@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:contentInsetStart="0dp"
+                    android:contentInsetLeft="0dp"
+                    app:contentInsetLeft="0dp"
+                    app:contentInsetStart="0dp"
+                    android:background="@color/primary_color"
+                    android:minHeight="?attr/actionBarSize">
+                    <FrameLayout
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/action_bar"
+                        android:background="@color/primary_color">
+
+                        <ImageView
+                            android:id="@+id/drawer_indicator"
+                            android:layout_width="56dp"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerInside"
+                            android:background="@drawable/drawer_selector"
+                            android:layout_gravity="start"
+                            android:src="@drawable/back_black_ic"
+                            android:padding="15dp" />
+
+                        <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="TRAINING 1"
+                            android:layout_gravity="center_vertical"
+                            android:id="@+id/date_text_viewd"
+                            android:textAllCaps="false"
+                            android:gravity="center_vertical"
+                            android:typeface="sans"
+                            android:textSize="20sp"
+                            android:textColor="@color/dark_text_color"
+                            android:layout_marginLeft="60dp" />
+
+                    </FrameLayout>
+                </android.support.v7.widget.Toolbar>
+
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_marginTop="56dp"
+                android:layout_height="match_parent"
+                android:background="#e1e1e1">
+            </android.support.v7.widget.RecyclerView>
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="#e1e1e1"
+                android:layout_gravity="bottom">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center_horizontal|bottom">
+
+                    <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="END TRAINING"
+                        android:id="@+id/textView23"
+                        android:layout_gravity="left|center_vertical"
+                        android:layout_marginLeft="56dp"
+                        android:gravity="center"
+                        android:textColor="#ffffff"
+                        android:background="#3695ed"
+                        android:paddingRight="30dp" />
+
+                    <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+                        android:layout_width="60dp"
+                        android:layout_height="fill_parent"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="50%"
+                        android:id="@+id/textView24"
+                        android:layout_gravity="left|center_vertical"
+                        android:textColor="#ffffff"
+                        android:textSize="20sp"
+                        android:gravity="center"
+                        android:background="#38a0f0" />
+                </FrameLayout>
+            </FrameLayout>
+
+        </FrameLayout>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical" android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/dialog"
+            android:visibility="gone"
+            android:background="#ca212121">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/empty"
+                android:layout_gravity="bottom">
+                <ImageView
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:id="@+id/imageView8"
+                    android:layout_gravity="left|top"
+                    android:src="@drawable/delete_dark"
+                    android:padding="12dp" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="140dp"
+                    android:background="#ffffff">
+
+                    <ScrollView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/scrollView" >
+
+                        <binaryblitz.athleteapp.Custom.RobotoTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?"
+                            android:id="@+id/textView18"
+                            android:textColor="@color/dark_text_color"
+                            android:textSize="16sp"
+                            android:paddingLeft="16dp"
+                            android:paddingTop="16dp"
+                            android:paddingRight="16dp"
+                            android:paddingBottom="16dp" />
+                    </ScrollView>
+                </FrameLayout>
+            </FrameLayout>
+
+        </RelativeLayout>
+    </FrameLayout>

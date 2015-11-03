@@ -1,0 +1,15 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:state_checked="true"
+        android:drawable="@drawable/new_training_two" />
+
+    <item android:state_pressed="true"
+        android:drawable="@drawable/new_training_two" />
+
+    <item android:state_focused="true"
+        android:drawable="@drawable/new_training_two" />
+
+    <item android:drawable="@drawable/one_training" />
+
+</selector>

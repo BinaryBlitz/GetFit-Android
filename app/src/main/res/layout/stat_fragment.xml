@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical" android:layout_width="match_parent"
+            android:layout_height="600dp"
+            android:background="#ffffff">
+
+            <FrameLayout
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="#b6b6b6"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp">
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="center"
+                android:background="#b6b6b6"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"></FrameLayout>
+
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="140dp"
+                android:layout_marginRight="100dp"
+                android:background="@drawable/blue_circle">
+
+                <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="16"
+                    android:id="@+id/textView12"
+                    android:layout_gravity="center"
+                    android:textSize="32sp"
+                    android:textColor="@color/dark_text_color" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="140dp"
+                android:background="@drawable/yellow_circle"
+                android:layout_marginLeft="100dp">
+
+                <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="4 H\n50 M"
+                    android:id="@+id/textView13"
+                    android:layout_gravity="center"
+                    android:textColor="@color/dark_text_color"
+                    android:textSize="32sp"
+                    android:gravity="center" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="100dp"
+                android:background="@drawable/green_circle"
+                android:layout_marginTop="140dp">
+
+                <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="80.3 KM"
+                    android:id="@+id/textView14"
+                    android:layout_gravity="center"
+                    android:textSize="32sp"
+                    android:textColor="@color/dark_text_color" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
+                android:background="@drawable/red_circle"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="140dp">
+
+                <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="22600"
+                    android:id="@+id/textView15"
+                    android:layout_gravity="center"
+                    android:textColor="@color/dark_text_color"
+                    android:textSize="30sp" />
+            </FrameLayout>
+
+            <binaryblitz.athleteapp.Custom.ThinRobotoTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Length"
+                android:id="@+id/textView11"
+                android:layout_gravity="center"
+                android:layout_marginBottom="36dp"
+                android:layout_marginLeft="100dp"
+                android:textColor="@color/dark_text_color"
+                android:textSize="24sp" />
+
+            <binaryblitz.athleteapp.Custom.ThinRobotoTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Trainings"
+                android:id="@+id/textView1f1"
+                android:layout_gravity="center"
+                android:layout_marginBottom="36dp"
+                android:textColor="@color/dark_text_color"
+                android:textSize="24sp"
+                android:layout_marginRight="100dp" />
+
+            <binaryblitz.athleteapp.Custom.ThinRobotoTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Calories"
+                android:id="@+id/textViewf11"
+                android:layout_gravity="center"
+                android:layout_marginLeft="100dp"
+                android:textColor="@color/dark_text_color"
+                android:textSize="24sp"
+                android:layout_marginTop="256dp" />
+
+            <binaryblitz.athleteapp.Custom.ThinRobotoTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Distance"
+                android:id="@+id/texftView11"
+                android:layout_gravity="center"
+                android:textColor="@color/dark_text_color"
+                android:textSize="24sp"
+                android:layout_marginTop="256dp"
+                android:layout_marginRight="100dp" />
+
+        </FrameLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

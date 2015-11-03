@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:id="@+id/card_view"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    app:elevation="2dp"
+    android:padding="0dp"
+    app:cardCornerRadius="4dp"
+    android:layout_marginLeft="6dp"
+    android:layout_marginRight="6dp"
+    android:layout_marginTop="6dp"
+    app:cardBackgroundColor="#ffffff"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:background="?android:selectableItemBackground"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="12dp">
+
+                <com.github.siyamed.shapeimageview.CircularImageView
+                    app:siBorderWidth="1dp"
+                    app:siBorderColor="#ffffff"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:id="@+id/imageView"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_marginLeft="6dp" />
+
+                <binaryblitz.athleteapp.Custom.RobotoTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_marginLeft="56dp"
+                    android:textSize="18sp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/grey_text_color" />
+            </FrameLayout>
+
+            <binaryblitz.athleteapp.Custom.RobotoTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textView2"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:textColor="@color/dark_text_color"
+                android:textSize="18sp"
+                android:typeface="sans" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="250dp"
+                android:id="@+id/imageView2"
+                android:layout_gravity="center_vertical|top"
+                android:layout_marginTop="16dp"
+                android:scaleType="centerCrop" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+
+                <RelativeLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginLeft="150dp">
+
+                    <ImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:id="@+id/imageView3"
+                        android:layout_gravity="end"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="16dp"
+                        android:padding="12dp" />
+
+                    <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:id="@+id/textView3"
+                        android:layout_gravity="right"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/imageView3"
+                        android:layout_toStartOf="@+id/imageView3"
+                        android:textColor="@color/dark_text_color"
+                        android:textSize="22sp"
+                        android:textIsSelectable="false"
+                        android:layout_marginRight="-4dp" />
+
+                    <ImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:id="@+id/imageView4"
+                        android:layout_gravity="right"
+                        android:src="@drawable/comment_active_ic"
+                        android:padding="12dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/textView3"
+                        android:layout_toStartOf="@+id/textView3" />
+
+                    <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:id="@+id/textView4"
+                        android:layout_gravity="right"
+                        android:textColor="@color/dark_text_color"
+                        android:textSize="22sp"
+                        android:layout_toLeftOf="@+id/imageView4"
+                        android:layout_toStartOf="@+id/imageView4"
+                        android:layout_marginRight="-4dp"
+                        android:layout_centerVertical="true" />
+                </RelativeLayout>
+
+                <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+                    android:layout_width="100dp"
+                    android:layout_height="28dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView5"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:textColor="@color/grey_text_color"
+                    android:textStyle="bold"
+                    android:background="@drawable/date_text_border_back"
+                    android:gravity="center"
+                    android:textSize="16sp" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <binaryblitz.athleteapp.Custom.SquareFrameLayout
+            android:id="@+id/vImageRoot"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center">
+
+            <View
+                android:id="@+id/vBgLike"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_like_circle_background"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/ivLike"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:src="@drawable/like_filled"
+                android:visibility="gone" />
+
+        </binaryblitz.athleteapp.Custom.SquareFrameLayout>
+    </FrameLayout>
+</android.support.v7.widget.CardView>

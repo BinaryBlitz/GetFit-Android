@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff">
+
+    <binaryblitz.athleteapp.Custom.RobotoTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="&quot;Who has taken an extended leave of absence from training? &quot;"
+        android:id="@+id/textView19"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/dark_text_color"
+        android:textSize="16sp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="8dp"
+        android:id="@+id/trainer">
+
+        <com.github.siyamed.shapeimageview.CircularImageView
+            app:siBorderWidth="1dp"
+            app:siBorderColor="#ffffff"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:id="@+id/imageView"
+            android:layout_gravity="left|center_vertical" />
+
+        <binaryblitz.athleteapp.Custom.RobotoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Henry Harrison"
+            android:id="@+id/textViewfdfd"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginLeft="48dp"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:textColor="@color/grey_text_color" />
+    </FrameLayout>
+
+    <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+        android:layout_width="fill_parent"
+        android:layout_height="44dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="SHOW ME TRAINING TIPS"
+        android:id="@+id/textView16"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:background="@color/accent_color"
+        android:textSize="16sp"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+</LinearLayout>

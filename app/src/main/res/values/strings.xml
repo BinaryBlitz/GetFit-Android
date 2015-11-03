@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AthleteApp</string>
+    <string name="exsercises_string">Exercises</string>
+    <string name="min_string">MIN</string>
+</resources>
