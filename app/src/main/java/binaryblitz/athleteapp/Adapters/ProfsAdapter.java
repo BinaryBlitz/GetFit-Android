@@ -21,12 +21,9 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import java.util.ArrayList;
 
-import binaryblitz.athleteapp.Activities.CalendarActivity;
 import binaryblitz.athleteapp.Activities.ProfProfileActivity;
-import binaryblitz.athleteapp.Data.FITTIComment;
-import binaryblitz.athleteapp.Data.FITTIPost;
-import binaryblitz.athleteapp.Data.FITTIProfessional;
-import binaryblitz.athleteapp.Data.FITTIProfessionalType;
+import binaryblitz.athleteapp.Data.Professional;
+import binaryblitz.athleteapp.Data.ProfessionalType;
 import binaryblitz.athleteapp.R;
 
 public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -34,7 +31,7 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private Activity context;
     DisplayImageOptions options;
 
-    private ArrayList<FITTIProfessional> collection;
+    private ArrayList<Professional> collection;
 
     public ProfsAdapter(Activity context) {
         this.context = context;
@@ -66,22 +63,22 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             @Override
             public void run() {
                 if(position == 0) {
-                    collection.add(new FITTIProfessional("1", "photo", null, R.drawable.test4, R.drawable.test9,
-                            "Mike Silvestri", "Cross-fit coach. Your faithful assistant to athletic body in short time.",
-                            FITTIProfessionalType.COACH, false, 8, 32, 4.7));
+                    collection.add(new Professional("1", "photo", null, R.drawable.test4, R.drawable.test9,
+                            "Evgeny Malkin", "Cross-fit coach. Your faithful assistant to athletic body in short time.",
+                            ProfessionalType.COACH, false, 8, 32, 4.7));
                     notifyItemInserted(collection.size());
-                    collection.add(new FITTIProfessional("1", "photo", null, R.drawable.test5, R.drawable.test10,
+                    collection.add(new Professional("1", "photo", null, R.drawable.test5, R.drawable.test10,
                             "Henry Harrison", "Professional marathoner. The best choice to improve your stamina and get fit.",
-                            FITTIProfessionalType.COACH, false, 12, 68, 4.5));
+                            ProfessionalType.COACH, false, 12, 68, 4.5));
                     notifyItemInserted(collection.size());
-                    collection.add(new FITTIProfessional("1", "photo", null, R.drawable.test6, R.drawable.tina,
+                    collection.add(new Professional("1", "photo", null, R.drawable.test6, R.drawable.tina,
                             "Tina Kandelaki", "Fitness fan. Get the training celebrity uses, with all the features eventually developed.",
-                            FITTIProfessionalType.COACH, false, 5, 188, 4.9));
+                            ProfessionalType.COACH, false, 5, 188, 4.9));
                     notifyItemInserted(collection.size());
                 } else if(position == 1) {
-                    collection.add(new FITTIProfessional("1", "photo", null, R.drawable.sports_medicine, R.drawable.arkov,
+                    collection.add(new Professional("1", "photo", null, R.drawable.sports_medicine, R.drawable.arkov,
                             "Vladimir Arkov", "Ph.D in Medical Sciences, Head of Physiotherapy Department in Moscow Sports Medicine Clinic",
-                            FITTIProfessionalType.DOCTOR, false, 6, 224, 4.9));
+                            ProfessionalType.DOCTOR, false, 6, 224, 4.9));
                     notifyItemInserted(collection.size());
                 }
             }
@@ -112,7 +109,7 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
         });
 
-        final FITTIProfessional prof = collection.get(position);
+        final Professional prof = collection.get(position);
 
         holder.user_name.setText(prof.getName());
         holder.post_desc.setText(prof.getDesc());

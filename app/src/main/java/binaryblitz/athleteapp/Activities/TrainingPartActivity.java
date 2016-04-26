@@ -1,6 +1,5 @@
 package binaryblitz.athleteapp.Activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -9,15 +8,15 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import binaryblitz.athleteapp.Data.FITTITrainingPart;
+import binaryblitz.athleteapp.Data.TrainingPart;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Utils.AndroidUtils;
 
 public class TrainingPartActivity extends AppCompatActivity {
 
-    private static FITTITrainingPart part;
+    private static TrainingPart part;
 
-    public static void setPart(FITTITrainingPart part) {
+    public static void setPart(TrainingPart part) {
         TrainingPartActivity.part = part;
     }
 

@@ -1,10 +1,8 @@
 package binaryblitz.athleteapp.Adapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +21,8 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import java.util.ArrayList;
 import java.util.Date;
 
-import binaryblitz.athleteapp.Activities.CalendarActivity;
 import binaryblitz.athleteapp.Activities.TrainingActivity;
-import binaryblitz.athleteapp.Data.FITTITraining;
-import binaryblitz.athleteapp.Data.FITTITrainingPart;
+import binaryblitz.athleteapp.Data.Training;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Utils.DateTimeUtil;
 
@@ -34,7 +30,7 @@ public class TrainingsAdapter
         extends RecyclerView.Adapter<TrainingsAdapter.MyViewHolder>
         implements SwipeableItemAdapter<TrainingsAdapter.MyViewHolder> {
 
-    private ArrayList<FITTITraining> trainings;
+    private ArrayList<Training> trainings;
     private Activity context;
 
     public static int SELECTED;
@@ -106,12 +102,12 @@ public class TrainingsAdapter
         trainings = new ArrayList<>();
     }
 
-    public void addTraining(FITTITraining training) {
+    public void addTraining(Training training) {
         trainings.add(training);
         notifyDataSetChanged();
     }
 
-    public void setTrainings(ArrayList<FITTITraining> trainings) {
+    public void setTrainings(ArrayList<Training> trainings) {
         this.trainings = trainings;
     }
 
@@ -167,7 +163,7 @@ public class TrainingsAdapter
         // set swiping properties
         holder.setSwipeItemHorizontalSlideAmount(0);
 
-        final FITTITraining training = trainings.get(position);
+        final Training training = trainings.get(position);
 
         holder.name.setText(training.getName());
         holder.type.setText(training.getType());

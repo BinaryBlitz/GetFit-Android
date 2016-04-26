@@ -3,7 +3,6 @@ package binaryblitz.athleteapp.Adapters;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +25,8 @@ import java.util.ArrayList;
 import binaryblitz.athleteapp.Activities.ProfProfileActivity;
 import binaryblitz.athleteapp.Activities.TrainingActivity;
 import binaryblitz.athleteapp.Activities.TrainingPartActivity;
-import binaryblitz.athleteapp.Data.FITTITraining;
-import binaryblitz.athleteapp.Data.FITTITrainingPart;
+import binaryblitz.athleteapp.Data.Training;
+import binaryblitz.athleteapp.Data.TrainingPart;
 import binaryblitz.athleteapp.R;
 
 public class TrainingPartsAdapter
@@ -37,7 +36,7 @@ public class TrainingPartsAdapter
     private ArrayList<Pair<Integer, Pair<Integer, Object>>> trainings;
     private Activity context;
 
-    private FITTITraining parent;
+    private Training parent;
 
     public static final int SPACE = 1;
     public static final int HEADER = 2;
@@ -87,7 +86,7 @@ public class TrainingPartsAdapter
         ((TrainingActivity) context).setPercents((int) (((double) done / (double) (done + basic)) * 100));
     }
 
-    public TrainingPartsAdapter(Activity context, FITTITraining parent) {
+    public TrainingPartsAdapter(Activity context, Training parent) {
         mItemViewOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,7 +198,7 @@ public class TrainingPartsAdapter
             final int swipeState = ((DoneViewHolder) holder).getSwipeStateFlags();
             ((DoneViewHolder) holder).setSwipeItemHorizontalSlideAmount(0);
             final DoneViewHolder basicViewHolder = (DoneViewHolder) holder;
-            final FITTITrainingPart part = (FITTITrainingPart) trainings.get(position).second.second;
+            final TrainingPart part = (TrainingPart) trainings.get(position).second.second;
             if ((swipeState & Swipeable.STATE_FLAG_IS_UPDATED) != 0) {
                 int bgResId;
 
@@ -247,7 +246,7 @@ public class TrainingPartsAdapter
         } else if(getItemViewType(position) == BASIC) {
             final int swipeState = ((BasicViewHolder) holder).getSwipeStateFlags();
             ((BasicViewHolder) holder).setSwipeItemHorizontalSlideAmount(0);
-            final FITTITrainingPart part = (FITTITrainingPart) trainings.get(position).second.second;
+            final TrainingPart part = (TrainingPart) trainings.get(position).second.second;
 
             final BasicViewHolder basicViewHolder = (BasicViewHolder) holder;
 

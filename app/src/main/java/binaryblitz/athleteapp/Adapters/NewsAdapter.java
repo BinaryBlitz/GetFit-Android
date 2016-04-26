@@ -11,12 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -32,16 +29,19 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import java.util.ArrayList;
 
 import binaryblitz.athleteapp.Activities.PostActivity;
-import binaryblitz.athleteapp.Data.FITTIComment;
-import binaryblitz.athleteapp.Data.FITTIPost;
+import binaryblitz.athleteapp.Data.Comment;
+import binaryblitz.athleteapp.Data.Post;
 import binaryblitz.athleteapp.R;
+import binaryblitz.athleteapp.Server.GetFitServerRequest;
+import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
+import binaryblitz.athleteapp.Utils.DateUtils;
 
 public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Activity context;
     DisplayImageOptions options;
 
-    private ArrayList<FITTIPost> news;
+    private ArrayList<Post> news;
 
     private static final DecelerateInterpolator DECCELERATE_INTERPOLATOR = new DecelerateInterpolator();
     private static final AccelerateInterpolator ACCELERATE_INTERPOLATOR = new AccelerateInterpolator();
@@ -57,6 +57,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         config.denyCacheImageMultipleSizesInMemory();
         config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
         config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
+        config.writeDebugLogs();
         config.tasksProcessingOrder(QueueProcessingType.LIFO);
 
         // Initialize ImageLoader with configuration.
@@ -72,47 +73,18 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 .build();
 
         news = new ArrayList<>();
-
-        news.add(new FITTIPost("1", "Henry Harrison", "1", null,
-                R.drawable.test10, "Who has taken an extended leave of absence from training?",
-                "No photo", R.drawable.test2, "TODAY", 43, new ArrayList<FITTIComment>()));
-
-        news.add(new FITTIPost("1", "Henry Harrison", "1", null,
-                R.drawable.test10, "Who has taken an extended leave of absence from training?",
-                "Photo", R.drawable.test3, "TODAY", 43, new ArrayList<FITTIComment>()));
-
-        news.add(new FITTIPost("1", "Henry Harrison", "1", null,
-                R.drawable.test10, "Who has taken an extended leave of absence from training?",
-                "No photo", R.drawable.test4, "TODAY", 43, new ArrayList<FITTIComment>()));
-
-        news.add(new FITTIPost("1", "Henry Harrison", "1", null,
-                R.drawable.test10, "Who has taken an extended leave of absence from training?",
-                "Photo", R.drawable.test5, "TODAY", 43, new ArrayList<FITTIComment>()));
-
-        news.add(new FITTIPost("1", "Henry Harrison", "1", null,
-                R.drawable.test10, "Who has taken an extended leave of absence from training?",
-                "No photo", R.drawable.test6, "TODAY", 43, new ArrayList<FITTIComment>()));
-
-        news.add(new FITTIPost("1", "Henry Harrison", "1", null,
-                R.drawable.test10, "Who has taken an extended leave of absence from training?",
-                "No photo", R.drawable.test3, "TODAY", 43, new ArrayList<FITTIComment>()));
-
-        news.add(new FITTIPost("1", "Henry Harrison", "1", null,
-                R.drawable.test10, "Who has taken an extended leave of absence from training?",
-                "Photo", R.drawable.test6, "TODAY", 43, new ArrayList<FITTIComment>()));
-
-        news.add(new FITTIPost("1", "Henry Harrison", "1", null,
-                R.drawable.test10, "Who has taken an extended leave of absence from training?",
-                "Photo", R.drawable.test3, "TODAY", 43, new ArrayList<FITTIComment>()));
-
-        news.add(new FITTIPost("1", "Henry Harrison", "1", null,
-                R.drawable.test10, "Who has taken an extended leave of absence from training?",
-                "No photo", R.drawable.test3, "TODAY", 43, new ArrayList<FITTIComment>()));
-
     }
 
     public void setContext(Activity context) {
         this.context = context;
+    }
+
+    public ArrayList<Post> getNews() {
+        return news;
+    }
+
+    public void setNews(ArrayList<Post> news) {
+        this.news = news;
     }
 
     @Override
@@ -128,7 +100,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         final NewsViewHolder holder = (NewsViewHolder) viewHolder;
 
-        final FITTIPost post = news.get(position);
+        final Post post = news.get(position);
 
         holder.user_name.setText(post.getUserName());
         holder.post_desc.setText(post.getDesc());
@@ -141,7 +113,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             holder.post_photo.setVisibility(View.GONE);
         } else {
             holder.post_photo.setVisibility(View.VISIBLE);
-            ImageLoader.getInstance().displayImage("drawable://" + post.getPhotoResId(), holder.post_photo, new ImageLoadingListener() {
+            ImageLoader.getInstance().displayImage(post.getPhotoUrl(), holder.post_photo, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
 
@@ -163,22 +135,34 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 }
             });
-            //holder.post_photo.setImageResource(post.getPhotoResId());
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 long pressTime = System.currentTimeMillis();
-                // If double click...
                 if (pressTime - lastPressTime <= DOUBLE_PRESS_INTERVAL) {
                     mHasDoubleClicked = true;
                     if (!post.isLiked()) {
                         animatePhotoLike(holder);
+
+                        GetFitServerRequest.with(context)
+                                .authorize()
+                                .listener(new OnRequestPerformedListener() {
+                                    @Override
+                                    public void onRequestPerformedListener(Object... objects) {
+                                    }
+                                })
+                                .like(post.getId())
+                                .perform();
+
                         holder.like_image.setImageResource(R.drawable.like_filled);
                         post.setLiked(true);
+                        post.setLikeCount(post.getLikeCount() + 1);
+                        holder.like_count.setText(Integer.toString(post.getLikeCount()));
                     }
-                } else { // If not double click....
+                } else {
+
                     mHasDoubleClicked = false;
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -196,7 +180,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 //        holder.post_photo.setImageResource(post.getPhotoResId());
 
-        holder.date.setText(post.getDate());
+        holder.date.setText(DateUtils.getDateStringRepresentationWithoutTime(post.getDate()));
 
         if(post.isLiked()) {
             holder.like_image.setImageResource(R.drawable.like_filled);
@@ -209,8 +193,31 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             public void onClick(View v) {
                 if(post.isLiked()) {
                     holder.like_image.setImageResource(R.drawable.like_active_ic);
+                    post.setLikeCount(post.getLikeCount() - 1);
+                    holder.like_count.setText(Integer.toString(post.getLikeCount()));
+                    GetFitServerRequest.with(context)
+                            .authorize()
+                            .listener(new OnRequestPerformedListener() {
+                                @Override
+                                public void onRequestPerformedListener(Object... objects) {
+
+                                }
+                            })
+                            .deleteLike(post.getLikeId())
+                            .perform();
                 } else {
                     holder.like_image.setImageResource(R.drawable.like_filled);
+                    post.setLikeCount(post.getLikeCount() + 1);
+                    holder.like_count.setText(Integer.toString(post.getLikeCount()));
+                    GetFitServerRequest.with(context)
+                            .authorize()
+                            .listener(new OnRequestPerformedListener() {
+                                @Override
+                                public void onRequestPerformedListener(Object... objects) {
+                                }
+                            })
+                            .like(post.getId())
+                            .perform();
                 }
 
                 post.setLiked(!post.isLiked());

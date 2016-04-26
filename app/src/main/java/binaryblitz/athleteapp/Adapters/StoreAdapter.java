@@ -3,7 +3,6 @@ package binaryblitz.athleteapp.Adapters;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +22,8 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 
-import binaryblitz.athleteapp.Activities.PostActivity;
 import binaryblitz.athleteapp.Activities.ProgramActivity;
-import binaryblitz.athleteapp.Data.FITTIProgram;
+import binaryblitz.athleteapp.Data.Program;
 import binaryblitz.athleteapp.R;
 
 public class StoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -33,7 +31,11 @@ public class StoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private Activity context;
     DisplayImageOptions options;
 
-    private ArrayList<FITTIProgram> collection;
+    private ArrayList<Program> collection;
+
+    public void setCollection(ArrayList<Program> collection) {
+        this.collection = collection;
+    }
 
     public StoreAdapter(Activity context) {
         this.context = context;
@@ -57,27 +59,6 @@ public class StoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 .build();
 
         collection = new ArrayList<>();
-
-        collection.add(new FITTIProgram("1", "Intensive training program for your body", "photo", R.drawable.test2, "65", "Cardio", 5,
-                "Who has taken an extended leave of absence from training?",
-                "40", 159, 5, "Mike Silvestri", "1"));
-        collection.get(0).setUserPhotoResId(R.drawable.test9);
-        collection.add(new FITTIProgram("1", "Intensive training program for your body", "photo", R.drawable.test3, "65", "Cardio", 5,
-                "Who has taken an extended leave of absence from training?",
-                "40", 159, 5, "Mike Silvestri", "1"));
-        collection.get(1).setUserPhotoResId(R.drawable.test10);
-        collection.add(new FITTIProgram("1", "Intensive training program for your body", "photo", R.drawable.test4, "65", "Cardio", 5,
-                "Who has taken an extended leave of absence from training?",
-                "40", 159, 5, "Mike Silvestri", "1"));
-        collection.get(2).setUserPhotoResId(R.drawable.test9);
-        collection.add(new FITTIProgram("1", "Intensive training program for your body", "photo", R.drawable.test5, "65", "Cardio", 5,
-                "Who has taken an extended leave of absence from training?",
-                "40", 159, 5, "Mike Silvestri", "1"));
-        collection.get(3).setUserPhotoResId(R.drawable.test10);
-        collection.add(new FITTIProgram("1", "Intensive training program for your body", "photo", R.drawable.test6, "65", "Cardio", 5,
-                "Who has taken an extended leave of absence from training?",
-                "40", 159, 5, "Mike Silvestri", "1"));
-        collection.get(4).setUserPhotoResId(R.drawable.test10);
     }
 
     public void setContext(Activity context) {
@@ -105,7 +86,7 @@ public class StoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
         });
 
-        final FITTIProgram program = collection.get(position);
+        final Program program = collection.get(position);
 
         holder.user_name.setText(program.getTrainerName());
         holder.name.setText(program.getName());
@@ -113,13 +94,39 @@ public class StoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         holder.like_count.setText(Double.toString(program.getStarCount()));
         holder.text_count.setText(Integer.toString(program.getUserCount()));
 
-        holder.user_avatar.setImageResource(program.getUserPhotoResId());
-
         if(program.getPhoto_url() == null || program.getPhoto_url().equals("No photo")) {
             holder.post_photo.setVisibility(View.GONE);
         } else {
             holder.post_photo.setVisibility(View.VISIBLE);
-            ImageLoader.getInstance().displayImage("drawable://" + program.getPhotoResId(), holder.post_photo, new ImageLoadingListener() {
+            ImageLoader.getInstance().displayImage(program.getPhotoUrl(), holder.post_photo, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    ImageView imageView = (ImageView) view;
+                    FadeInBitmapDisplayer.animate(imageView, 500);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+
+                }
+            });
+        }
+
+        if(program.getUserPhotoUrl() == null || program.getUserPhotoUrl().equals("No photo")) {
+            holder.user_avatar.setVisibility(View.GONE);
+        } else {
+            holder.user_avatar.setVisibility(View.VISIBLE);
+            ImageLoader.getInstance().displayImage(program.getUserPhotoUrl(), holder.user_avatar, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
 

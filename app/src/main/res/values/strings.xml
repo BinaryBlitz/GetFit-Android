@@ -1,5 +1,18 @@
 <resources>
+    <string name="facebook_app_id">789940354469829</string>
     <string name="app_name">AthleteApp</string>
     <string name="exsercises_string">Exercises</string>
     <string name="min_string">MIN</string>
+    <string name="next_upcase_str">NEXT</string>
+    <string name="type_number_str">Type your phone number</string>
+    <string name="type_code_str">Type your code</string>
+    <string name="code_str">Code</string>
+    <string name="send_code_after_str">"Send code again after "</string>
+    <string name="lost_connection_str">Lost internet connection</string>
+    <string name="empty_field_str">Field can`t be empty</string>
+    <string name="error_try_str">Error, please, try again</string>
+    <string name="send_again_str">Send again</string>
+    <string name="wait_str">Please, wait...</string>
+
+    <integer name="com_vk_sdk_AppId">5357520</integer>
 </resources>

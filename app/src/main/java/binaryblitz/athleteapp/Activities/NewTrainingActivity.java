@@ -1,5 +1,6 @@
 package binaryblitz.athleteapp.Activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -21,21 +22,21 @@ import binaryblitz.athleteapp.Adapters.NewTrainingsAdapter;
 import binaryblitz.athleteapp.CalendarUtils.BasicDecorator;
 import binaryblitz.athleteapp.CalendarUtils.CalendarDecorator;
 import binaryblitz.athleteapp.CalendarUtils.SelectionDecorator;
-import binaryblitz.athleteapp.Data.FITTITraining;
+import binaryblitz.athleteapp.Data.Training;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Utils.AndroidUtils;
 
 public class NewTrainingActivity extends AppCompatActivity implements OnDateSelectedListener {
 
-    private static ArrayList<FITTITraining> trainings;
+    private static ArrayList<Training> trainings;
 
-    private static FITTITraining training;
+    private static Training training;
 
-    public static void setTraining(FITTITraining training) {
+    public static void setTraining(Training training) {
         NewTrainingActivity.training = training;
     }
 
-    public static void setTrainings(ArrayList<FITTITraining> trainings) {
+    public static void setTrainings(ArrayList<Training> trainings) {
         NewTrainingActivity.trainings = trainings;
     }
 
@@ -43,6 +44,7 @@ public class NewTrainingActivity extends AppCompatActivity implements OnDateSele
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
         widget.invalidateDecorators();
+        findViewById(R.id.textView16).setBackgroundColor(Color.parseColor("#3695ed"));
     }
 
     @Override
@@ -66,13 +68,17 @@ public class NewTrainingActivity extends AppCompatActivity implements OnDateSele
         findViewById(R.id.textView16).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(((MaterialCalendarView) findViewById(R.id.calendarView2fd)).getSelectedDates().size() == 0) {
+                    return;
+                }
+
                 CalendarActivity.FLAG = true;
-                ArrayList<FITTITraining> trainings = new ArrayList<>();
+                ArrayList<Training> trainings = new ArrayList<>();
                 int idStart = CalendarActivity.getCount();
 
                 for(int i = 0; i < ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).getSelectedDates().size(); i++) {
                     CalendarDay day = ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).getSelectedDates().get(i);
-                    FITTITraining new_training = new FITTITraining("1", idStart + i,
+                    Training new_training = new Training("1", idStart + i,
                             training.getName(), training.getType(), training.getExCount(),
                             new Date(day.getYear(), day.getMonth() + 1, day.getDay()),
                             training.getTime(), training.getParts(), training.getOwner(), training.getDesc());
@@ -105,6 +111,7 @@ public class NewTrainingActivity extends AppCompatActivity implements OnDateSele
     }
 
     public void showDialog() {
+        findViewById(R.id.textView16).setBackgroundColor(Color.parseColor("#4e4e4e"));
         ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).removeDecorators();
         ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).setSelectionMode(MaterialCalendarView.SELECTION_MODE_MULTIPLE);
 
@@ -161,7 +168,7 @@ public class NewTrainingActivity extends AppCompatActivity implements OnDateSele
         ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).addDecorators(decorator1, decorator2, decorator3);
         ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).setOnDateChangedListener(this);
 
-        AndroidUtils.animateRevealShowFirst(findViewById(R.id.dialog), NewTrainingActivity.this);
+       // AndroidUtils.animateRevealShowFirst(findViewById(R.id.dialog), NewTrainingActivity.this);
 
         new Handler().post(new Runnable() {
             @Override

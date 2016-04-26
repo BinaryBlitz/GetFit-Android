@@ -142,7 +142,8 @@
                     android:id="@+id/imageView8"
                     android:layout_gravity="left|top"
                     android:src="@drawable/delete_dark"
-                    android:padding="12dp" />
+                    android:padding="12dp"
+                    android:layout_marginTop="24dp" />
             </FrameLayout>
 
             <binaryblitz.athleteapp.Custom.BoldRobotoTextView
@@ -181,7 +182,7 @@
                 android:id="@+id/textView16"
                 android:gravity="center"
                 android:textColor="#ffffff"
-                android:background="@color/accent_color"
+                android:background="#4e4e4e"
                 android:textSize="20sp"
                 android:layout_gravity="bottom"
                 android:layout_alignParentBottom="true"

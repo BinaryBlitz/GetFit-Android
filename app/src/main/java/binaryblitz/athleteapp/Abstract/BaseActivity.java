@@ -20,7 +20,7 @@ import binaryblitz.athleteapp.Activities.StoreActivity;
 import binaryblitz.athleteapp.Custom.DrawerArrowDrawable;
 import binaryblitz.athleteapp.R;
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity implements InternetConnectionDependentActivity {
 
     protected DrawerArrowDrawable drawer_arrow;
     private float offset;
@@ -119,6 +119,11 @@ public class BaseActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+    }
+
+    @Override
+    public void cancelRequest() {
 
     }
 }

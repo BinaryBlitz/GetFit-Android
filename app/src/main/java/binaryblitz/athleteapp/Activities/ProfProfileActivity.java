@@ -13,10 +13,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import binaryblitz.athleteapp.Data.FITTIProfessional;
-import binaryblitz.athleteapp.Data.FITTIProfessionalType;
+import binaryblitz.athleteapp.Data.Professional;
+import binaryblitz.athleteapp.Data.ProfessionalType;
 import binaryblitz.athleteapp.Fragments.NewsFragment;
-import binaryblitz.athleteapp.Fragments.ProfsFragment;
 import binaryblitz.athleteapp.Fragments.ProgramsFragment;
 import binaryblitz.athleteapp.R;
 
@@ -71,9 +70,9 @@ public class ProfProfileActivity extends AppCompatActivity {
         vBgLike = findViewById(R.id.follow_btn);
         ivLike = (ImageView) findViewById(R.id.imageView6);
 
-        final FITTIProfessional prof = new FITTIProfessional("1", "photo", null, R.drawable.test4, R.drawable.test10,
+        final Professional prof = new Professional("1", "photo", null, R.drawable.test4, R.drawable.test10,
                 "Mike Silvestri", "Who has taken an extended leave of absence from training?",
-                FITTIProfessionalType.COACH, false, 10, 43, 4.9);
+                ProfessionalType.COACH, false, 10, 43, 4.9);
 
         vBgLike.setOnClickListener(new View.OnClickListener() {
             @Override

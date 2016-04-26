@@ -6,10 +6,8 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
-import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
@@ -20,11 +18,10 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeMana
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import binaryblitz.athleteapp.Adapters.TrainingPartsAdapter;
-import binaryblitz.athleteapp.Data.FITTITraining;
-import binaryblitz.athleteapp.Data.FITTITrainingPart;
+import binaryblitz.athleteapp.Data.Training;
+import binaryblitz.athleteapp.Data.TrainingPart;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Utils.AndroidUtils;
 
@@ -34,17 +31,17 @@ public class TrainingActivity extends AppCompatActivity {
     private RecyclerViewSwipeManager mRecyclerViewSwipeManager;
     private RecyclerViewTouchActionGuardManager mRecyclerViewTouchActionGuardManager;
 
-    private static FITTITraining parent;
-    private static ArrayList<FITTITrainingPart> parts;
+    private static Training parent;
+    private static ArrayList<TrainingPart> parts;
     private TrainingPartsAdapter myItemAdapter;
 
     public static boolean FLAG = false;
 
-    public static void setParts(ArrayList<FITTITrainingPart> parts) {
+    public static void setParts(ArrayList<TrainingPart> parts) {
         TrainingActivity.parts = parts;
     }
 
-    public static void setParent(FITTITraining parent) {
+    public static void setParent(Training parent) {
         TrainingActivity.parent = parent;
     }
 

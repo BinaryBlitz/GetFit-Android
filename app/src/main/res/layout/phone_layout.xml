@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/imageView15"
+        android:src="@drawable/test3"
+        android:scaleType="centerCrop" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/black_gradiend">
+        <android.support.v7.widget.AppCompatButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/next_upcase_str"
+            android:id="@+id/button"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:background="@color/accent_color"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:layout_marginLeft="56dp"
+            android:layout_marginRight="56dp" />
+
+        <FrameLayout
+            android:id="@+id/l1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="56dp"
+            android:layout_marginRight="56dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="56dp"
+            android:visibility="visible">
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="56dp"
+                android:layout_height="41dp"
+                android:dropDownWidth="200dp"
+                android:spinnerMode="dropdown"
+                android:layout_gravity="bottom"
+                android:background="@null" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/phone"
+                android:textColor="#ffffff"
+                android:inputType="numberSigned"
+                android:textSize="16sp"
+                app:met_baseColor="#ffffff"
+                app:met_errorColor="#ffffff"
+                app:met_floatingLabel="highlight"
+                app:met_helperTextColor="#ffffff"
+                app:met_primaryColor="#ffffff"
+                app:met_typeface="fonts/roboto.ttf"
+                android:layout_marginLeft="56dp"
+                android:textColorHint="#ffffff"
+                android:layout_gravity="bottom" />
+
+        </FrameLayout>
+
+
+        <FrameLayout
+            android:id="@+id/l2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="56dp"
+            android:layout_marginRight="56dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="56dp"
+            android:visibility="gone">
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/phon2e"
+                android:textColor="#ffffff"
+                android:inputType="numberSigned"
+                android:textSize="16sp"
+                android:hint="@string/code_str"
+                app:met_floatingLabelText="Code"
+                app:met_baseColor="#ffffff"
+                app:met_errorColor="#ffffff"
+                app:met_floatingLabel="highlight"
+                app:met_helperTextColor="#ffffff"
+                app:met_primaryColor="#ffffff"
+                app:met_typeface="fonts/roboto.ttf"
+                android:textColorHint="#ffffff"
+                android:layout_gravity="bottom"
+                android:visibility="visible" />
+
+        </FrameLayout>
+
+        <binaryblitz.athleteapp.Custom.RobotoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/type_number_str"
+            android:id="@+id/textView2"
+            android:layout_gravity="center"
+            android:layout_marginBottom="108dp"
+            android:textSize="18sp"
+            android:textColor="#ffffff" />
+
+        <binaryblitz.athleteapp.Custom.RobotoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/type_code_str"
+            android:id="@+id/textView23"
+            android:layout_gravity="center"
+            android:layout_marginBottom="108dp"
+            android:visibility="gone"
+            android:textSize="18sp"
+            android:textColor="#ffffff" />
+
+        <binaryblitz.athleteapp.Custom.RobotoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textView37"
+            android:layout_gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="16sp"
+            android:layout_marginTop="64dp"
+            android:visibility="gone" />
+    </FrameLayout>
+</FrameLayout>

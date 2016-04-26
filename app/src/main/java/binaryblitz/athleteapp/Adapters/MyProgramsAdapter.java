@@ -20,7 +20,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import java.util.ArrayList;
 
 import binaryblitz.athleteapp.Activities.ProgramActivity;
-import binaryblitz.athleteapp.Data.FITTIProgram;
+import binaryblitz.athleteapp.Data.Program;
 import binaryblitz.athleteapp.R;
 
 public class MyProgramsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -28,7 +28,7 @@ public class MyProgramsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private Activity context;
     DisplayImageOptions options;
 
-    private ArrayList<FITTIProgram> collection;
+    private ArrayList<Program> collection;
 
     public MyProgramsAdapter(Activity context) {
         this.context = context;
@@ -53,23 +53,23 @@ public class MyProgramsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         collection = new ArrayList<>();
 
-        collection.add(new FITTIProgram("1", "Intensive training program for your body", "photo", R.drawable.test2, "65", "Cardio", 5,
+        collection.add(new Program("1", "Intensive training program for your body", "photo", R.drawable.test2, "65", "Cardio", 5,
                 "Who has taken an extended leave of absence from training?",
                 "40", 159, 5, "Mike Silvestri", "1"));
         collection.get(0).setUserPhotoResId(R.drawable.test10);
-        collection.add(new FITTIProgram("1", "Intensive training program for your body", "photo", R.drawable.test3, "65", "Cardio", 5,
+        collection.add(new Program("1", "Intensive training program for your body", "photo", R.drawable.test3, "65", "Cardio", 5,
                 "Who has taken an extended leave of absence from training?",
                 "40", 159, 5, "Mike Silvestri", "1"));
         collection.get(1).setUserPhotoResId(R.drawable.test10);
-        collection.add(new FITTIProgram("1", "Intensive training program for your body", "photo", R.drawable.test4, "65", "Cardio", 5,
+        collection.add(new Program("1", "Intensive training program for your body", "photo", R.drawable.test4, "65", "Cardio", 5,
                 "Who has taken an extended leave of absence from training?",
                 "40", 159, 5, "Mike Silvestri", "1"));
         collection.get(2).setUserPhotoResId(R.drawable.test10);
-        collection.add(new FITTIProgram("1", "Intensive training program for your body", "photo", R.drawable.test5, "65", "Cardio", 5,
+        collection.add(new Program("1", "Intensive training program for your body", "photo", R.drawable.test5, "65", "Cardio", 5,
                 "Who has taken an extended leave of absence from training?",
                 "40", 159, 5, "Mike Silvestri", "1"));
         collection.get(3).setUserPhotoResId(R.drawable.test10);
-        collection.add(new FITTIProgram("1", "Intensive training program for your body", "photo", R.drawable.test6, "65", "Cardio", 5,
+        collection.add(new Program("1", "Intensive training program for your body", "photo", R.drawable.test6, "65", "Cardio", 5,
                 "Who has taken an extended leave of absence from training?",
                 "40", 159, 5, "Mike Silvestri", "1"));
         collection.get(4).setUserPhotoResId(R.drawable.test10);
@@ -100,7 +100,7 @@ public class MyProgramsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
         });
 
-        final FITTIProgram program = collection.get(position);
+        final Program program = collection.get(position);
 
         holder.user_name.setText(program.getTrainerName());
         holder.name.setText(program.getName());

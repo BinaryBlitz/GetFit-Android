@@ -1,0 +1,29 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:background="#ffffff">
+
+    <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/textView33"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="24dp"
+        android:textSize="18sp"
+        android:textColor="#212121"
+        android:text="@string/wait_str"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:gravity="center" />
+
+    <binaryblitz.athleteapp.Custom.MetaBallView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/progress_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="32dp"
+        android:layout_marginTop="88dp" />
+
+</FrameLayout>

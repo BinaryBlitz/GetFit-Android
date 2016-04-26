@@ -18,7 +18,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import java.util.ArrayList;
 
-import binaryblitz.athleteapp.Data.FITTIChat;
+import binaryblitz.athleteapp.Data.Chat;
 import binaryblitz.athleteapp.R;
 
 public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -26,7 +26,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private Activity context;
     DisplayImageOptions options;
 
-    private ArrayList<FITTIChat> collection;
+    private ArrayList<Chat> collection;
 
     public ChatsAdapter(Activity context) {
         this.context = context;
@@ -51,10 +51,10 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         collection = new ArrayList<>();
 
-        collection.add(new FITTIChat(2, "Mike Silvestri", "14:02", "How your training?", R.drawable.test9));
-        collection.add(new FITTIChat(0, "Henry Harrison", "14:02", "How your training?", R.drawable.test10));
-        collection.add(new FITTIChat(0, "Efanov Evgeniy", "18:08", "I cant start training. So many parties.", R.drawable.evgen));
-        collection.add(new FITTIChat(1, "Jack Sparrow", "14:02", "Capitan!!! Capitan Jack Sparrow!!!", R.drawable.sparrow));
+        collection.add(new Chat(2, "Mike Silvestri", "14:02", "How your training?", R.drawable.test9));
+        collection.add(new Chat(0, "Henry Harrison", "14:02", "How your training?", R.drawable.test10));
+        collection.add(new Chat(0, "Efanov Evgeniy", "18:08", "I cant start training. So many parties.", R.drawable.evgen));
+        collection.add(new Chat(1, "Jack Sparrow", "14:02", "Capitan!!! Capitan Jack Sparrow!!!", R.drawable.sparrow));
 
     }
 
@@ -75,7 +75,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         final NewsViewHolder holder = (NewsViewHolder) viewHolder;
 
-        FITTIChat chat = collection.get(position);
+        Chat chat = collection.get(position);
 
         holder.user_name.setText(chat.getName());
 

@@ -1,0 +1,43 @@
+{
+  "project_info": {
+    "project_id": "default-demo-app-1e844",
+    "project_number": "427899873731",
+    "name": "Default Demo App"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427899873731:android:3d6da4a5fdc71e5d",
+        "client_id": "android:binaryblitz.athleteapp",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "binaryblitz.athleteapp",
+          "certificate_hash": []
+        }
+      },
+      "oauth_client": [],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 2,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 1
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}

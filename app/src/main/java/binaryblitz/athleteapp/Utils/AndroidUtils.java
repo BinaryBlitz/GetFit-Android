@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
@@ -16,6 +19,11 @@ import binaryblitz.athleteapp.CircularReveal.animation.SupportAnimator;
 import binaryblitz.athleteapp.CircularReveal.animation.ViewAnimationUtils;
 
 public class AndroidUtils {
+
+    public static void hideKeyboard(View v) {
+        InputMethodManager imm = (InputMethodManager) v.getContext().getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
 
     public int getStatusBarHeight(Context context) {
         int result = 0;
@@ -155,5 +163,14 @@ public class AndroidUtils {
                 fa_button.setVisibility(View.GONE);
             }
         }, 200);
+    }
+
+    public static boolean isConnected(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
     }
 }
