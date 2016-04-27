@@ -4,13 +4,23 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#e1e1e1">
-    <LinearLayout
+    android:background="#ffffff"
+    android:id="@+id/main">
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="56dp">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:background="#ffffff"
-            android:layout_height="wrap_content"
-        android:layout_marginTop="56dp">
+            android:layout_height="wrap_content">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -143,7 +153,15 @@
                     android:gravity="center"
                     android:textSize="16sp" />
             </FrameLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
         </LinearLayout>
+    </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
@@ -189,14 +207,6 @@
                         android:textSize="20sp"
                         android:textColor="@color/dark_text_color"
                         android:layout_marginLeft="60dp" />
-
-                    <ImageView
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:id="@+id/imageView12"
-                        android:layout_gravity="right|center_vertical"
-                        android:src="@drawable/more_ic"
-                        android:padding="12dp" />
 
                 </FrameLayout>
             </android.support.v7.widget.Toolbar>

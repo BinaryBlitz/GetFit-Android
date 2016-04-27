@@ -125,6 +125,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         public void run() {
                             if (!mHasDoubleClicked) {
                                 Intent intent = new Intent(context, PostActivity.class);
+                                intent.putExtra("id", post.getId());
                                 context.startActivity(intent);
                             }
                         }

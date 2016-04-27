@@ -1,6 +1,9 @@
 package binaryblitz.athleteapp.Activities;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,9 +17,10 @@ import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Server.GetFitServerRequest;
 import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
 
-public class PostActivity extends BaseActivity {
+public class PostActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private static String id;
+    private SwipeRefreshLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,16 +36,49 @@ public class PostActivity extends BaseActivity {
 
         id = getIntent().getStringExtra("id");
 
+        layout = (SwipeRefreshLayout) findViewById(R.id.refresh);
+        layout.setOnRefreshListener(this);
+        layout.setColorSchemeResources(R.color.accent_color);
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                layout.setRefreshing(true);
+                load();
+            }
+        });
+
+    }
+
+    private void load() {
         GetFitServerRequest.with(this)
                 .authorize()
                 .listener(new OnRequestPerformedListener() {
                     @Override
                     public void onRequestPerformedListener(Object... objects) {
-                        Log.e("qwerty", objects[0].toString());
+                        layout.setRefreshing(false);
+                        if (objects[0].equals("Internet")) {
+                            return;
+                        }
+                        if (objects[0].equals("Error")) {
+                            cancelRequest();
+                            return;
+                        }
+
+
                     }
                 })
                 .post(id)
                 .perform();
+    }
+
+    @Override
+    public void cancelRequest() {
+        Snackbar.make(findViewById(R.id.main), R.string.lost_connection_str, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRefresh() {
 
     }
 }
