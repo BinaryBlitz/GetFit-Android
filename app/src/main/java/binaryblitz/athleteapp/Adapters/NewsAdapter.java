@@ -18,6 +18,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import binaryblitz.athleteapp.Activities.PhotoActivity;
 import binaryblitz.athleteapp.Activities.PostActivity;
 import binaryblitz.athleteapp.Data.Post;
 import binaryblitz.athleteapp.R;
@@ -81,6 +82,15 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             Picasso.with(context)
                     .load(post.getPhotoUrl())
                     .into(holder.post_photo);
+
+            holder.post_photo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, PhotoActivity.class);
+                    PhotoActivity.url = post.getPhotoUrl();
+                    context.startActivity(intent);
+                }
+            });
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

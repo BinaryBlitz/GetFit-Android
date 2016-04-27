@@ -87,7 +87,7 @@ public class NewsActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                                         null,
                                         R.drawable.test10,
                                         object.getString("content"),
-                                        GetFitServerRequest.baseUrl + object.getString("image_url"),
+                                        object.getString("image_url"),
                                         R.drawable.test2,
                                         start,
                                         object.getInt("likes_count"),

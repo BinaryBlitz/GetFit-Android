@@ -35,7 +35,7 @@ public class PhotoActivity extends BaseActivity {
         mImageView = (ImageView) findViewById(R.id.pager);
 
         mAttacher = new PhotoViewAttacher(mImageView);
-
+        Picasso.with(this).setLoggingEnabled(true);
         Picasso.with(this)
                 .load(GetFitServerRequest.imagesUrl + url)
                 .into(mImageView, new Callback() {
