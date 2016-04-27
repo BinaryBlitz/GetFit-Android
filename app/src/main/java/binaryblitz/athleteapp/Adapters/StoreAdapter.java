@@ -2,7 +2,6 @@ package binaryblitz.athleteapp.Adapters;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,15 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -29,7 +20,6 @@ import binaryblitz.athleteapp.R;
 public class StoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Activity context;
-    DisplayImageOptions options;
 
     private ArrayList<Program> collection;
 
@@ -39,25 +29,6 @@ public class StoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public StoreAdapter(Activity context) {
         this.context = context;
-        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);
-        config.threadPriority(Thread.NORM_PRIORITY - 2);
-        config.denyCacheImageMultipleSizesInMemory();
-        config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
-        config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
-        config.tasksProcessingOrder(QueueProcessingType.LIFO);
-
-        // Initialize ImageLoader with configuration.
-        ImageLoader.getInstance().init(config.build());
-
-        options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .resetViewBeforeLoading(true)
-                .build();
-
         collection = new ArrayList<>();
     }
 
@@ -94,60 +65,22 @@ public class StoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         holder.like_count.setText(Double.toString(program.getStarCount()));
         holder.text_count.setText(Integer.toString(program.getUserCount()));
 
-        if(program.getPhoto_url() == null || program.getPhoto_url().equals("No photo")) {
+        if(program.getPhotoUrl() == null || program.getPhotoUrl().equals("No photo")) {
             holder.post_photo.setVisibility(View.GONE);
         } else {
             holder.post_photo.setVisibility(View.VISIBLE);
-            ImageLoader.getInstance().displayImage(program.getPhotoUrl(), holder.post_photo, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    ImageView imageView = (ImageView) view;
-                    FadeInBitmapDisplayer.animate(imageView, 500);
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-
-                }
-            });
+            Picasso.with(context)
+                    .load(program.getPhotoUrl())
+                    .into(holder.post_photo);
         }
 
         if(program.getUserPhotoUrl() == null || program.getUserPhotoUrl().equals("No photo")) {
             holder.user_avatar.setVisibility(View.GONE);
         } else {
             holder.user_avatar.setVisibility(View.VISIBLE);
-            ImageLoader.getInstance().displayImage(program.getUserPhotoUrl(), holder.user_avatar, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    ImageView imageView = (ImageView) view;
-                    FadeInBitmapDisplayer.animate(imageView, 500);
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-
-                }
-            });
+            Picasso.with(context)
+                    .load(program.getUserPhotoUrl())
+                    .into(holder.user_avatar);
         }
 
         holder.date.setText(program.getTime() + " MIN");

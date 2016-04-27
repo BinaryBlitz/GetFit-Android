@@ -4,9 +4,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.R;
 
-public class ProgramActivity extends AppCompatActivity {
+public class ProgramActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

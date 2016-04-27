@@ -13,13 +13,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.Data.Professional;
 import binaryblitz.athleteapp.Data.ProfessionalType;
 import binaryblitz.athleteapp.Fragments.NewsFragment;
 import binaryblitz.athleteapp.Fragments.ProgramsFragment;
 import binaryblitz.athleteapp.R;
 
-public class ProfProfileActivity extends AppCompatActivity {
+public class ProfProfileActivity extends BaseActivity {
 
     private ViewPager mPager;
 

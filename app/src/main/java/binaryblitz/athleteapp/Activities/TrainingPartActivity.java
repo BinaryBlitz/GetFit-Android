@@ -8,11 +8,12 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.Data.TrainingPart;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Utils.AndroidUtils;
 
-public class TrainingPartActivity extends AppCompatActivity {
+public class TrainingPartActivity extends BaseActivity {
 
     private static TrainingPart part;
 

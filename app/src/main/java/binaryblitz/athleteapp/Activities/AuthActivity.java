@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.Custom.ProgressDialog;
 import binaryblitz.athleteapp.Push.QuickstartPreferences;
 import binaryblitz.athleteapp.Push.RegistrationIntentService;
@@ -37,7 +38,7 @@ import binaryblitz.athleteapp.Server.DeviceInfoStore;
 import binaryblitz.athleteapp.Server.GetFitServerRequest;
 import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
 
-public class AuthActivity extends AppCompatActivity {
+public class AuthActivity extends BaseActivity {
 
     static CallbackManager callbackManager;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;

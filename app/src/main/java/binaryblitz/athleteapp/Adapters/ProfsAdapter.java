@@ -12,12 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -29,30 +24,11 @@ import binaryblitz.athleteapp.R;
 public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Activity context;
-    DisplayImageOptions options;
 
     private ArrayList<Professional> collection;
 
     public ProfsAdapter(Activity context) {
         this.context = context;
-        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);
-        config.threadPriority(Thread.NORM_PRIORITY - 2);
-        config.denyCacheImageMultipleSizesInMemory();
-        config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
-        config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
-        config.tasksProcessingOrder(QueueProcessingType.LIFO);
-
-        // Initialize ImageLoader with configuration.
-        ImageLoader.getInstance().init(config.build());
-
-        options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .resetViewBeforeLoading(true)
-                .build();
 
         collection = new ArrayList<>();
 
@@ -122,8 +98,9 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             holder.post_photo.setVisibility(View.GONE);
         } else {
             holder.post_photo.setVisibility(View.VISIBLE);
-            ImageLoader.getInstance().displayImage("drawable://" + prof.getPhotoResId(), holder.post_photo);
-           // holder.post_photo.setImageResource(prof.getPhotoResId());
+            Picasso.with(context)
+                    .load(prof.getPhotoUrl())
+                    .into(holder.post_photo);
         }
 
         holder.date.setText(prof.getProgramCount() + " PROGRAMS");

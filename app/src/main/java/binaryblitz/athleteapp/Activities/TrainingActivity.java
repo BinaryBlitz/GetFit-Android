@@ -19,13 +19,14 @@ import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchAct
 
 import java.util.ArrayList;
 
+import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.Adapters.TrainingPartsAdapter;
 import binaryblitz.athleteapp.Data.Training;
 import binaryblitz.athleteapp.Data.TrainingPart;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Utils.AndroidUtils;
 
-public class TrainingActivity extends AppCompatActivity {
+public class TrainingActivity extends BaseActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.Adapter mWrappedAdapter;
     private RecyclerViewSwipeManager mRecyclerViewSwipeManager;

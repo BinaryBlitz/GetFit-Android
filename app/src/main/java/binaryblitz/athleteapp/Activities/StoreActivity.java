@@ -86,10 +86,8 @@ public class StoreActivity extends BaseActivity implements SwipeRefreshLayout.On
                                       for (int i = 0; i < array.length(); i++) {
                                           JSONObject object = array.getJSONObject(i);
                                           Program program = new Program(
+                                                  object.getString("id"),
                                                   object.getString("name"),
-                                                  object.getString("preview"),
-                                                  GetFitServerRequest.baseUrl + object.getString("banner_url"),
-                                                  0,
                                                   object.getString("price"),
                                                   "Cardio",
                                                   5,
@@ -99,7 +97,8 @@ public class StoreActivity extends BaseActivity implements SwipeRefreshLayout.On
                                                   5,
                                                   object.getJSONObject("trainer").getString("first_name") + " " +
                                                           object.getJSONObject("trainer").getString("last_name"),
-                                                  "1"
+                                                  "1",
+                                                  GetFitServerRequest.baseUrl + object.getString("banner_url")
                                           );
                                           program.setUserPhotoUrl(GetFitServerRequest.baseUrl +
                                                   object.getJSONObject("trainer").getString("avatar_url"));

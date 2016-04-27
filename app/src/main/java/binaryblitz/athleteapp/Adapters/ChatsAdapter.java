@@ -9,13 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-
 import java.util.ArrayList;
 
 import binaryblitz.athleteapp.Data.Chat;
@@ -24,37 +17,16 @@ import binaryblitz.athleteapp.R;
 public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Activity context;
-    DisplayImageOptions options;
 
     private ArrayList<Chat> collection;
 
     public ChatsAdapter(Activity context) {
         this.context = context;
-        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);
-        config.threadPriority(Thread.NORM_PRIORITY - 2);
-        config.denyCacheImageMultipleSizesInMemory();
-        config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
-        config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
-        config.tasksProcessingOrder(QueueProcessingType.LIFO);
-
-        // Initialize ImageLoader with configuration.
-        ImageLoader.getInstance().init(config.build());
-
-        options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .resetViewBeforeLoading(true)
-                .build();
-
         collection = new ArrayList<>();
-
-        collection.add(new Chat(2, "Mike Silvestri", "14:02", "How your training?", R.drawable.test9));
-        collection.add(new Chat(0, "Henry Harrison", "14:02", "How your training?", R.drawable.test10));
-        collection.add(new Chat(0, "Efanov Evgeniy", "18:08", "I cant start training. So many parties.", R.drawable.evgen));
-        collection.add(new Chat(1, "Jack Sparrow", "14:02", "Capitan!!! Capitan Jack Sparrow!!!", R.drawable.sparrow));
+//        collection.add(new Chat(2, "Mike Silvestri", "14:02", "How your training?", R.drawable.test9));
+//        collection.add(new Chat(0, "Henry Harrison", "14:02", "How your training?", R.drawable.test10));
+//        collection.add(new Chat(0, "Efanov Evgeniy", "18:08", "I cant start training. So many parties.", R.drawable.evgen));
+//        collection.add(new Chat(1, "Jack Sparrow", "14:02", "Capitan!!! Capitan Jack Sparrow!!!", R.drawable.sparrow));
 
     }
 

@@ -10,13 +10,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -31,30 +24,11 @@ import binaryblitz.athleteapp.R;
 public class NewTrainingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Activity context;
-    DisplayImageOptions options;
 
     private ArrayList<Training> trainings;
 
     public NewTrainingsAdapter(Activity context) {
         this.context = context;
-        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);
-        config.threadPriority(Thread.NORM_PRIORITY - 2);
-        config.denyCacheImageMultipleSizesInMemory();
-        config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
-        config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
-        config.tasksProcessingOrder(QueueProcessingType.LIFO);
-
-        // Initialize ImageLoader with configuration.
-        ImageLoader.getInstance().init(config.build());
-
-        options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .resetViewBeforeLoading(true)
-                .build();
 
         trainings = new ArrayList<>();
 

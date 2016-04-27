@@ -18,6 +18,7 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import java.util.ArrayList;
 import java.util.Date;
 
+import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.Adapters.NewTrainingsAdapter;
 import binaryblitz.athleteapp.CalendarUtils.BasicDecorator;
 import binaryblitz.athleteapp.CalendarUtils.CalendarDecorator;
@@ -26,7 +27,7 @@ import binaryblitz.athleteapp.Data.Training;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Utils.AndroidUtils;
 
-public class NewTrainingActivity extends AppCompatActivity implements OnDateSelectedListener {
+public class NewTrainingActivity extends BaseActivity implements OnDateSelectedListener {
 
     private static ArrayList<Training> trainings;
 

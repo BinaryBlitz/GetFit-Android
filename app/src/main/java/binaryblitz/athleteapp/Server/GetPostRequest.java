@@ -3,27 +3,28 @@ package binaryblitz.athleteapp.Server;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class GetNewsItemRequest implements Request {
+public class GetPostRequest implements Request {
 
     String id;
 
-    public GetNewsItemRequest(String id) {
+    public GetPostRequest(String id) {
         this.id = id;
     }
 
     @Override
     public void execute(final OnRequestPerformedListener listener, final JSONObject... params) {
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(
+        JsonArrayRequest jsObjRequest = new JsonArrayRequest(
                 com.android.volley.Request.Method.GET,
                 GetFitServerRequest.baseUrl
                         + "/api/posts/" + id
                         + GetFitServerRequest.apiToken
                 ,
-                new Response.Listener<JSONObject>() {
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(JSONArray response) {
                         if(response.toString().startsWith("{\"error\"")) {
                             listener.onRequestPerformedListener("Error");
                         } else {

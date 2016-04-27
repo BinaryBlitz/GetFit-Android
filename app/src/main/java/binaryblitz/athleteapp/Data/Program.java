@@ -4,13 +4,6 @@ public class Program {
     private String id;
 
     private String name;
-    private String photo_url;
-
-    @SuppressWarnings("unused")
-    private int photoResId;
-
-    @SuppressWarnings("unused")
-    private int userPhotoResId;
 
     private String price;
     private String type;
@@ -28,13 +21,11 @@ public class Program {
     private String trainerName;
     private String trainerId;
 
-    public Program(String id, String name, String photo_url, int photoResId, String price,
+    public Program(String id, String name, String price,
                    String type, int count, String desc, String time, int userCount,
-                   int starCount, String trainerName, String trainerId) {
+                   int starCount, String trainerName, String trainerId, String photoUrl) {
         this.id = id;
         this.name = name;
-        this.photo_url = photo_url;
-        this.photoResId = photoResId;
         this.price = price;
         this.type = type;
         this.count = count;
@@ -44,6 +35,7 @@ public class Program {
         this.starCount = starCount;
         this.trainerName = trainerName;
         this.trainerId = trainerId;
+        this.photoUrl = photoUrl;
     }
 
     public String getUserPhotoUrl() {
@@ -52,14 +44,6 @@ public class Program {
 
     public void setUserPhotoUrl(String userPhotoUrl) {
         this.userPhotoUrl = userPhotoUrl;
-    }
-
-    public int getUserPhotoResId() {
-        return userPhotoResId;
-    }
-
-    public void setUserPhotoResId(int userPhotoResId) {
-        this.userPhotoResId = userPhotoResId;
     }
 
     public String getPhotoUrl() {
@@ -84,22 +68,6 @@ public class Program {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPhoto_url() {
-        return photo_url;
-    }
-
-    public void setPhoto_url(String photo_url) {
-        this.photo_url = photo_url;
-    }
-
-    public int getPhotoResId() {
-        return photoResId;
-    }
-
-    public void setPhotoResId(int photoResId) {
-        this.photoResId = photoResId;
     }
 
     public String getPrice() {

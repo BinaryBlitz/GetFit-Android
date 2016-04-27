@@ -17,10 +17,9 @@ public class GetFitServerRequest {
     static String apiToken;
     static Context context;
     public static String baseUrl = "http://getfit.binaryblitz.ru";
-
+    public static String imagesUrl = "http://getfit.binaryblitz.ru";
     static String PREFERENCE_NAME = "GetFitAppPrefs";
     static String TOKEN_ENTITY = "auth_token";
-    static String TOKEN_MESSAGER_ENTITY = "messager_token";
     static String TOKEN_DEVICE_ENTITY = "device_token";
     static String USER_ENTITY = "auth_info";
 

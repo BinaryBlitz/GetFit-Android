@@ -29,10 +29,6 @@ public class RequestPerformer {
         return new RequestExecutor(new CreateUserRequest(), listener, objects);
     }
 
-    public RequestExecutor post(String id) {
-        return new RequestExecutor(new GetNewsItemRequest(id), listener, objects);
-    }
-
     public RequestExecutor like(String id) {
         return new RequestExecutor(new LikeRequest(id), listener, objects);
     }
@@ -55,6 +51,14 @@ public class RequestPerformer {
 
     public RequestExecutor programs() {
         return new RequestExecutor(new GetProgramsRequest(), listener, objects);
+    }
+
+    public RequestExecutor post(String id) {
+        return new RequestExecutor(new GetPostRequest(id), listener, objects);
+    }
+
+    public RequestExecutor program(String id) {
+        return new RequestExecutor(new GetProgramRequest(id), listener, objects);
     }
 
     public RequestExecutor updateUser() {
