@@ -57,6 +57,34 @@
         android:textColor="#212121"
         android:textIsSelectable="true" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:background="?android:selectableItemBackground"
+        android:id="@+id/delete_btn"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:id="@+id/remove_btn"
+            android:layout_gravity="center_vertical|right"
+            android:src="@drawable/ic_action_remove_black"
+            android:padding="7dp" />
+
+        <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/delete_str"
+            android:id="@+id/textView24"
+            android:textColor="#727272"
+            android:textSize="12sp"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="16dp" />
+    </LinearLayout>
+
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="1px"

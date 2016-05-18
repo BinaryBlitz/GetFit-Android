@@ -24,8 +24,7 @@
             android:layout_gravity="center_vertical|left"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginLeft="16dp"
-            android:src="@drawable/test9" />
+            android:layout_marginLeft="16dp" />
 
         <binaryblitz.athleteapp.Custom.BoldRobotoTextView
             android:layout_width="fill_parent"
@@ -38,8 +37,7 @@
             android:textSize="16sp"
             android:layout_marginBottom="16dp"
             android:layout_marginRight="72dp"
-            android:singleLine="true"
-            android:text="Efanov Evgeniy" />
+            android:singleLine="true" />
 
         <binaryblitz.athleteapp.Custom.RobotoTextView
             android:layout_width="fill_parent"
@@ -53,8 +51,7 @@
             android:textSize="14sp"
             android:layout_marginRight="48dp"
             android:singleLine="true"
-            android:gravity="center_vertical"
-            android:text="Hello, nigga!" />
+            android:gravity="center_vertical" />
 
         <FrameLayout
             android:layout_width="fill_parent"
@@ -75,8 +72,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
             android:gravity="center_vertical|right"
-            android:singleLine="true"
-            android:text="11:59" />
+            android:singleLine="true" />
 
         <binaryblitz.athleteapp.Custom.BoldRobotoTextView
             android:layout_width="26dp"
@@ -89,8 +85,7 @@
             android:textColor="#ffffff"
             android:textSize="12sp"
             android:background="@drawable/filled_blue_circle"
-            android:gravity="center"
-            android:text="2" />
+            android:gravity="center" />
     </FrameLayout>
 
 </FrameLayout>

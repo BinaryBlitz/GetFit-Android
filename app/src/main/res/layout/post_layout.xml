@@ -11,11 +11,12 @@
         android:id="@+id/refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="56dp"
         android:layout_marginTop="56dp">
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/scroll">
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
@@ -37,14 +38,12 @@
                     android:layout_height="34dp"
                     android:id="@+id/imageView"
                     android:layout_gravity="left|center_vertical"
-                    android:src="@drawable/test10"
                     android:layout_marginLeft="6dp" />
 
                 <binaryblitz.athleteapp.Custom.RobotoTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Henry Harrison"
                     android:id="@+id/textView"
                     android:layout_gravity="left|center_vertical"
                     android:layout_marginLeft="56dp"
@@ -57,7 +56,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Who has taken an extended leave of absence from training? "
                 android:id="@+id/textView2"
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
@@ -72,7 +70,6 @@
                 android:id="@+id/imageView2"
                 android:layout_gravity="center_vertical|top"
                 android:layout_marginTop="16dp"
-                android:src="@drawable/test2"
                 android:scaleType="centerCrop" />
 
             <FrameLayout
@@ -102,7 +99,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="99"
                         android:id="@+id/textView3"
                         android:layout_gravity="right"
                         android:layout_centerVertical="true"
@@ -128,7 +124,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="43"
                         android:id="@+id/textView4"
                         android:layout_gravity="right"
                         android:textColor="@color/dark_text_color"
@@ -143,7 +138,6 @@
                     android:layout_width="100dp"
                     android:layout_height="28dp"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="TODAY"
                     android:id="@+id/textView5"
                     android:layout_gravity="left|center_vertical"
                     android:layout_marginLeft="16dp"

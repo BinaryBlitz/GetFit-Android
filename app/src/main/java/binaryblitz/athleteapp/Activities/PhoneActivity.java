@@ -223,6 +223,7 @@ public class PhoneActivity extends BaseActivity {
                                 @Override
                                 public void onRequestPerformedListener(Object... objects) {
                                     dialog.dismiss();
+                                    Log.e("qwerty", objects[0].toString());
                                     if (objects[0].equals("Internet")) {
                                         return;
                                     }

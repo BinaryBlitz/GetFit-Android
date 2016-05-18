@@ -19,7 +19,6 @@
             android:layout_height="fill_parent"
             android:id="@+id/photo_menu"
             android:background="#2B2D42"
-            android:src="@drawable/test1"
             android:scaleType="centerCrop"/>
 
         <TextView
@@ -39,7 +38,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/name_drawer"
             android:textColor="#efffffff"
-            android:text="Efanov Evgeniy"
             android:layout_gravity="left|bottom"
             android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"
@@ -54,7 +52,6 @@
             android:id="@+id/avatar_drawer"
             android:layout_gravity="left|center_vertical"
             android:layout_marginLeft="16dp"
-            android:src="@drawable/evgen"
             android:layout_marginBottom="16dp" />
 
     </FrameLayout>

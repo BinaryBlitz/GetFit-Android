@@ -10,14 +10,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
 import binaryblitz.athleteapp.Adapters.NewsAdapter;
 import binaryblitz.athleteapp.Adapters.StoreAdapter;
+import binaryblitz.athleteapp.Data.Post;
+import binaryblitz.athleteapp.Data.Program;
 import binaryblitz.athleteapp.R;
 
-/**
- * Created by evgenijefanov on 24.10.15.
- */
 public class ProgramsFragment extends Fragment {
+
+    private StoreAdapter adapter;
+    private ArrayList<Program> collection;
+
+    public void setCollection(ArrayList<Program> collection) {
+        this.collection = collection;
+
+        adapter.setCollection(collection);
+        adapter.notifyDataSetChanged();
+    }
 
     @Nullable
     @Override
@@ -32,7 +43,9 @@ public class ProgramsFragment extends Fragment {
         RecyclerView view = (RecyclerView) getView().findViewById(R.id.recyclerView);
         view.setItemAnimator(new DefaultItemAnimator());
         view.setLayoutManager(new LinearLayoutManager(getContext()));
-        view.setAdapter(new StoreAdapter(getActivity()));
+
+        adapter = new StoreAdapter(getActivity());
+        view.setAdapter(adapter);
 
     }
 }

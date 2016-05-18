@@ -10,39 +10,30 @@ public class Post {
     private String userId;
     private String userPhotoUrl;
 
-    @SuppressWarnings("unused")
-    private int userPhotoResId;
-
     private String desc;
 
     private String photoUrl;
 
-    @SuppressWarnings("unused")
-    private int photoResId;
-
     private Calendar date;
 
     private int likeCount;
+    private int commentsCount;
     private boolean liked;
 
     private String likeId;
 
-    private ArrayList<Comment> comments;
-
     public Post(String id, String userName, String userId, String userPhotoUrl,
-                int userPhotoResId, String desc, String photoUrl,
-                int photoResId, Calendar date, int likeCount, ArrayList<Comment> comments, String likeId, boolean liked) {
+                 String desc, String photoUrl,
+                 Calendar date, int likeCount, int commentsCount, String likeId, boolean liked) {
         this.id = id;
         this.userName = userName;
         this.userId = userId;
         this.userPhotoUrl = userPhotoUrl;
-        this.userPhotoResId = userPhotoResId;
         this.desc = desc;
         this.photoUrl = photoUrl;
-        this.photoResId = photoResId;
         this.date = date;
         this.likeCount = likeCount;
-        this.comments = comments;
+        this.commentsCount = commentsCount;
         this.likeId = likeId;
         this.liked = liked;
     }
@@ -95,14 +86,6 @@ public class Post {
         this.userPhotoUrl = userPhotoUrl;
     }
 
-    public int getUserPhotoResId() {
-        return userPhotoResId;
-    }
-
-    public void setUserPhotoResId(int userPhotoResId) {
-        this.userPhotoResId = userPhotoResId;
-    }
-
     public String getDesc() {
         return desc;
     }
@@ -117,14 +100,6 @@ public class Post {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
-    }
-
-    public int getPhotoResId() {
-        return photoResId;
-    }
-
-    public void setPhotoResId(int photoResId) {
-        this.photoResId = photoResId;
     }
 
     public Calendar getDate() {
@@ -143,11 +118,11 @@ public class Post {
         this.likeCount = likeCount;
     }
 
-    public ArrayList<Comment> getComments() {
-        return comments;
+    public int getCommentsCount() {
+        return commentsCount;
     }
 
-    public void setComments(ArrayList<Comment> comments) {
-        this.comments = comments;
+    public void setCommentsCount(int commentsCount) {
+        this.commentsCount = commentsCount;
     }
 }

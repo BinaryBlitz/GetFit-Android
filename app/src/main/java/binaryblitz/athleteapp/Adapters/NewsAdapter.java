@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import binaryblitz.athleteapp.Activities.PhotoActivity;
 import binaryblitz.athleteapp.Activities.PostActivity;
+import binaryblitz.athleteapp.Activities.ProfProfileActivity;
 import binaryblitz.athleteapp.Data.Post;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Server.GetFitServerRequest;
@@ -71,9 +72,32 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         holder.user_name.setText(post.getUserName());
         holder.post_desc.setText(post.getDesc());
         holder.like_count.setText(Integer.toString(post.getLikeCount()));
-        holder.text_count.setText(Integer.toString(post.getComments().size()));
+        holder.text_count.setText(Integer.toString(post.getCommentsCount()));
 
-        holder.user_avatar.setImageResource(post.getUserPhotoResId());
+        if(!(post.getUserPhotoUrl() == null || post.getUserPhotoUrl().equals("No photo"))) {
+            holder.user_avatar.setVisibility(View.VISIBLE);
+            Picasso.with(context)
+                    .load(post.getUserPhotoUrl())
+                    .into(holder.post_photo);
+        }
+
+        holder.user_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ProfProfileActivity.class);
+                intent.putExtra("id", post.getUserId());
+                context.startActivity(intent);
+            }
+        });
+
+        holder.user_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ProfProfileActivity.class);
+                intent.putExtra("id", post.getUserId());
+                context.startActivity(intent);
+            }
+        });
 
         if(post.getPhotoUrl() == null || post.getPhotoUrl().equals("No photo")) {
             holder.post_photo.setVisibility(View.GONE);
@@ -125,6 +149,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         public void run() {
                             if (!mHasDoubleClicked) {
                                 Intent intent = new Intent(context, PostActivity.class);
+                                PostActivity.post = post;
                                 intent.putExtra("id", post.getId());
                                 context.startActivity(intent);
                             }
@@ -135,7 +160,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         });
 
-        holder.date.setText(DateUtils.getDateStringRepresentationWithoutTime(post.getDate()));
+        holder.date.setText(DateUtils.getDateStringRepresentationForNews(post.getDate()));
 
         if(post.isLiked()) {
             holder.like_image.setImageResource(R.drawable.like_filled);

@@ -8,25 +8,38 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
-import binaryblitz.athleteapp.Data.Chat;
+import binaryblitz.athleteapp.Activities.PostActivity;
+import binaryblitz.athleteapp.Custom.ProgressDialog;
+import binaryblitz.athleteapp.Data.Comment;
+import binaryblitz.athleteapp.Data.User;
 import binaryblitz.athleteapp.R;
+import binaryblitz.athleteapp.Server.DeviceInfoStore;
+import binaryblitz.athleteapp.Server.GetFitServerRequest;
+import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
+import binaryblitz.athleteapp.Utils.DateUtils;
 
 public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Activity context;
 
-    private ArrayList<Chat> collection;
+    private ArrayList<Comment> collection;
 
     public CommentsAdapter(Activity context) {
         this.context = context;
         collection = new ArrayList<>();
-//        collection.add(new Chat(2, "Mike Silvestri", "14:02", "How your training?", R.drawable.test9));
-//        collection.add(new Chat(0, "Henry Harrison", "14:02", "How your training?", R.drawable.test10));
-//        collection.add(new Chat(0, "Efanov Evgeniy", "18:08", "I cant start training. So many parties.", R.drawable.evgen));
-//        collection.add(new Chat(1, "Jack Sparrow", "14:02", "Capitan!!! Capitan Jack Sparrow!!!", R.drawable.sparrow));
+    }
 
+    public void add(Comment comment) {
+        collection.add(comment);
+        notifyItemInserted(collection.size() - 1);
+    }
+
+    public void setCollection(ArrayList<Comment> collection) {
+        this.collection = collection;
     }
 
     public void setContext(Activity context) {
@@ -37,7 +50,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View itemView = LayoutInflater.
                 from(parent.getContext()).
-                inflate(R.layout.chat_card, parent, false);
+                inflate(R.layout.comment_card, parent, false);
 
         return new NewsViewHolder(itemView);
     }
@@ -46,19 +59,45 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         final NewsViewHolder holder = (NewsViewHolder) viewHolder;
 
-        Chat chat = collection.get(position);
+        final Comment comment = collection.get(position);
+        holder.itemView.findViewById(R.id.delete_btn).setVisibility(View.GONE);
+        holder.user_name.setText(comment.getUserName());
 
-        holder.user_name.setText(chat.getName());
+        holder.date.setText(DateUtils.getDateStringRepresentation(comment.getDate()));
+        holder.post_desc.setText(comment.getText());
 
-        if(chat.getUnRead() == 0) {
-            holder.text_count.setVisibility(View.GONE);
-        } else {
-            holder.text_count.setVisibility(View.VISIBLE);
-            holder.text_count.setText(Integer.toString(chat.getUnRead()));
-        }
-        holder.date.setText(chat.getTime());
-        holder.post_desc.setText(chat.getLast());
-        holder.user_avatar.setImageResource(chat.getAvatar());
+        Picasso.with(context).load(comment.getAvatarUrl()).into(holder.user_avatar);
+
+        try {
+            if(comment.getUserId().equals(User.fromString(DeviceInfoStore.getUser()).getId())) {
+                holder.itemView.findViewById(R.id.delete_btn).setVisibility(View.VISIBLE);
+            } else {
+                holder.itemView.findViewById(R.id.delete_btn).setVisibility(View.GONE);
+            }
+        } catch (Exception e) {}
+
+        holder.itemView.findViewById(R.id.delete_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final ProgressDialog dialog = new ProgressDialog();
+
+                dialog.show(context.getFragmentManager(), "atheletapp");
+
+                GetFitServerRequest.with(context)
+                        .authorize()
+                        .listener(new OnRequestPerformedListener() {
+                            @Override
+                            public void onRequestPerformedListener(Object... objects) {
+                                dialog.dismiss();
+                                collection.remove(position);
+                                ((PostActivity) context).deleteComment();
+                                notifyItemRemoved(position);
+                            }
+                        })
+                        .deleteComment(comment.getId())
+                        .perform();
+            }
+        });
     }
 
     @Override
@@ -72,16 +111,14 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private TextView post_desc;
 
         private TextView date;
-        private TextView text_count;
 
         public NewsViewHolder(final View itemView) {
             super(itemView);
 
-            user_name = (TextView) itemView.findViewById(R.id.name_text);
-            user_avatar = (ImageView) itemView.findViewById(R.id.profile_image);
-            post_desc = (TextView) itemView.findViewById(R.id.age_text);
-            date = (TextView) itemView.findViewById(R.id.time_text);
-            text_count = (TextView) itemView.findViewById(R.id.unread);
+            user_name = (TextView) itemView.findViewById(R.id.user_text);
+            user_avatar = (ImageView) itemView.findViewById(R.id.avatar);
+            post_desc = (TextView) itemView.findViewById(R.id.comment_text);
+            date = (TextView) itemView.findViewById(R.id.date_text);
         }
     }
 }

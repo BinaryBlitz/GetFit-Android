@@ -8,6 +8,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Pair;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,6 +16,8 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -90,24 +93,33 @@ public class NewsActivity extends BaseActivity implements SwipeRefreshLayout.OnR
 
                                 news.add(new Post(
                                         object.getString("id"),
-                                        "Henry Harrison",
-                                        "1",
-                                        null,
-                                        R.drawable.test10,
+                                        object.getJSONObject("trainer").getString("first_name")
+                                                + " " + object.getJSONObject("trainer").getString("last_name"),
+                                        object.getJSONObject("trainer").getString("id"),
+                                        GetFitServerRequest.imagesUrl + object.getJSONObject("trainer").getString("avatar_url"),
                                         object.getString("content"),
-                                        object.getString("image_url"),
-                                        R.drawable.test2,
+                                        GetFitServerRequest.imagesUrl + object.getString("image_url"),
                                         start,
                                         object.getInt("likes_count"),
-                                        new ArrayList<Comment>(),
+                                        object.getInt("comments_count"),
                                         object.getString("like_id"),
                                         !object.isNull("like_id")));
                             }
 
-                            adapter.setNews(news);
+                            Collections.sort(news, new Comparator<Post>() {
+                                        @Override
+                                        public int compare(Post lhs, Post rhs) {
+                                            if(lhs.getDate().before(rhs.getDate())) {
+                                                return 1;
+                                            } else {
+                                                return -1;
+                                            }
+                                        }
+                                    });
+
+                                    adapter.setNews(news);
                             adapter.notifyDataSetChanged();
                         } catch (Exception e) {
-
                         }
                     }
                 })

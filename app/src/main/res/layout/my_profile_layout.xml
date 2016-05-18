@@ -27,7 +27,7 @@
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:contentScrim="@color/primary_color"
             app:expandedTitleMarginStart="48dp"
             app:expandedTitleMarginEnd="64dp"
@@ -76,7 +76,8 @@
                         android:layout_gravity="right|bottom"
                         android:layout_marginRight="16dp"
                         android:background="@drawable/blue_border"
-                        android:layout_marginBottom="6dp">
+                        android:layout_marginBottom="6dp"
+                        android:id="@+id/edit">
 
                         <binaryblitz.athleteapp.Custom.BoldRobotoTextView
                             android:layout_width="wrap_content"
@@ -163,15 +164,6 @@
                         android:textSize="20sp"
                         android:textColor="@color/dark_text_color"
                         android:layout_marginLeft="60dp" />
-
-                    <ImageView
-                        android:id="@+id/drawer_indicator_end"
-                        android:layout_width="56dp"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerInside"
-                        android:layout_gravity="end"
-                        android:padding="15dp"
-                        android:src="@drawable/more_ic" />
 
                 </FrameLayout>
             </android.support.v7.widget.Toolbar>

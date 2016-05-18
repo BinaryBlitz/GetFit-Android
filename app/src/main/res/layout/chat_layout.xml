@@ -10,13 +10,19 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="56dp"
-            android:background="#e1e1e1">
-        </android.support.v7.widget.RecyclerView>
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
@@ -65,16 +71,6 @@
                 </FrameLayout>
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:backgroundTint="@color/accent_color"
-            android:src="@drawable/pluc_ic_white"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-            android:layout_gravity="right|bottom"/>
     </FrameLayout>
 
     <include layout="@layout/meny_layout" />

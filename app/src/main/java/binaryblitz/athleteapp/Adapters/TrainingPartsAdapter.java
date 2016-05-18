@@ -365,7 +365,7 @@ public class TrainingPartsAdapter
 
             headerViewHolder.desc.setText(parent.getDesc());
             headerViewHolder.name.setText(parent.getOwner().getName());
-            headerViewHolder.avatar.setImageResource(parent.getOwner().getDebug_userPhotoResId());
+            //headerViewHolder.avatar.setImageResource(parent.getOwner().getUserPhotoUrl());
 
             headerViewHolder.btn.setOnClickListener(new View.OnClickListener() {
                 @Override

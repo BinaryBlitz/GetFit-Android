@@ -10,10 +10,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
 import binaryblitz.athleteapp.Adapters.NewsAdapter;
+import binaryblitz.athleteapp.Data.Post;
 import binaryblitz.athleteapp.R;
 
 public class NewsFragment extends Fragment {
+
+    private NewsAdapter adapter;
+    private ArrayList<Post> collection;
+
+    public void setCollection(ArrayList<Post> collection) {
+        this.collection = collection;
+
+        adapter.setNews(collection);
+        adapter.notifyDataSetChanged();
+    }
 
     @Nullable
     @Override
@@ -28,7 +41,9 @@ public class NewsFragment extends Fragment {
         RecyclerView view = (RecyclerView) getView().findViewById(R.id.recyclerView);
         view.setItemAnimator(new DefaultItemAnimator());
         view.setLayoutManager(new LinearLayoutManager(getContext()));
-        view.setAdapter(new NewsAdapter(getActivity()));
+
+        adapter = new NewsAdapter(getActivity());
+        view.setAdapter(adapter);
 
     }
 }

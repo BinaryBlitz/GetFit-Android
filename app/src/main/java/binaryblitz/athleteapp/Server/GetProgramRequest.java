@@ -16,15 +16,15 @@ public class GetProgramRequest implements Request {
 
     @Override
     public void execute(final OnRequestPerformedListener listener, final JSONObject... params) {
-        JsonArrayRequest jsObjRequest = new JsonArrayRequest(
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.GET,
                 GetFitServerRequest.baseUrl
                         + "/api/programs/" + id
                         + GetFitServerRequest.apiToken
                 ,
-                new Response.Listener<JSONArray>() {
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(JSONObject response) {
                         if(response.toString().startsWith("{\"error\"")) {
                             listener.onRequestPerformedListener("Error");
                         } else {

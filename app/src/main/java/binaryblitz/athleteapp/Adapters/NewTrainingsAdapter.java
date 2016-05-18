@@ -41,9 +41,7 @@ public class NewTrainingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         trainings.add(new Training("1", 1, "Intensive cross-fit training", "Crossfit, Power", 4,
                 new Date(2015, 11, 4), 80, parts,
-                new Professional("1", "photo", null, R.drawable.test4, R.drawable.test9,
-                        "Mike Silvestri", "Cross-fit coach. Your faithful assistant to athletic body in short time.",
-                        ProfessionalType.COACH, false, 8, 32, 4.7),
+                null,
                 "A complex of 18 exercises to get your body in shape, and achieve great results in stamina and power. Appreciated by more than 1000+ users."));
 
 
@@ -58,9 +56,7 @@ public class NewTrainingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         trainings.add(new Training("1", 2, "Run Forrest, Run!", "Running, Stamina", 6,
                 new Date(2015, 11, 8), 80, parts2,
-                new Professional("1", "photo", null, R.drawable.test5, R.drawable.test10,
-                        "Henry Harrison", "Professional marathoner. The best choice to improve your stamina and get fit.",
-                        ProfessionalType.COACH, false, 12, 68, 4.5),
+                null,
                 "A set of running programs to maintain your shape and develop stamina. Breath right, run fast and GetFit with other 2000 subscribers."));
 
         ArrayList<TrainingPart> parts3 = new ArrayList<>();
@@ -72,9 +68,7 @@ public class NewTrainingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         trainings.add(new Training("1", 3, "Tinas’ Choice", "Fitness", 4,
                 new Date(2015, 11, 12), 80, parts3,
-                new Professional("1", "photo", null, R.drawable.test6, R.drawable.tina,
-                        "Tina Kandelaki", "Fitness fan. Get the training celebrity uses, with all the features eventually developed.",
-                        ProfessionalType.COACH, false, 5, 188, 4.9),
+                null,
                 "A training developed by Tina! Get her shape, with all the tips provided by strong woman who uses this set for years!"));
 
         ArrayList<TrainingPart> parts4 = new ArrayList<>();
@@ -85,9 +79,7 @@ public class NewTrainingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         trainings.add(new Training("1", 4, "Rehabilitation after knee injury", "Rehabilitation", 3,
                 new Date(2015, 11, 15), 80, parts4,
-                new Professional("1", "photo", null, R.drawable.sports_medicine, R.drawable.arkov,
-                        "Vladimir Arkov", "Ph.D in Medical Sciences, Head of Physiotherapy Department in Moscow Sports Medicine Clinic",
-                        ProfessionalType.DOCTOR, false, 6, 224, 4.9),
+                null,
                 "This program is a complex of exercises for sportsmen rehabilitation after knee injuries."));
 
         notifyDataSetChanged();
@@ -97,8 +89,6 @@ public class NewTrainingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void setContext(Activity context) {
         this.context = context;
     }
-
-
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

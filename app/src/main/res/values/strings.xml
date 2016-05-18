@@ -13,6 +13,23 @@
     <string name="error_try_str">Error, please, try again</string>
     <string name="send_again_str">Send again</string>
     <string name="wait_str">Please, wait...</string>
+    <string name="type_your_text_here_string">Type something</string>
+    <string name="delete_str">Delete</string>
+    <string name="storage_permission_denied">Permission denied</string>
+    <string name="enable_background_audio">Enable back audio</string>
+    <string name="off">Off</string>
+    <string name="video">Video</string>
+    <string name="retry">Retry</string>
+    <string name="text">Text</string>
+    <string name="audio">Audio</string>
+    <string name="first_name_str">First name</string>
+    <string name="last_name_str">Last name</string>
+    <string name="hometown_str">Description</string>
+    <string name="all_string">Notifications</string>
+    <string name="version_string">Version</string>
+    <string name="app_version_string">1.0</string>
+    <string name="licenses_string">Open source licenses</string>
+    <string name="about_string">About</string>
 
     <integer name="com_vk_sdk_AppId">5357520</integer>
 </resources>

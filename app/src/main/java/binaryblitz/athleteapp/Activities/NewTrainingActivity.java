@@ -8,12 +8,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,12 +29,14 @@ import binaryblitz.athleteapp.CalendarUtils.CalendarDecorator;
 import binaryblitz.athleteapp.CalendarUtils.SelectionDecorator;
 import binaryblitz.athleteapp.Data.Training;
 import binaryblitz.athleteapp.R;
+import binaryblitz.athleteapp.Server.GetFitServerRequest;
+import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
 import binaryblitz.athleteapp.Utils.AndroidUtils;
 
 public class NewTrainingActivity extends BaseActivity implements OnDateSelectedListener {
 
     private static ArrayList<Training> trainings;
-
+    private NewTrainingsAdapter adapter;
     private static Training training;
 
     public static void setTraining(Training training) {
@@ -40,7 +46,6 @@ public class NewTrainingActivity extends BaseActivity implements OnDateSelectedL
     public static void setTrainings(ArrayList<Training> trainings) {
         NewTrainingActivity.trainings = trainings;
     }
-
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
@@ -57,7 +62,9 @@ public class NewTrainingActivity extends BaseActivity implements OnDateSelectedL
         RecyclerView view = (RecyclerView) findViewById(R.id.recyclerView);
         view.setItemAnimator(new DefaultItemAnimator());
         view.setLayoutManager(new LinearLayoutManager(this));
-        view.setAdapter(new NewTrainingsAdapter(this));
+
+        adapter = new NewTrainingsAdapter(this);
+        view.setAdapter(adapter);
 
         findViewById(R.id.empty).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,14 +108,39 @@ public class NewTrainingActivity extends BaseActivity implements OnDateSelectedL
             }
         });
 
-        ArrayList<CalendarDay> days3 = new ArrayList<>();
-        days3.add(new CalendarDay(2015, 10, 4));
-        days3.add(new CalendarDay(2015, 10, 8));
-        days3.add(new CalendarDay(2015, 10, 12));
-        days3.add(new CalendarDay(2015, 10, 15));
-        CalendarDecorator decorator3 = new CalendarDecorator(this, R.drawable.one_training, days3);
+//        ArrayList<CalendarDay> days3 = new ArrayList<>();
+//        days3.add(new CalendarDay(2015, 10, 4));
+//        days3.add(new CalendarDay(2015, 10, 8));
+//        days3.add(new CalendarDay(2015, 10, 12));
+//        days3.add(new CalendarDay(2015, 10, 15));
+//        CalendarDecorator decorator3 = new CalendarDecorator(this, R.drawable.one_training, days3);
+//
+//        ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).addDecorators(decorator3);
 
-        ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).addDecorators(decorator3);
+        GetFitServerRequest.with(this)
+                .authorize()
+                .listener(new OnRequestPerformedListener() {
+                    @Override
+                    public void onRequestPerformedListener(Object... objects) {
+                        Log.e("qwerty", objects[0].toString());
+
+                        try {
+                            JSONArray array = (JSONArray) objects[0];
+                            ArrayList<Training> trainings = new ArrayList<>();
+                            for(int i = 0; i < array.length(); i++) {
+                                JSONObject object = array.getJSONObject(i);
+
+//                                trainings.add(new Training(
+//
+//                                ));
+                            }
+                        } catch (Exception e) {
+
+                        }
+                    }
+                })
+                .workouts()
+                .perform();
     }
 
     public void showDialog() {

@@ -6,11 +6,6 @@ public class Professional {
     private String photoUrl;
     private String userPhotoUrl;
 
-    @SuppressWarnings("unused")
-    private int photoResId;
-    @SuppressWarnings("unused")
-    private int debug_userPhotoResId;
-
     private String name;
     private String desc;
     private ProfessionalType type;
@@ -21,15 +16,14 @@ public class Professional {
     private int userCount;
     private double starCount;
 
-    public Professional(String id, String photoUrl, String userPhotoUrl,
-                        int photoResId, int debug_userPhotoResId, String name,
+    private String followId;
+
+    public Professional(String id, String photoUrl, String userPhotoUrl, String name,
                         String desc, ProfessionalType type, boolean following,
                         int programCount, int userCount, double starCount) {
         this.id = id;
         this.photoUrl = photoUrl;
         this.userPhotoUrl = userPhotoUrl;
-        this.photoResId = photoResId;
-        this.debug_userPhotoResId = debug_userPhotoResId;
         this.name = name;
         this.desc = desc;
         this.type = type;
@@ -37,6 +31,14 @@ public class Professional {
         this.programCount = programCount;
         this.userCount = userCount;
         this.starCount = starCount;
+    }
+
+    public String getFollowId() {
+        return followId;
+    }
+
+    public void setFollowId(String followId) {
+        this.followId = followId;
     }
 
     public String getId() {
@@ -61,22 +63,6 @@ public class Professional {
 
     public void setUserPhotoUrl(String userPhotoUrl) {
         this.userPhotoUrl = userPhotoUrl;
-    }
-
-    public int getPhotoResId() {
-        return photoResId;
-    }
-
-    public void setPhotoResId(int photoResId) {
-        this.photoResId = photoResId;
-    }
-
-    public int getDebug_userPhotoResId() {
-        return debug_userPhotoResId;
-    }
-
-    public void setDebug_userPhotoResId(int debug_userPhotoResId) {
-        this.debug_userPhotoResId = debug_userPhotoResId;
     }
 
     public String getName() {

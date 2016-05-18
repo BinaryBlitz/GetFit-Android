@@ -89,6 +89,24 @@ public class DateUtils {
         return date;
     }
 
+    public static String getDateStringRepresentationForNews(Calendar startTime) {
+        String date;
+        Calendar calendar = Calendar.getInstance();
+
+        if(calendar.equals(startTime)) {
+            return "TODAY";
+        }
+
+        date = Integer.toString(startTime.get(Calendar.DAY_OF_MONTH)) + "/" +
+                (startTime.get(Calendar.MONTH) + 1 > 9 ? (startTime.get(Calendar.MONTH) + 1) : "0" + (startTime.get(Calendar.MONTH) + 1));
+
+        if(calendar.get(Calendar.YEAR) != startTime.get(Calendar.YEAR)) {
+            date += "/" + startTime.get(Calendar.YEAR);
+        }
+
+        return date;
+    }
+
     public static String getDateStringRepresentationForMessager(Calendar startTime) {
         String date = Integer.toString(startTime.get(Calendar.DAY_OF_MONTH)) + "." +
                 (startTime.get(Calendar.MONTH) + 1 > 9 ? (startTime.get(Calendar.MONTH) + 1) : "0" + (startTime.get(Calendar.MONTH) + 1));

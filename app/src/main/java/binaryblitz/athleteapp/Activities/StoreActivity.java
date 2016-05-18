@@ -1,5 +1,6 @@
 package binaryblitz.athleteapp.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,9 +16,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import binaryblitz.athleteapp.Abstract.BaseActivity;
-import binaryblitz.athleteapp.Adapters.NewsAdapter;
 import binaryblitz.athleteapp.Adapters.StoreAdapter;
-import binaryblitz.athleteapp.Data.Post;
 import binaryblitz.athleteapp.Data.Program;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Server.GetFitServerRequest;
@@ -46,6 +45,14 @@ public class StoreActivity extends BaseActivity implements SwipeRefreshLayout.On
 
         fab = findViewById(R.id.fab12);
 
+        findViewById(R.id.fab12).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StoreActivity.this, FilterActivity.class);
+                startActivity(intent);
+            }
+        });
+
         view.addOnScrollListener(new ShowHideScrollListener() {
             @Override
             public void onHide() {
@@ -72,6 +79,7 @@ public class StoreActivity extends BaseActivity implements SwipeRefreshLayout.On
                 .listener(new OnRequestPerformedListener() {
                               @Override
                               public void onRequestPerformedListener(Object... objects) {
+                                  Log.e("qwerty", objects[0].toString());
                                   layout.setRefreshing(false);
                                   if (objects[0].equals("Error")) {
                                       cancelRequest();
@@ -89,15 +97,15 @@ public class StoreActivity extends BaseActivity implements SwipeRefreshLayout.On
                                                   object.getString("id"),
                                                   object.getString("name"),
                                                   object.getString("price"),
-                                                  "Cardio",
-                                                  5,
-                                                  object.getString("description"),
+                                                  object.getJSONObject("program_type").getString("name"),
+                                                  object.getInt("workouts_count"),
+                                                  object.getString("preview"),
                                                   object.getString("duration"),
-                                                  159,
-                                                  5,
+                                                  object.getInt("users_count"),
+                                                  object.isNull("raring") ? 0 : object.getInt("rating"),
                                                   object.getJSONObject("trainer").getString("first_name") + " " +
                                                           object.getJSONObject("trainer").getString("last_name"),
-                                                  "1",
+                                                  object.getJSONObject("trainer").getString("id"),
                                                   GetFitServerRequest.baseUrl + object.getString("banner_url")
                                           );
                                           program.setUserPhotoUrl(GetFitServerRequest.baseUrl +
@@ -108,7 +116,7 @@ public class StoreActivity extends BaseActivity implements SwipeRefreshLayout.On
                                       adapter.setCollection(collection);
                                       adapter.notifyDataSetChanged();
                                   } catch (Exception e) {
-
+                                      Log.e("qwerty", e.getLocalizedMessage());
                                   }
                               }
                           }

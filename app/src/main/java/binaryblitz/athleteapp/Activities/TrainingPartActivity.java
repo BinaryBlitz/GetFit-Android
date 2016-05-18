@@ -1,5 +1,7 @@
 package binaryblitz.athleteapp.Activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.exoplayer.util.Util;
 
 import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.Data.TrainingPart;
@@ -30,6 +33,18 @@ public class TrainingPartActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        findViewById(R.id.video).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mpdIntent = new Intent(TrainingPartActivity.this, PlayerActivity.class)
+                        .setData(Uri.parse("https://youtu.be/_cbzhusIBMc"))
+                        .putExtra(PlayerActivity.CONTENT_ID_EXTRA, "Video")
+                        .putExtra(PlayerActivity.CONTENT_TYPE_EXTRA, Util.TYPE_DASH)
+                        .putExtra(PlayerActivity.PROVIDER_EXTRA, "");
+                startActivity(mpdIntent);
             }
         });
 

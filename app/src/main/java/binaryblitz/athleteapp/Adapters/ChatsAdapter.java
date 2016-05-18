@@ -1,7 +1,9 @@
 package binaryblitz.athleteapp.Adapters;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +13,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import binaryblitz.athleteapp.Activities.ChatActivity;
+import binaryblitz.athleteapp.Activities.ProgramActivity;
 import binaryblitz.athleteapp.Data.Chat;
 import binaryblitz.athleteapp.R;
+import binaryblitz.athleteapp.Utils.DateUtils;
 
 public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -20,14 +25,13 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private ArrayList<Chat> collection;
 
+    public void setCollection(ArrayList<Chat> collection) {
+        this.collection = collection;
+    }
+
     public ChatsAdapter(Activity context) {
         this.context = context;
         collection = new ArrayList<>();
-//        collection.add(new Chat(2, "Mike Silvestri", "14:02", "How your training?", R.drawable.test9));
-//        collection.add(new Chat(0, "Henry Harrison", "14:02", "How your training?", R.drawable.test10));
-//        collection.add(new Chat(0, "Efanov Evgeniy", "18:08", "I cant start training. So many parties.", R.drawable.evgen));
-//        collection.add(new Chat(1, "Jack Sparrow", "14:02", "Capitan!!! Capitan Jack Sparrow!!!", R.drawable.sparrow));
-
     }
 
     public void setContext(Activity context) {
@@ -47,7 +51,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         final NewsViewHolder holder = (NewsViewHolder) viewHolder;
 
-        Chat chat = collection.get(position);
+        final Chat chat = collection.get(position);
 
         holder.user_name.setText(chat.getName());
 
@@ -57,9 +61,25 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             holder.text_count.setVisibility(View.VISIBLE);
             holder.text_count.setText(Integer.toString(chat.getUnRead()));
         }
-        holder.date.setText(chat.getTime());
+        holder.date.setText(DateUtils.getDateStringRepresentationForMessager(chat.getTime()));
         holder.post_desc.setText(chat.getLast());
+
+        if(chat.getLast().equals("Image")) {
+            holder.post_desc.setTextColor(Color.argb(255, 54,149,237));
+        } else {
+            holder.post_desc.setTextColor(Color.parseColor("#212121"));
+        }
+
         holder.user_avatar.setImageResource(chat.getAvatar());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra("id", chat.getSubscriptionId());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

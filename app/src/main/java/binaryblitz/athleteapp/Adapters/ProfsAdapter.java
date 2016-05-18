@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +15,19 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import binaryblitz.athleteapp.Activities.ProfProfileActivity;
+import binaryblitz.athleteapp.Custom.ProgressDialog;
+import binaryblitz.athleteapp.Custom.RaitingDialog;
 import binaryblitz.athleteapp.Data.Professional;
 import binaryblitz.athleteapp.Data.ProfessionalType;
 import binaryblitz.athleteapp.R;
+import binaryblitz.athleteapp.Server.GetFitServerRequest;
+import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
 
 public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -29,36 +37,11 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public ProfsAdapter(Activity context) {
         this.context = context;
-
         collection = new ArrayList<>();
-
     }
 
-    public void setCollection(final int position) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(position == 0) {
-                    collection.add(new Professional("1", "photo", null, R.drawable.test4, R.drawable.test9,
-                            "Evgeny Malkin", "Cross-fit coach. Your faithful assistant to athletic body in short time.",
-                            ProfessionalType.COACH, false, 8, 32, 4.7));
-                    notifyItemInserted(collection.size());
-                    collection.add(new Professional("1", "photo", null, R.drawable.test5, R.drawable.test10,
-                            "Henry Harrison", "Professional marathoner. The best choice to improve your stamina and get fit.",
-                            ProfessionalType.COACH, false, 12, 68, 4.5));
-                    notifyItemInserted(collection.size());
-                    collection.add(new Professional("1", "photo", null, R.drawable.test6, R.drawable.tina,
-                            "Tina Kandelaki", "Fitness fan. Get the training celebrity uses, with all the features eventually developed.",
-                            ProfessionalType.COACH, false, 5, 188, 4.9));
-                    notifyItemInserted(collection.size());
-                } else if(position == 1) {
-                    collection.add(new Professional("1", "photo", null, R.drawable.sports_medicine, R.drawable.arkov,
-                            "Vladimir Arkov", "Ph.D in Medical Sciences, Head of Physiotherapy Department in Moscow Sports Medicine Clinic",
-                            ProfessionalType.DOCTOR, false, 6, 224, 4.9));
-                    notifyItemInserted(collection.size());
-                }
-            }
-        }, 100);
+    public void setCollection(ArrayList<Professional> collection) {
+        this.collection = collection;
     }
 
     public void setContext(Activity context) {
@@ -77,22 +60,109 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         final NewsViewHolder holder = (NewsViewHolder) viewHolder;
+        final Professional prof = collection.get(position);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ProfProfileActivity.class);
+                intent.putExtra("id", prof.getId());
                 context.startActivity(intent);
             }
         });
-
-        final Professional prof = collection.get(position);
 
         holder.user_name.setText(prof.getName());
         holder.post_desc.setText(prof.getDesc());
         holder.like_count.setText(Double.toString(prof.getStarCount()));
         holder.text_count.setText(Integer.toString(prof.getUserCount()));
 
-        holder.user_avatar.setImageResource(prof.getDebug_userPhotoResId());
+        Picasso.with(context).load(prof.getUserPhotoUrl()).into(holder.user_avatar);
+
+        holder.itemView.findViewById(R.id.imageView3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RaitingDialog dialog = new RaitingDialog();
+                dialog.setListener(new RaitingDialog.OnRateDialogFinished() {
+                    @Override
+                    public void OnRateDialogFinished(float rating) {
+                        Log.e("qwety", "finished");
+                        JSONObject object = new JSONObject();
+
+                        try {
+                            object.accumulate("value", (int) rating);
+                            object.accumulate("content", "Gut");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        JSONObject toSend = new JSONObject();
+
+                        try {
+                            toSend.accumulate("rating", object);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        GetFitServerRequest.with(context)
+                                .authorize()
+                                .objects(toSend)
+                                .listener(new OnRequestPerformedListener() {
+                                    @Override
+                                    public void onRequestPerformedListener(Object... objects) {
+                                        Log.e("qwerty", objects[0].toString());
+                                    }
+                                })
+                                .rateTrainer(prof.getId())
+                                .perform();
+                    }
+                });
+
+                dialog.show(context.getFragmentManager(), "rating");
+            }
+        });
+
+        holder.itemView.findViewById(R.id.textView3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RaitingDialog dialog = new RaitingDialog();
+                dialog.setListener(new RaitingDialog.OnRateDialogFinished() {
+                    @Override
+                    public void OnRateDialogFinished(float rating) {
+                        Log.e("qwety", "finished");
+                        JSONObject object = new JSONObject();
+
+                        try {
+                            object.accumulate("value", (int) rating);
+                            object.accumulate("content", "Gut");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        JSONObject toSend = new JSONObject();
+
+                        try {
+                            toSend.accumulate("rating", object);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        GetFitServerRequest.with(context)
+                                .authorize()
+                                .objects(toSend)
+                                .listener(new OnRequestPerformedListener() {
+                                    @Override
+                                    public void onRequestPerformedListener(Object... objects) {
+                                        Log.e("qwerty", objects[0].toString());
+                                    }
+                                })
+                                .rateTrainer(prof.getId())
+                                .perform();
+                    }
+                });
+
+                dialog.show(context.getFragmentManager(), "rating");
+            }
+        });
 
         if(prof.getPhotoUrl() == null || prof.getPhotoUrl().equals("No photo")) {
             holder.post_photo.setVisibility(View.GONE);
@@ -118,14 +188,51 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         holder.vBgLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final ProgressDialog dialog = new ProgressDialog();
+                dialog.show(context.getFragmentManager(), "atheleteapp");
+
                 if(!prof.isFollowing()) {
-                    holder.vBgLike.setBackgroundResource(R.drawable.blue_btn);
-                    holder.ivLike.setImageResource(R.drawable.done_ic);
-                    ((TextView) holder.itemView.findViewById(R.id.textView6)).setTextColor(Color.WHITE);
+                    GetFitServerRequest.with(context)
+                            .authorize()
+                            .listener(new OnRequestPerformedListener() {
+                                @Override
+                                public void onRequestPerformedListener(Object... objects) {
+                                    Log.e("qwerty", objects[0].toString());
+                                    dialog.dismiss();
+
+                                    try {
+                                        prof.setFollowId(((JSONObject) objects[0]).getString("id"));
+                                        prof.setFollowing(true);
+                                    } catch (Exception ignored) {}
+
+                                    prof.setUserCount(prof.getUserCount() + 1);
+                                    holder.text_count.setText(Integer.toString(prof.getUserCount()));
+                                    holder.vBgLike.setBackgroundResource(R.drawable.blue_btn);
+                                    holder.ivLike.setImageResource(R.drawable.done_ic);
+                                    ((TextView) holder.itemView.findViewById(R.id.textView6)).setTextColor(Color.WHITE);
+                                }
+                            })
+                            .follow(prof.getId())
+                            .perform();
                 } else {
-                    holder.vBgLike.setBackgroundResource(R.drawable.blue_border);
-                    holder.ivLike.setImageResource(R.drawable.plus_ic);
-                    ((TextView) holder.itemView.findViewById(R.id.textView6)).setTextColor(Color.parseColor("#3695ed"));
+
+                    GetFitServerRequest.with(context)
+                            .authorize()
+                            .listener(new OnRequestPerformedListener() {
+                                @Override
+                                public void onRequestPerformedListener(Object... objects) {
+                                    dialog.dismiss();
+                                    prof.setUserCount(prof.getUserCount() - 1);
+                                    prof.setFollowId(null);
+                                    prof.setFollowing(false);
+                                    holder.text_count.setText(Integer.toString(prof.getUserCount()));
+                                    holder.vBgLike.setBackgroundResource(R.drawable.blue_border);
+                                    holder.ivLike.setImageResource(R.drawable.plus_ic);
+                                    ((TextView) holder.itemView.findViewById(R.id.textView6)).setTextColor(Color.parseColor("#3695ed"));
+                                }
+                            })
+                            .unfollow(prof.getFollowId())
+                            .perform();
                 }
 
                 prof.setFollowing(!prof.isFollowing());

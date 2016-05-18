@@ -14,7 +14,7 @@ public class UpdateUserRequest implements Request {
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.PATCH,
                 GetFitServerRequest.baseUrl
-                        + "/api/users"
+                        + "/api/user"
                         + GetFitServerRequest.apiToken
                 ,
                 params[0],

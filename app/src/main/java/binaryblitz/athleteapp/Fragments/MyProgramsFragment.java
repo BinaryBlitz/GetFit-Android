@@ -13,9 +13,6 @@ import android.view.ViewGroup;
 import binaryblitz.athleteapp.Adapters.MyProgramsAdapter;
 import binaryblitz.athleteapp.R;
 
-/**
- * Created by evgenijefanov on 24.10.15.
- */
 public class MyProgramsFragment extends Fragment {
 
     @Nullable

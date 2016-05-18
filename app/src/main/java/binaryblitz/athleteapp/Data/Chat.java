@@ -1,18 +1,31 @@
 package binaryblitz.athleteapp.Data;
 
+import java.util.Calendar;
+
 public class Chat {
     private int avatar;
     private String name;
-    private String time;
+    private Calendar time;
     private String last;
     private int unRead;
 
-    public Chat(int unRead, String name, String time, String last, int avatar) {
+    private String subscriptionId;
+
+    public Chat(int unRead, String name, Calendar time, String last, int avatar, String subscriptionId) {
         this.unRead = unRead;
         this.name = name;
         this.time = time;
         this.last = last;
         this.avatar = avatar;
+        this.subscriptionId = subscriptionId;
+    }
+
+    public String getSubscriptionId() {
+        return subscriptionId;
+    }
+
+    public void setSubscriptionId(String subscriptionId) {
+        this.subscriptionId = subscriptionId;
     }
 
     public int getAvatar() {
@@ -31,11 +44,11 @@ public class Chat {
         this.name = name;
     }
 
-    public String getTime() {
+    public Calendar getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Calendar time) {
         this.time = time;
     }
 

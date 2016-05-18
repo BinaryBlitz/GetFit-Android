@@ -37,7 +37,7 @@ public class PhotoActivity extends BaseActivity {
         mAttacher = new PhotoViewAttacher(mImageView);
         Picasso.with(this).setLoggingEnabled(true);
         Picasso.with(this)
-                .load(GetFitServerRequest.imagesUrl + url)
+                .load(url)
                 .into(mImageView, new Callback() {
                     @Override
                     public void onSuccess() {

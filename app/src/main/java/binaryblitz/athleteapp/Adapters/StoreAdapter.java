@@ -11,11 +11,17 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import binaryblitz.athleteapp.Activities.ProgramActivity;
+import binaryblitz.athleteapp.Custom.RaitingDialog;
 import binaryblitz.athleteapp.Data.Program;
 import binaryblitz.athleteapp.R;
+import binaryblitz.athleteapp.Server.GetFitServerRequest;
+import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
 
 public class StoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -49,15 +55,102 @@ public class StoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         final NewsViewHolder holder = (NewsViewHolder) viewHolder;
 
+        final Program program = collection.get(position);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ProgramActivity.class);
+                intent.putExtra("id", program.getId());
                 context.startActivity(intent);
             }
         });
 
-        final Program program = collection.get(position);
+        holder.itemView.findViewById(R.id.imageView3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RaitingDialog dialog = new RaitingDialog();
+                dialog.setListener(new RaitingDialog.OnRateDialogFinished() {
+                    @Override
+                    public void OnRateDialogFinished(float rating) {
+
+                        JSONObject object = new JSONObject();
+
+                        try {
+                            object.accumulate("value", (int) rating);
+                            object.accumulate("content", "Gut");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        JSONObject toSend = new JSONObject();
+
+                        try {
+                            toSend.accumulate("rating", object);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        GetFitServerRequest.with(context)
+                                .authorize()
+                                .objects(toSend)
+                                .listener(new OnRequestPerformedListener() {
+                                    @Override
+                                    public void onRequestPerformedListener(Object... objects) {
+
+                                    }
+                                })
+                                .rateProgram(program.getId())
+                                .perform();
+                    }
+                });
+
+                dialog.show(context.getFragmentManager(), "rating");
+            }
+        });
+
+        holder.itemView.findViewById(R.id.textView3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RaitingDialog dialog = new RaitingDialog();
+                dialog.setListener(new RaitingDialog.OnRateDialogFinished() {
+                    @Override
+                    public void OnRateDialogFinished(float rating) {
+
+                        JSONObject object = new JSONObject();
+
+                        try {
+                            object.accumulate("value", (int) rating);
+                            object.accumulate("content", "Gut");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        JSONObject toSend = new JSONObject();
+
+                        try {
+                            toSend.accumulate("rating", object);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        GetFitServerRequest.with(context)
+                                .authorize()
+                                .objects(toSend)
+                                .listener(new OnRequestPerformedListener() {
+                                    @Override
+                                    public void onRequestPerformedListener(Object... objects) {
+
+                                    }
+                                })
+                                .rateProgram(program.getId())
+                                .perform();
+                    }
+                });
+
+                dialog.show(context.getFragmentManager(), "rating");
+            }
+        });
 
         holder.user_name.setText(program.getTrainerName());
         holder.name.setText(program.getName());
@@ -83,7 +176,12 @@ public class StoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     .into(holder.user_avatar);
         }
 
-        holder.date.setText(program.getTime() + " MIN");
+        holder.user_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         holder.price.setText("$" + program.getPrice());
         holder.type.setText(program.getType() + ", ");

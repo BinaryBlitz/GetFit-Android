@@ -238,7 +238,8 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="56dp">
+                android:layout_marginBottom="56dp"
+                android:id="@+id/video">
                 <include layout="@layout/video_card" />
                 <include layout="@layout/video_card" />
             </LinearLayout>
