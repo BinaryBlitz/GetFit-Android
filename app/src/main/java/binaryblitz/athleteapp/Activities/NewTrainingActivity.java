@@ -1,9 +1,13 @@
 package binaryblitz.athleteapp.Activities;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,9 +21,11 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import binaryblitz.athleteapp.Abstract.BaseActivity;
@@ -27,17 +33,22 @@ import binaryblitz.athleteapp.Adapters.NewTrainingsAdapter;
 import binaryblitz.athleteapp.CalendarUtils.BasicDecorator;
 import binaryblitz.athleteapp.CalendarUtils.CalendarDecorator;
 import binaryblitz.athleteapp.CalendarUtils.SelectionDecorator;
+import binaryblitz.athleteapp.CalendarUtils.TodayDecorator;
+import binaryblitz.athleteapp.Custom.ProgressDialog;
 import binaryblitz.athleteapp.Data.Training;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Server.GetFitServerRequest;
 import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
 import binaryblitz.athleteapp.Utils.AndroidUtils;
 
-public class NewTrainingActivity extends BaseActivity implements OnDateSelectedListener {
+public class NewTrainingActivity extends BaseActivity implements OnDateSelectedListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private static ArrayList<Training> trainings;
+    private static ArrayList<Training> trainings = new ArrayList<>();
     private NewTrainingsAdapter adapter;
     private static Training training;
+    private SwipeRefreshLayout layout;
+
+    private String id = null;
 
     public static void setTraining(Training training) {
         NewTrainingActivity.training = training;
@@ -66,6 +77,7 @@ public class NewTrainingActivity extends BaseActivity implements OnDateSelectedL
         adapter = new NewTrainingsAdapter(this);
         view.setAdapter(adapter);
 
+        id = getIntent().getStringExtra("id");
         findViewById(R.id.empty).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,22 +92,60 @@ public class NewTrainingActivity extends BaseActivity implements OnDateSelectedL
                     return;
                 }
 
+                final ProgressDialog dialog = new ProgressDialog();
+                dialog.show(getFragmentManager(), "athleteapp");
+
                 CalendarActivity.FLAG = true;
-                ArrayList<Training> trainings = new ArrayList<>();
-                int idStart = CalendarActivity.getCount();
+
+                JSONObject toSend = new JSONObject();
+
+                JSONArray array = new JSONArray();
 
                 for(int i = 0; i < ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).getSelectedDates().size(); i++) {
                     CalendarDay day = ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).getSelectedDates().get(i);
-                    Training new_training = new Training("1", idStart + i,
-                            training.getName(), training.getType(), training.getExCount(),
-                            new Date(day.getYear(), day.getMonth() + 1, day.getDay()),
-                            training.getTime(), training.getParts(), training.getOwner(), training.getDesc());
-                   trainings.add(new_training);
+                    JSONObject object = new JSONObject();
+                    try {
+                        object.accumulate("workout_id", id == null ? training.getId() : id);
+                        object.accumulate("scheduled_for", day.getYear() + "-" +
+                                (day.getMonth() + 1 > 9 ? (day.getMonth() + 1) : "0" + (day.getMonth() + 1)) + "-" +
+                        (day.getDay() > 9 ? day.getDay() : "0" + day.getDay()));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    array.put(object);
                 }
 
-                CalendarActivity.setNewTraining(trainings);
+                try {
+                    toSend.accumulate("workout_sessions_attributes", array);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-                finish();
+                JSONObject finalObj = new JSONObject();
+
+                try {
+                    finalObj.accumulate("user", toSend);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                GetFitServerRequest.with(NewTrainingActivity.this)
+                        .authorize()
+                        .objects(finalObj)
+                        .listener(new OnRequestPerformedListener() {
+                            @Override
+                            public void onRequestPerformedListener(Object... objects) {
+                                dialog.dismiss();
+                                if (objects[0].equals("Internet")) {
+                                    cancelRequest();
+                                    return;
+                                }
+                                CalendarActivity.reload = true;
+                                finish();
+                            }
+                        })
+                        .updateWorkouts()
+                        .perform();
             }
         });
 
@@ -108,31 +158,93 @@ public class NewTrainingActivity extends BaseActivity implements OnDateSelectedL
             }
         });
 
-//        ArrayList<CalendarDay> days3 = new ArrayList<>();
-//        days3.add(new CalendarDay(2015, 10, 4));
-//        days3.add(new CalendarDay(2015, 10, 8));
-//        days3.add(new CalendarDay(2015, 10, 12));
-//        days3.add(new CalendarDay(2015, 10, 15));
-//        CalendarDecorator decorator3 = new CalendarDecorator(this, R.drawable.one_training, days3);
-//
-//        ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).addDecorators(decorator3);
+        layout = (SwipeRefreshLayout) findViewById(R.id.refresh);
+        layout.setOnRefreshListener(this);
+        layout.setColorSchemeResources(R.color.accent_color);
 
+        layout.setRefreshing(true);
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                layout.setRefreshing(true);
+                loadActivityData();
+            }
+        });
+    }
+
+    public void loadActivityData() {
         GetFitServerRequest.with(this)
                 .authorize()
                 .listener(new OnRequestPerformedListener() {
                     @Override
                     public void onRequestPerformedListener(Object... objects) {
-                        Log.e("qwerty", objects[0].toString());
-
                         try {
+                            layout.setRefreshing(false);
+
+                            if(objects[0].equals("AuthError")) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!isFinishing()) {
+                                            new AlertDialog.Builder(NewTrainingActivity.this)
+                                                    .setTitle(getString(R.string.title_str))
+                                                    .setMessage(getString(R.string.reg_alert_str))
+                                                    .setCancelable(false)
+                                                    .setPositiveButton(getString(R.string.cont_upcase_str), new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            Intent intent = new Intent(NewTrainingActivity.this, AuthActivity.class);
+                                                            startActivity(intent);
+                                                        }
+                                                    })
+                                                    .setNegativeButton(getString(R.string.cancel_upcase_str), new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+
+                                                        }
+                                                    })
+                                                    .show();
+                                        }
+                                    }
+                                });
+
+                                return;
+                            }
+
+                            if (objects[0].equals("Internet")) {
+                                cancelRequest();
+                                return;
+                            }
+
                             JSONArray array = (JSONArray) objects[0];
                             ArrayList<Training> trainings = new ArrayList<>();
                             for(int i = 0; i < array.length(); i++) {
                                 JSONObject object = array.getJSONObject(i);
 
-//                                trainings.add(new Training(
-//
-//                                ));
+                                trainings.add(new Training(
+                                        object.getString("id"),
+                                        object.getString("name"),
+                                        object.getJSONObject("program").getString("name"),
+                                        object.getInt("exercises_count"),
+                                        null,
+                                        object.getInt("duration"),
+                                        null,
+                                        object.getJSONObject("program").getString("id"),
+                                        null
+                                ));
+                            }
+
+                            adapter.setTrainings(trainings);
+                            adapter.notifyDataSetChanged();
+
+                            if(id != null) {
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        showDialog();
+                                    }
+                                }, 100);
                             }
                         } catch (Exception e) {
 
@@ -148,60 +260,78 @@ public class NewTrainingActivity extends BaseActivity implements OnDateSelectedL
         ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).removeDecorators();
         ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).setSelectionMode(MaterialCalendarView.SELECTION_MODE_MULTIPLE);
 
-        ArrayList<CalendarDay> days1 = new ArrayList<>();
-        ArrayList<CalendarDay> days2 = new ArrayList<>();
+        ArrayList<CalendarActivity.Workout> dates = new ArrayList<>();
 
-        ArrayList<Pair<Date, Integer>> decorators = new ArrayList<>();
+        final ArrayList<CalendarDay> days1 = new ArrayList<>();
+        final ArrayList<CalendarDay> days2 = new ArrayList<>();
+        final ArrayList<CalendarDay> days3 = new ArrayList<>();
 
-        main_loop:
         for(int i = 0; i < trainings.size(); i++) {
-            Date date = trainings.get(i).getDate();
+            if(dates.size() == 0) {
+                dates.add(new CalendarActivity.Workout(new CalendarDay(trainings.get(i).getDate().get(Calendar.YEAR),
+                        trainings.get(i).getDate().get(Calendar.MONTH),
+                        trainings.get(i).getDate().get(Calendar.DAY_OF_MONTH)), 1));
+                continue;
+            }
 
-            for(int j = 0; j < decorators.size(); j++) {
-                if(decorators.get(j).first.equals(date)) {
-                    decorators.set(j, new Pair<>(date, decorators.get(j).second + 1));
-                    continue  main_loop;
+            for(int j = 0; j < dates.size(); j++) {
+                if(dates.get(j).day.getDay() ==  trainings.get(i).getDate().get(Calendar.DAY_OF_MONTH) &&
+                        dates.get(j).day.getMonth() ==  trainings.get(i).getDate().get(Calendar.MONTH) &&
+                        dates.get(j).day.getYear() ==  trainings.get(i).getDate().get(Calendar.YEAR)) {
+                    dates.get(j).count = dates.get(j).count + 1;
+                    break;
+                }
+
+                if(j == dates.size() - 1) {
+                    dates.add(new CalendarActivity.Workout(new CalendarDay(trainings.get(i).getDate().get(Calendar.YEAR),
+                            trainings.get(i).getDate().get(Calendar.MONTH),
+                            trainings.get(i).getDate().get(Calendar.DAY_OF_MONTH)), 0));
                 }
             }
-
-            decorators.add(new Pair<>(date, 1));
         }
 
-        for(int i = 0; i < decorators.size(); i++) {
-            switch (decorators.get(i).second) {
-                case 1:
-                    days1.add(new CalendarDay(decorators.get(i).first.getYear(),
-                            decorators.get(i).first.getMonth() - 1,
-                            decorators.get(i).first.getDate()));
-                    break;
-                case 2:
-                    days2.add(new CalendarDay(decorators.get(i).first.getYear(),
-                            decorators.get(i).first.getMonth() - 1,
-                            decorators.get(i).first.getDate()));
-                    break;
-                default:
-                    days1.add(new CalendarDay(decorators.get(i).first.getYear(),
-                            decorators.get(i).first.getMonth() - 1,
-                            decorators.get(i).first.getDate()));
-                    break;
+        for(int i = 0; i < dates.size(); i++) {
+            if(dates.get(i).count == 1) {
+                days1.add(dates.get(i).day);
+            } else if(dates.get(i).count == 2) {
+                days2.add(dates.get(i).day);
+            } else {
+                days3.add(dates.get(i).day);
             }
         }
 
-        BasicDecorator decorator1 = new BasicDecorator(this,
-                R.drawable.selector_one);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                CalendarDecorator decorator1 = new CalendarDecorator(NewTrainingActivity.this, R.drawable.one_training, days1);
+                CalendarDecorator decorator2 = new CalendarDecorator(NewTrainingActivity.this, R.drawable.two_trainings, days2);
+                CalendarDecorator decorator3 = new CalendarDecorator(NewTrainingActivity.this, R.drawable.busy_day, days3);
 
-        SelectionDecorator decorator2 = new SelectionDecorator(this,
-                R.drawable.selector_new_two,
-                days1);
+                BasicDecorator decorator11 = new BasicDecorator(NewTrainingActivity.this,
+                        R.drawable.selector_one);
 
-        SelectionDecorator decorator3 = new SelectionDecorator(this,
-                R.drawable.selector_three,
-                days2);
+                SelectionDecorator decorator21 = new SelectionDecorator(NewTrainingActivity.this,
+                        R.drawable.selector_new_two,
+                        days1);
 
-        ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).addDecorators(decorator1, decorator2, decorator3);
+                SelectionDecorator decorator31 = new SelectionDecorator(NewTrainingActivity.this,
+                        R.drawable.selector_three,
+                        days2);
+                ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).removeDecorators();
+                ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).addDecorators(decorator11, decorator21, decorator31);
+                ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).addDecorators(decorator1, decorator2, decorator3);
+                Calendar calendar = Calendar.getInstance();
+                ArrayList<CalendarDay> days4 = new ArrayList<CalendarDay>();
+                days4.add(new CalendarDay(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)));
+                TodayDecorator decorator4 = new TodayDecorator(NewTrainingActivity.this, R.drawable.day_selected_circle,
+                        days4);
+                ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).addDecorators(decorator1, decorator2, decorator3,
+                        decorator4);
+                ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).invalidateDecorators();
+            }
+        }, 50);
+
         ((MaterialCalendarView) findViewById(R.id.calendarView2fd)).setOnDateChangedListener(this);
-
-       // AndroidUtils.animateRevealShowFirst(findViewById(R.id.dialog), NewTrainingActivity.this);
 
         new Handler().post(new Runnable() {
             @Override
@@ -209,5 +339,10 @@ public class NewTrainingActivity extends BaseActivity implements OnDateSelectedL
                 AndroidUtils.animateRevealShowFirst(findViewById(R.id.dialog), NewTrainingActivity.this);
             }
         });
+    }
+
+    @Override
+    public void onRefresh() {
+        loadActivityData();
     }
 }

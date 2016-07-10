@@ -7,14 +7,11 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.common.ConnectionResult;
@@ -42,7 +39,6 @@ public class AuthActivity extends BaseActivity {
 
     static CallbackManager callbackManager;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final String TAG = "MainActivity";
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private ProgressDialog dialog1;
 
@@ -84,7 +80,6 @@ public class AuthActivity extends BaseActivity {
         LoginManager.getInstance().registerCallback(AuthActivity.callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.e("qwerty", "success");
 
                 final ProgressDialog dialog = new ProgressDialog();
                 dialog.show(getFragmentManager(), "getfitapp");
@@ -95,8 +90,8 @@ public class AuthActivity extends BaseActivity {
                             @Override
                             public void onRequestPerformedListener(Object... objects) {
                                 dialog.dismiss();
-                                Log.e("qwerty", objects[0].toString());
                                 if (objects[0].equals("Internet")) {
+                                    cancelRequest();
                                     return;
                                 }
                                 if (objects[0].equals("Error")) {
@@ -129,14 +124,13 @@ public class AuthActivity extends BaseActivity {
 
             @Override
             public void onCancel() {
-                Log.e("qwerty", "cancel");
             }
 
             @Override
             public void onError(FacebookException e) {
                 Snackbar
-                        .make(findViewById(R.id.main), "Error.", Snackbar.LENGTH_LONG)
-                        .setAction("OK", new View.OnClickListener() {
+                        .make(findViewById(R.id.main), R.string.error_code_str, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.ok_str, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                             }
@@ -162,7 +156,6 @@ public class AuthActivity extends BaseActivity {
         if (!VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
             @Override
             public void onResult(VKAccessToken res) {
-                Log.e("werty", res.accessToken);
 
                 final ProgressDialog dialog = new ProgressDialog();
                 dialog.show(getFragmentManager(), "getfitapp");
@@ -172,9 +165,9 @@ public class AuthActivity extends BaseActivity {
                         .listener(new OnRequestPerformedListener() {
                             @Override
                             public void onRequestPerformedListener(Object... objects) {
-                                Log.e("qwerty", objects[0].toString());
                                 dialog.dismiss();
                                 if (objects[0].equals("Internet")) {
+                                    cancelRequest();
                                     return;
                                 }
                                 if (objects[0].equals("Error")) {
@@ -208,8 +201,8 @@ public class AuthActivity extends BaseActivity {
             @Override
             public void onError(VKError error) {
                 Snackbar
-                        .make(findViewById(R.id.main), "Error.", Snackbar.LENGTH_LONG)
-                        .setAction("OK", new View.OnClickListener() {
+                        .make(findViewById(R.id.main), R.string.error_code_str, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.ok_str, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                             }
@@ -243,7 +236,6 @@ public class AuthActivity extends BaseActivity {
                 apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
                         .show();
             } else {
-                Log.i(TAG, "This device is not supported.");
                 finish();
             }
             return false;

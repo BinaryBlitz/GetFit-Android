@@ -1,15 +1,17 @@
 package binaryblitz.athleteapp.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -21,18 +23,18 @@ import java.util.TimeZone;
 
 import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.Adapters.ChatsAdapter;
-import binaryblitz.athleteapp.Adapters.NewsAdapter;
 import binaryblitz.athleteapp.Data.Chat;
 import binaryblitz.athleteapp.Data.SubscriptionsSet;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Server.GetFitServerRequest;
 import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
 
-
 public class ChatsActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private ChatsAdapter adapter;
     private SwipeRefreshLayout layout;
+
+    ArrayList<Chat> list = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,65 +68,141 @@ public class ChatsActivity extends BaseActivity implements SwipeRefreshLayout.On
                 .listener(new OnRequestPerformedListener() {
                     @Override
                     public void onRequestPerformedListener(Object... objects) {
-                        Log.e("qwerty", objects[0].toString());
-                        layout.setRefreshing(false);
                         try {
-                            SubscriptionsSet
-                                    .load()
-                                    .clear();
                             JSONArray array = (JSONArray) objects[0];
 
-                            ArrayList<Chat> list = new ArrayList<>();
-
-                            for(int i = 0; i < array.length(); i++) {
-                                JSONObject object = array.getJSONObject(i);
-
-                                SubscriptionsSet
-                                        .load()
-                                        .add(new SubscriptionsSet.Subscription(
-                                                object.getString("id"),
-                                                object.getString("trainer_id")
-                                        ));
-
-                                Calendar start = Calendar.getInstance();
-                                try {
-                                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
-                                    format.setTimeZone(TimeZone.getTimeZone("UTC"));
-                                    Date date = format.parse(object.getJSONObject("message_preview").getString("created_at"));
-                                    start.setTime(date);
-                                } catch (Exception ignored) {}
-
-                                String last = "";
-
-                                if(object.isNull("message_preview")) {
-                                    last = "No messages yet";
-                                } else {
-                                    if(!object.getJSONObject("message_preview").isNull("image_url")) {
-                                        last = "Image";
-                                    } else {
-                                        last = object.getJSONObject("message_preview").getString("content");
-                                    }
-                                }
-
-                                list.add(new Chat(
-                                        0,
-                                        "qwerty",
-                                        start,
-                                        last,
-                                        0,
-                                        object.getString("id")
-                                ));
+                            JSONObject object;
+                            if (objects[0].equals("Internet")) {
+                                cancelRequest();
+                                return;
                             }
+                            object = array.getJSONObject(0);
+
+                            Calendar start = Calendar.getInstance();
+                            try {
+                                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+                                format.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                Date date = format.parse(object.getJSONObject("message_preview").getString("created_at"));
+                                start.setTime(date);
+                            } catch (Exception ignored) {
+                            }
+
+
+                            list.add(new Chat(
+                                    0,
+                                    getString(R.string.notifications_str),
+                                    start,
+                                    object.getString("content"),
+                                    "",
+                                    "notif"
+                            ));
 
                             adapter.setCollection(list);
                             adapter.notifyDataSetChanged();
 
-                        } catch (Exception e) {
+                            GetFitServerRequest.with(ChatsActivity.this)
+                                    .authorize()
+                                    .listener(new OnRequestPerformedListener() {
+                                        @Override
+                                        public void onRequestPerformedListener(Object... objects) {
+                                            layout.setRefreshing(false);
+                                            try {
+                                                if (objects[0].equals("Internet")) {
+                                                    cancelRequest();
+                                                    return;
+                                                }
+                                                if (objects[0].equals("AuthError")) {
+                                                    runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            if (!isFinishing()) {
+                                                                new AlertDialog.Builder(ChatsActivity.this)
+                                                                        .setTitle(getString(R.string.title_str))
+                                                                        .setMessage(getString(R.string.reg_alert_str))
+                                                                        .setCancelable(false)
+                                                                        .setPositiveButton(getString(R.string.cont_upcase_str), new DialogInterface.OnClickListener() {
+                                                                            @Override
+                                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                                Intent intent = new Intent(ChatsActivity.this, AuthActivity.class);
+                                                                                startActivity(intent);
+                                                                            }
+                                                                        })
+                                                                        .setNegativeButton(getString(R.string.cancel_upcase_str), new DialogInterface.OnClickListener() {
+                                                                            @Override
+                                                                            public void onClick(DialogInterface dialog, int which) {
 
+                                                                            }
+                                                                        })
+                                                                        .show();
+                                                            }
+                                                        }
+                                                    });
+
+                                                    return;
+                                                }
+
+                                                SubscriptionsSet
+                                                        .load()
+                                                        .clear();
+                                                JSONArray array = (JSONArray) objects[0];
+
+                                                for (int i = 0; i < array.length(); i++) {
+                                                    JSONObject object = array.getJSONObject(i);
+
+                                                    SubscriptionsSet
+                                                            .load()
+                                                            .add(new SubscriptionsSet.Subscription(
+                                                                    object.getString("id"),
+                                                                    object.getString("trainer_id")
+                                                            ));
+
+                                                    Calendar start = Calendar.getInstance();
+                                                    try {
+                                                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+                                                        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                                        Date date = format.parse(object.getJSONObject("message_preview").getString("created_at"));
+                                                        start.setTime(date);
+                                                    } catch (Exception ignored) {
+                                                    }
+
+                                                    String last;
+
+                                                    if (object.isNull("message_preview")) {
+                                                        last = getString(R.string.no_messages_yet);
+                                                    } else {
+                                                        if (!object.getJSONObject("message_preview").isNull("image_url")) {
+                                                            last = getString(R.string.image_str);
+                                                        } else {
+                                                            last = object.getJSONObject("message_preview").getString("content");
+                                                        }
+                                                    }
+
+                                                    list.add(new Chat(
+                                                            0,
+                                                            "qwerty",
+                                                            start,
+                                                            last,
+                                                            "",
+                                                            object.getString("id")
+                                                    ));
+                                                }
+
+                                                adapter.setCollection(list);
+                                                adapter.notifyDataSetChanged();
+
+                                            } catch (Exception ignored) {
+
+                                            }
+                                        }
+                                    })
+                                    .subscriptions()
+                                    .perform();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 })
-                .subscriptions()
+                .notifications()
                 .perform();
     }
 

@@ -16,8 +16,8 @@ public class GetFitServerRequest {
 
     static String apiToken;
     static Context context;
-    public static String baseUrl = "http://getfit.binaryblitz.ru";
-    public static String imagesUrl = "http://getfit.binaryblitz.ru";
+    public static String baseUrl = "http://getfit-staging.herokuapp.com";
+    public static String imagesUrl = "http://getfit-staging.herokuapp.com";
     static String PREFERENCE_NAME = "GetFitAppPrefs";
     static String TOKEN_ENTITY = "auth_token";
     static String TOKEN_DEVICE_ENTITY = "device_token";
@@ -76,10 +76,15 @@ public class GetFitServerRequest {
 
     public RequestPerformer authorize() throws IllegalArgumentException {
         if(DeviceInfoStore.getToken(context).equals("null")) {
-            throw new IllegalArgumentException();
+            apiToken = "";
+        } else {
+            apiToken = "?api_token=" + DeviceInfoStore.getToken(context);
         }
-        apiToken = "?api_token=" + DeviceInfoStore.getToken(context);
         return new RequestPerformer();
+    }
+
+    public boolean isAuthorized() throws IllegalArgumentException {
+        return DeviceInfoStore.getToken(context).equals("null");
     }
 
     public RequestPerformer skipAuth() {

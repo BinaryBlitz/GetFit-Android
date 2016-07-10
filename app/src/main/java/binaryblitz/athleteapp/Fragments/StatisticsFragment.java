@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import org.json.JSONObject;
 
+import binaryblitz.athleteapp.Abstract.BaseActivity;
+import binaryblitz.athleteapp.Activities.ProfileActivity;
 import binaryblitz.athleteapp.Adapters.StoreAdapter;
 import binaryblitz.athleteapp.Data.User;
 import binaryblitz.athleteapp.R;
@@ -21,10 +23,17 @@ import binaryblitz.athleteapp.Server.DeviceInfoStore;
 import binaryblitz.athleteapp.Server.GetFitServerRequest;
 import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
 
-/**
- * Created by evgenijefanov on 24.10.15.
- */
 public class StatisticsFragment extends Fragment {
+
+    private boolean other = false;
+
+    public boolean isOther() {
+        return other;
+    }
+
+    public void setOther(boolean other) {
+        this.other = other;
+    }
 
     @Nullable
     @Override
@@ -35,11 +44,6 @@ public class StatisticsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-//
-//        RecyclerView view = (RecyclerView) getView().findViewById(R.id.recyclerView);
-//        view.setItemAnimator(new DefaultItemAnimator());
-//        view.setLayoutManager(new LinearLayoutManager(getContext()));
-//        view.setAdapter(new StoreAdapter(getActivity()));
 
         try {
             GetFitServerRequest.with(getActivity())
@@ -47,8 +51,10 @@ public class StatisticsFragment extends Fragment {
                     .listener(new OnRequestPerformedListener() {
                         @Override
                         public void onRequestPerformedListener(Object... objects) {
-                            Log.e("qwerty", objects[0].toString());
-
+                            if (objects[0].equals("Internet")) {
+                                ((BaseActivity) getActivity()).cancelRequest();
+                                return;
+                            }
                             try {
                                 JSONObject object = (JSONObject) objects[0];
 
@@ -60,7 +66,7 @@ public class StatisticsFragment extends Fragment {
                             }
                         }
                     })
-                    .statistics(User.fromString(DeviceInfoStore.getUser()).getId())
+                    .statistics(other ? ProfileActivity.id : User.fromString(DeviceInfoStore.getUser()).getId())
                     .perform();
         } catch (Exception e) {
 

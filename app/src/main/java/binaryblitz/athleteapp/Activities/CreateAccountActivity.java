@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,7 +30,6 @@ import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
 public class CreateAccountActivity extends BaseActivity {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final String TAG = "MainActivity";
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     @Override
@@ -113,14 +113,20 @@ public class CreateAccountActivity extends BaseActivity {
                         e.printStackTrace();
                     }
 
-                    Log.e("qwerty", toSend.toString());
-
                     GetFitServerRequest.with(CreateAccountActivity.this)
                             .skipAuth()
                             .objects(toSend)
                             .listener(new OnRequestPerformedListener() {
                                 @Override
                                 public void onRequestPerformedListener(Object... objects) {
+                                    if (objects[0].equals("Internet")) {
+                                        cancelRequest();
+                                        return;
+                                    }
+                                    if (objects[0].equals("Error")) {
+                                        Snackbar.make(findViewById(R.id.main), R.string.error_try_str, Snackbar.LENGTH_SHORT).show();
+                                        return;
+                                    }
                                     if (checkPlayServices()) {
                                         Intent intent = new Intent(CreateAccountActivity.this, RegistrationIntentService.class);
                                         startService(intent);
@@ -172,7 +178,6 @@ public class CreateAccountActivity extends BaseActivity {
                 apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
                         .show();
             } else {
-                Log.i(TAG, "This device is not supported.");
                 finish();
             }
             return false;

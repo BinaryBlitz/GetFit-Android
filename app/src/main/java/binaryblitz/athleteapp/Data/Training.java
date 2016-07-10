@@ -1,38 +1,52 @@
 package binaryblitz.athleteapp.Data;
 
+import android.util.Pair;
+
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 
 public class Training {
     private String id;
 
-    private int intId;
-
+    private String programId;
     private String name;
-    private String type;
+    private String programName;
     private int exCount;
-    private Date date;
+    private Calendar date;
     private int time;
-
-    private ArrayList<TrainingPart> parts;
-
-    private Professional owner;
 
     private String desc;
 
-    public Training(String id, int intId, String name, String type, int exCount,
-                    Date date, int time, ArrayList<TrainingPart> parts, Professional owner,
-                    String desc) {
+    private ArrayList<Pair<String, String>> tips;
+
+    public Training(String id, String name, String programName, int exCount,
+                    Calendar date, int time,
+                    String desc, String programId, ArrayList<Pair<String, String>> tips) {
         this.desc = desc;
-        this.intId = intId;
         this.name = name;
-        this.type = type;
+        this.programName = programName;
         this.exCount = exCount;
         this.date = date;
         this.time = time;
-        this.parts = parts;
-        this.owner = owner;
         this.id = id;
+        this.programId = programId;
+        this.tips = tips;
+    }
+
+    public ArrayList<Pair<String, String>> getTips() {
+        return tips;
+    }
+
+    public void setTips(ArrayList<Pair<String, String>> tips) {
+        this.tips = tips;
+    }
+
+    public String getProgramId() {
+        return programId;
+    }
+
+    public void setProgramId(String programId) {
+        this.programId = programId;
     }
 
     public String getDesc() {
@@ -43,20 +57,12 @@ public class Training {
         this.desc = desc;
     }
 
-    public Date getDate() {
+    public Calendar getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Calendar date) {
         this.date = date;
-    }
-
-    public Professional getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Professional owner) {
-        this.owner = owner;
     }
 
     public String getId() {
@@ -67,22 +73,6 @@ public class Training {
         this.id = id;
     }
 
-    public int getIntId() {
-        return intId;
-    }
-
-    public void setIntId(int intId) {
-        this.intId = intId;
-    }
-
-    public ArrayList<TrainingPart> getParts() {
-        return parts;
-    }
-
-    public void setParts(ArrayList<TrainingPart> parts) {
-        this.parts = parts;
-    }
-
     public String getName() {
         return name;
     }
@@ -91,12 +81,12 @@ public class Training {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
+    public String getProgramName() {
+        return programName;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setProgramName(String programName) {
+        this.programName = programName;
     }
 
     public int getExCount() {

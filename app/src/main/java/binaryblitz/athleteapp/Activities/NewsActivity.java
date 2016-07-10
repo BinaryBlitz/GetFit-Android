@@ -2,13 +2,10 @@ package binaryblitz.athleteapp.Activities;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.Pair;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,7 +21,6 @@ import java.util.TimeZone;
 
 import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.Adapters.NewsAdapter;
-import binaryblitz.athleteapp.Data.Comment;
 import binaryblitz.athleteapp.Data.Post;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Server.GetFitServerRequest;
@@ -32,7 +28,7 @@ import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
 
 public class NewsActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    NewsAdapter adapter;
+    private NewsAdapter adapter;
     private SwipeRefreshLayout layout;
 
     @Override
@@ -69,6 +65,10 @@ public class NewsActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                     @Override
                     public void onRequestPerformedListener(Object... objects) {
                         layout.setRefreshing(false);
+                        if (objects[0].equals("Internet")) {
+                            cancelRequest();
+                            return;
+                        }
                         if (objects[0].equals("Error")) {
                             cancelRequest();
                             return;
@@ -77,7 +77,6 @@ public class NewsActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                         ArrayList<Post> news = new ArrayList<>();
 
                         try {
-                            Log.e("qwerty", objects[0].toString());
                             JSONArray array = (JSONArray) objects[0];
 
                             for (int i = 0; i < array.length(); i++) {
@@ -91,19 +90,29 @@ public class NewsActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                                     start.setTime(date);
                                 } catch (Exception ignored) {}
 
-                                news.add(new Post(
+                                Post post = new Post(
                                         object.getString("id"),
                                         object.getJSONObject("trainer").getString("first_name")
                                                 + " " + object.getJSONObject("trainer").getString("last_name"),
                                         object.getJSONObject("trainer").getString("id"),
-                                        GetFitServerRequest.imagesUrl + object.getJSONObject("trainer").getString("avatar_url"),
+                                        object.getJSONObject("trainer").isNull("avatar_url") ? null : GetFitServerRequest.imagesUrl + object.getJSONObject("trainer").getString("avatar_url"),
                                         object.getString("content"),
-                                        GetFitServerRequest.imagesUrl + object.getString("image_url"),
+                                        object.isNull("image_url") ? null : GetFitServerRequest.imagesUrl + object.getString("image_url"),
                                         start,
                                         object.getInt("likes_count"),
                                         object.getInt("comments_count"),
-                                        object.getString("like_id"),
-                                        !object.isNull("like_id")));
+                                        object.isNull("like_id") ? "" : object.getString("like_id"),
+                                        !object.isNull("like_id"));
+
+                                if(!object.isNull("program")) {
+                                    post.setProgramName(object.getJSONObject("program").getString("name"));
+                                    post.setProgramId(object.getJSONObject("program").getString("id"));
+                                    post.setProgramPrice(object.getJSONObject("program").getString("price") + "$");
+                                    post.setProgramType(object.getJSONObject("program").getJSONObject("program_type").getString("name"));
+                                    post.setProgramWorkouts(object.getJSONObject("program").getString("workouts_count") + " workouts");
+                                }
+
+                                news.add(post);
                             }
 
                             Collections.sort(news, new Comparator<Post>() {
@@ -125,11 +134,6 @@ public class NewsActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                 })
                 .posts()
                 .perform();
-    }
-
-    @Override
-    public void cancelRequest() {
-        Snackbar.make(findViewById(R.id.main), R.string.lost_connection_str, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

@@ -1,8 +1,10 @@
 package binaryblitz.athleteapp.Adapters;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +20,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import binaryblitz.athleteapp.Abstract.BaseActivity;
+import binaryblitz.athleteapp.Activities.AuthActivity;
 import binaryblitz.athleteapp.Activities.PhotoActivity;
 import binaryblitz.athleteapp.Activities.PostActivity;
 import binaryblitz.athleteapp.Activities.ProfProfileActivity;
+import binaryblitz.athleteapp.Activities.ProgramActivity;
 import binaryblitz.athleteapp.Data.Post;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Server.GetFitServerRequest;
@@ -74,11 +79,11 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         holder.like_count.setText(Integer.toString(post.getLikeCount()));
         holder.text_count.setText(Integer.toString(post.getCommentsCount()));
 
-        if(!(post.getUserPhotoUrl() == null || post.getUserPhotoUrl().equals("No photo"))) {
+        if(post.getUserPhotoUrl() != null) {
             holder.user_avatar.setVisibility(View.VISIBLE);
             Picasso.with(context)
                     .load(post.getUserPhotoUrl())
-                    .into(holder.post_photo);
+                    .into(holder.user_avatar);
         }
 
         holder.user_avatar.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +104,24 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         });
 
-        if(post.getPhotoUrl() == null || post.getPhotoUrl().equals("No photo")) {
+        if(post.getProgramName() == null) {
+            holder.itemView.findViewById(R.id.program).setVisibility(View.GONE);
+        } else {
+            holder.itemView.findViewById(R.id.program).setVisibility(View.VISIBLE);
+            holder.itemView.findViewById(R.id.program).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ProgramActivity.class);
+                    intent.putExtra("id", post.getProgramId());
+                    context.startActivity(intent);
+                }
+            });
+            ((TextView) holder.itemView.findViewById(R.id.textView123)).setText(post.getProgramName());
+            ((TextView) holder.itemView.findViewById(R.id.textView6)).setText(post.getProgramPrice());
+            ((TextView) holder.itemView.findViewById(R.id.textView2123)).setText(post.getProgramType() + ", " + post.getProgramWorkouts());
+        }
+
+        if(post.getPhotoUrl() == null) {
             holder.post_photo.setVisibility(View.GONE);
         } else {
             holder.post_photo.setVisibility(View.VISIBLE);
@@ -122,6 +144,35 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             public void onClick(View v) {
                 long pressTime = System.currentTimeMillis();
                 if (pressTime - lastPressTime <= DOUBLE_PRESS_INTERVAL) {
+                    if(GetFitServerRequest.with(context).isAuthorized()) {
+                        context.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!context.isFinishing()) {
+                                    new AlertDialog.Builder(context)
+                                            .setTitle(context.getString(R.string.title_str))
+                                            .setMessage(context.getString(R.string.reg_alert_str))
+                                            .setCancelable(false)
+                                            .setPositiveButton(context.getString(R.string.cont_upcase_str), new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Intent intent = new Intent(context, AuthActivity.class);
+                                                    context.startActivity(intent);
+                                                }
+                                            })
+                                            .setNegativeButton(context.getString(R.string.cancel_upcase_str), new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                }
+                                            })
+                                            .show();
+                                }
+                            }
+                        });
+
+                        return;
+                    }
                     mHasDoubleClicked = true;
                     if (!post.isLiked()) {
                         animatePhotoLike(holder);
@@ -131,6 +182,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 .listener(new OnRequestPerformedListener() {
                                     @Override
                                     public void onRequestPerformedListener(Object... objects) {
+                                        if (objects[0].equals("Internet")) {
+                                            ((BaseActivity) context).cancelRequest();
+                                            return;
+                                        }
                                     }
                                 })
                                 .like(post.getId())
@@ -160,7 +215,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         });
 
-        holder.date.setText(DateUtils.getDateStringRepresentationForNews(post.getDate()));
+        holder.date.setText(DateUtils.getDateStringRepresentationForNews(post.getDate(), context));
 
         if(post.isLiked()) {
             holder.like_image.setImageResource(R.drawable.like_filled);
@@ -171,6 +226,35 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         holder.like_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(GetFitServerRequest.with(context).isAuthorized()) {
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!context.isFinishing()) {
+                                new AlertDialog.Builder(context)
+                                        .setTitle(context.getString(R.string.title_str))
+                                        .setMessage(context.getString(R.string.reg_alert_str))
+                                        .setCancelable(false)
+                                        .setPositiveButton(context.getString(R.string.cont_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent intent = new Intent(context, AuthActivity.class);
+                                                context.startActivity(intent);
+                                            }
+                                        })
+                                        .setNegativeButton(context.getString(R.string.cancel_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }
+                    });
+
+                    return;
+                }
                 if(post.isLiked()) {
                     holder.like_image.setImageResource(R.drawable.like_active_ic);
                     post.setLikeCount(post.getLikeCount() - 1);
@@ -180,7 +264,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             .listener(new OnRequestPerformedListener() {
                                 @Override
                                 public void onRequestPerformedListener(Object... objects) {
-
+                                    if (objects[0].equals("Internet")) {
+                                        ((BaseActivity) context).cancelRequest();
+                                        return;
+                                    }
                                 }
                             })
                             .deleteLike(post.getLikeId())
@@ -194,6 +281,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             .listener(new OnRequestPerformedListener() {
                                 @Override
                                 public void onRequestPerformedListener(Object... objects) {
+                                    if (objects[0].equals("Internet")) {
+                                        ((BaseActivity) context).cancelRequest();
+                                        return;
+                                    }
                                 }
                             })
                             .like(post.getId())

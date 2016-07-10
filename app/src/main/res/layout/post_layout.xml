@@ -49,7 +49,8 @@
                     android:layout_marginLeft="56dp"
                     android:textSize="18sp"
                     android:textAllCaps="false"
-                    android:textColor="@color/grey_text_color" />
+                    android:textColor="@color/grey_text_color"
+                    android:singleLine="true" />
             </FrameLayout>
 
             <binaryblitz.athleteapp.Custom.RobotoTextView
@@ -70,7 +71,78 @@
                 android:id="@+id/imageView2"
                 android:layout_gravity="center_vertical|top"
                 android:layout_marginTop="16dp"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:background="@drawable/date_text_border_back"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:id="@+id/program"
+                android:visibility="gone"
+                android:layout_marginTop="12dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center_vertical|right"
+                        android:layout_marginRight="16dp"
+                        android:background="@drawable/blue_border"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:layout_marginBottom="18dp"
+                        android:layout_marginTop="18dp">
+
+                        <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:id="@+id/textView6"
+                            android:layout_gravity="left|center_vertical"
+                            android:textColor="@color/accent_color"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:text="100$" />
+                    </FrameLayout>
+
+                    <binaryblitz.athleteapp.Custom.BoldRobotoTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:id="@+id/textView123"
+                        android:layout_gravity="center_vertical|left"
+                        android:layout_marginLeft="16dp"
+                        android:textSize="20sp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/accent_color"
+                        android:textStyle="bold"
+                        android:textIsSelectable="false"
+                        android:text="Awesome program"
+                        android:layout_marginBottom="8dp" />
+
+                    <binaryblitz.athleteapp.Custom.RobotoTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:id="@+id/textView2123"
+                        android:layout_marginTop="14dp"
+                        android:layout_marginLeft="17dp"
+                        android:layout_marginRight="16dp"
+                        android:textColor="#212121"
+                        android:textSize="14sp"
+                        android:typeface="sans"
+                        android:text="Cardio, 6 exercises"
+                        android:layout_gravity="center_vertical" />
+                </FrameLayout>
+
+            </LinearLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -192,7 +264,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Post"
+                        android:text="@string/post"
                         android:layout_gravity="center_vertical"
                         android:id="@+id/date_text_view"
                         android:textAllCaps="false"

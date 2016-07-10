@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<binaryblitz.athleteapp.CircularReveal.widget.RevealFrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-        <FrameLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main">
+        <binaryblitz.athleteapp.CircularReveal.widget.RevealFrameLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_height="match_parent">
@@ -105,7 +106,7 @@
                 </FrameLayout>
             </FrameLayout>
 
-        </FrameLayout>
+        </binaryblitz.athleteapp.CircularReveal.widget.RevealFrameLayout>
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical" android:layout_width="match_parent"
@@ -141,81 +142,8 @@
                         <LinearLayout
                             android:orientation="vertical"
                             android:layout_width="match_parent"
+                            android:id="@+id/tips"
                             android:layout_height="match_parent">
-                            <binaryblitz.athleteapp.Custom.BoldRobotoTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="1. Check out your pulse"
-                                android:id="@+id/textView30"
-                                android:textAllCaps="true"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginTop="16dp"
-                                android:textColor="#212121"
-                                android:textSize="24sp" />
-
-                            <binaryblitz.athleteapp.Custom.RobotoTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer"
-                                android:id="@+id/textView18"
-                                android:textColor="@color/dark_text_color"
-                                android:textSize="16sp"
-                                android:paddingLeft="16dp"
-                                android:paddingTop="16dp"
-                                android:paddingRight="16dp"
-                                android:paddingBottom="16dp" />
-
-                            <binaryblitz.athleteapp.Custom.BoldRobotoTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="2. Check out your breathe"
-                                android:id="@+id/textView30fd"
-                                android:textAllCaps="true"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginTop="16dp"
-                                android:textColor="#212121"
-                                android:textSize="24sp" />
-
-                            <binaryblitz.athleteapp.Custom.RobotoTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer"
-                                android:id="@+id/textView18ffd"
-                                android:textColor="@color/dark_text_color"
-                                android:textSize="16sp"
-                                android:paddingLeft="16dp"
-                                android:paddingTop="16dp"
-                                android:paddingRight="16dp"
-                                android:paddingBottom="16dp" />
-
-                            <binaryblitz.athleteapp.Custom.BoldRobotoTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="3. Make a 3 minute rest after each exercise"
-                                android:id="@+id/textView30dsds"
-                                android:textAllCaps="true"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginTop="16dp"
-                                android:textColor="#212121"
-                                android:textSize="24sp" />
-
-                            <binaryblitz.athleteapp.Custom.RobotoTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer"
-                                android:id="@+id/textView18dsds"
-                                android:textColor="@color/dark_text_color"
-                                android:textSize="16sp"
-                                android:paddingLeft="16dp"
-                                android:paddingTop="16dp"
-                                android:paddingRight="16dp"
-                                android:paddingBottom="16dp" />
                         </LinearLayout>
 
                     </ScrollView>
@@ -224,4 +152,4 @@
             </FrameLayout>
 
         </RelativeLayout>
-    </FrameLayout>
+    </binaryblitz.athleteapp.CircularReveal.widget.RevealFrameLayout>

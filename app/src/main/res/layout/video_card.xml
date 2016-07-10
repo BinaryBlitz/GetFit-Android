@@ -25,31 +25,30 @@
             android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginBottom="8dp"
-            android:src="@drawable/test_image"
             android:scaleType="centerCrop" />
 
         <binaryblitz.athleteapp.Custom.RobotoTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="How to done this\nexercise"
             android:id="@+id/textView28"
             android:layout_gravity="left|top"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="150dp"
             android:textColor="@color/dark_text_color"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:singleLine="true" />
 
-        <TextView
+        <binaryblitz.athleteapp.Custom.RobotoTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="1:55"
             android:id="@+id/textView29"
             android:layout_gravity="left|bottom"
             android:layout_marginBottom="22dp"
             android:layout_marginLeft="150dp"
             android:textColor="@color/grey_text_color"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:singleLine="true" />
     </FrameLayout>
 </android.support.v7.widget.CardView>

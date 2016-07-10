@@ -2,6 +2,7 @@
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#ffffff">
@@ -42,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Settings"
+                    android:text="@string/settings"
                     android:layout_gravity="center_vertical"
                     android:id="@+id/date_text_view"
                     android:textAllCaps="false"
@@ -242,4 +243,14 @@
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/log_out"
+        android:id="@+id/button3"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="44dp"
+        android:background="@color/accent_color"
+        android:textColor="#ffffff" />
 </FrameLayout>

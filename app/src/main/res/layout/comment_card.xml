@@ -10,7 +10,8 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="55dp"
-        android:layout_gravity="bottom">
+        android:layout_gravity="bottom"
+        android:id="@+id/user">
 
         <com.github.siyamed.shapeimageview.CircularImageView
             app:siBorderWidth="2dp"
@@ -30,7 +31,9 @@
             android:layout_gravity="center_vertical|left"
             android:layout_marginLeft="60dp"
             android:textSize="14sp"
-            android:textColor="#212121" />
+            android:textColor="#212121"
+            android:singleLine="true"
+            android:layout_marginRight="80dp" />
 
         <binaryblitz.athleteapp.Custom.RobotoTextView
             android:layout_width="wrap_content"

@@ -18,13 +18,19 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultAct
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractSwipeableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Date;
 
 import binaryblitz.athleteapp.Activities.TrainingActivity;
 import binaryblitz.athleteapp.Data.Training;
 import binaryblitz.athleteapp.R;
+import binaryblitz.athleteapp.Server.GetFitServerRequest;
+import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
 import binaryblitz.athleteapp.Utils.DateTimeUtil;
+import binaryblitz.athleteapp.Utils.DateUtils;
 
 public class TrainingsAdapter
         extends RecyclerView.Adapter<TrainingsAdapter.MyViewHolder>
@@ -35,7 +41,6 @@ public class TrainingsAdapter
 
     public static int SELECTED;
 
-    // NOTE: Make accessible with short name
     private interface Swipeable extends SwipeableItemConstants {
     }
 
@@ -94,9 +99,6 @@ public class TrainingsAdapter
         };
 
         this.context = context;
-
-        // SwipeableItemAdapter requires stable ID, and also
-        // have to implement the getItemId() method appropriately.
         setHasStableIds(true);
 
         trainings = new ArrayList<>();
@@ -125,7 +127,7 @@ public class TrainingsAdapter
 
     @Override
     public long getItemId(int position) {
-        return trainings.get(position).getIntId();
+        return Integer.parseInt(trainings.get(position).getId());
     }
 
     @Override
@@ -136,7 +138,7 @@ public class TrainingsAdapter
     }
 
     public void changeItem(int position, Date date) {
-        trainings.get(position).setDate(date);
+        //trainings.get(position).setDate(date);
         notifyItemChanged(position);
     }
 
@@ -160,15 +162,14 @@ public class TrainingsAdapter
             holder.mContainer.setBackgroundResource(bgResId);
         }
 
-        // set swiping properties
         holder.setSwipeItemHorizontalSlideAmount(0);
 
         final Training training = trainings.get(position);
 
         holder.name.setText(training.getName());
-        holder.type.setText(training.getType());
+        holder.type.setText(training.getProgramName());
         holder.count.setText(training.getExCount() + " " + context.getString(R.string.exsercises_string));
-        holder.date.setText(DateTimeUtil.getFriendlyDateRepresentation(training.getDate()));
+        holder.date.setText(DateUtils.getDateStringRepresentationForNews(training.getDate(), context));
         holder.time.setText(training.getTime() + " " + context.getString(R.string.min_string));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -177,7 +178,8 @@ public class TrainingsAdapter
                 Intent intent = new Intent(context, TrainingActivity.class);
                 TrainingActivity.setParent(training);
                 SELECTED = position;
-                TrainingActivity.setParts(training.getParts());
+                intent.putExtra("id", training.getId());
+                intent.putExtra("programId", training.getProgramId());
                 context.startActivity(intent);
             }
         });
@@ -280,6 +282,27 @@ public class TrainingsAdapter
         @Override
         protected void onPerformAction() {
             super.onPerformAction();
+            JSONObject object = new JSONObject();
+            JSONObject toSend = new JSONObject();
+
+            try {
+                object.accumulate("completed", true);
+                toSend.accumulate("workout_session", object);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            GetFitServerRequest.with(context)
+                    .authorize()
+                    .objects(toSend)
+                    .listener(new OnRequestPerformedListener() {
+                        @Override
+                        public void onRequestPerformedListener(Object... objects) {
+                            //Log.e("qwerty", objects[0].toString());
+                        }
+                    })
+                    .completeWorkout(trainings.get(mPosition).getId())
+                    .perform();
             trainings.remove(mPosition);
             mAdapter.notifyItemRemoved(mPosition);
         }

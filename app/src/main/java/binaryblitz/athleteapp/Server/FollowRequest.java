@@ -5,6 +5,8 @@ import com.android.volley.VolleyError;
 
 import org.json.JSONObject;
 
+import binaryblitz.athleteapp.Utils.AndroidUtils;
+
 public class FollowRequest implements Request {
 
     String id;
@@ -15,6 +17,13 @@ public class FollowRequest implements Request {
 
     @Override
     public void execute(final OnRequestPerformedListener listener, final JSONObject... params) {
+
+        if(!AndroidUtils.isConnected(GetFitServerRequest.context)) {
+            GetFitServerRequest.activity.cancelRequest();
+            listener.onRequestPerformedListener("Internet");
+            return;
+        }
+
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.POST,
                 GetFitServerRequest.baseUrl
@@ -34,6 +43,12 @@ public class FollowRequest implements Request {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        try {
+                            if(error.networkResponse.statusCode == 401) {
+                                listener.onRequestPerformedListener("AuthError");
+                                return;
+                            }
+                        } catch (Exception ignored) {}
                         listener.onRequestPerformedListener("Error");
                     }
                 }

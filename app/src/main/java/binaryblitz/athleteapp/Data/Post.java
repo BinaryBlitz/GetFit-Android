@@ -22,6 +22,12 @@ public class Post {
 
     private String likeId;
 
+    private String programName;
+    private String programPrice;
+    private String programType;
+    private String programWorkouts;
+    private String programId;
+
     public Post(String id, String userName, String userId, String userPhotoUrl,
                  String desc, String photoUrl,
                  Calendar date, int likeCount, int commentsCount, String likeId, boolean liked) {
@@ -36,6 +42,51 @@ public class Post {
         this.commentsCount = commentsCount;
         this.likeId = likeId;
         this.liked = liked;
+
+        this.programName = null;
+        this.programPrice = null;
+        this.programType = null;
+        this.programWorkouts = null;
+    }
+
+    public String getProgramId() {
+        return programId;
+    }
+
+    public void setProgramId(String programId) {
+        this.programId = programId;
+    }
+
+    public String getProgramName() {
+        return programName;
+    }
+
+    public void setProgramName(String programName) {
+        this.programName = programName;
+    }
+
+    public String getProgramPrice() {
+        return programPrice;
+    }
+
+    public void setProgramPrice(String programPrice) {
+        this.programPrice = programPrice;
+    }
+
+    public String getProgramType() {
+        return programType;
+    }
+
+    public void setProgramType(String programType) {
+        this.programType = programType;
+    }
+
+    public String getProgramWorkouts() {
+        return programWorkouts;
+    }
+
+    public void setProgramWorkouts(String programWorkouts) {
+        this.programWorkouts = programWorkouts;
     }
 
     public String getLikeId() {

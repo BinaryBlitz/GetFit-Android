@@ -64,13 +64,13 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         holder.date.setText(DateUtils.getDateStringRepresentationForMessager(chat.getTime()));
         holder.post_desc.setText(chat.getLast());
 
-        if(chat.getLast().equals("Image")) {
+        if(chat.getLast().equals(context.getString(R.string.image_str))) {
             holder.post_desc.setTextColor(Color.argb(255, 54,149,237));
         } else {
             holder.post_desc.setTextColor(Color.parseColor("#212121"));
         }
 
-        holder.user_avatar.setImageResource(chat.getAvatar());
+       // holder.user_avatar.setImageResource(chat.getAvatar());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

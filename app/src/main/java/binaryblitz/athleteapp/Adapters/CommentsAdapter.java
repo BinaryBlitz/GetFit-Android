@@ -1,6 +1,7 @@
 package binaryblitz.athleteapp.Adapters;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import binaryblitz.athleteapp.Abstract.BaseActivity;
+import binaryblitz.athleteapp.Activities.MyProfileActivity;
 import binaryblitz.athleteapp.Activities.PostActivity;
+import binaryblitz.athleteapp.Activities.ProfileActivity;
 import binaryblitz.athleteapp.Custom.ProgressDialog;
 import binaryblitz.athleteapp.Data.Comment;
 import binaryblitz.athleteapp.Data.User;
@@ -66,6 +70,20 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.date.setText(DateUtils.getDateStringRepresentation(comment.getDate()));
         holder.post_desc.setText(comment.getText());
 
+        holder.itemView.findViewById(R.id.user).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(comment.getUserId().equals(User.fromString(DeviceInfoStore.getUser()).getId())) {
+                    Intent intent = new Intent(context, MyProfileActivity.class);
+                    context.startActivity(intent);
+                } else {
+                    Intent intent = new Intent(context, ProfileActivity.class);
+                    intent.putExtra("id", comment.getUserId());
+                    context.startActivity(intent);
+                }
+            }
+        });
+
         Picasso.with(context).load(comment.getAvatarUrl()).into(holder.user_avatar);
 
         try {
@@ -88,6 +106,10 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         .listener(new OnRequestPerformedListener() {
                             @Override
                             public void onRequestPerformedListener(Object... objects) {
+                                if (objects[0].equals("Internet")) {
+                                    ((BaseActivity) context).cancelRequest();
+                                    return;
+                                }
                                 dialog.dismiss();
                                 collection.remove(position);
                                 ((PostActivity) context).deleteComment();

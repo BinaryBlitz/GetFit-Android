@@ -96,9 +96,9 @@ public class ProfsActivity extends BaseActivity {
 
     private class NavigationAdapter extends FragmentPagerAdapter {
 
-        String[] TITLES = {"COACHES",
-                "DOCTORS",
-                "NUTRITIONISTS"};
+        String[] TITLES = {getString(R.string.coaches_upcase_str),
+                getString(R.string.doctors_upcase_str),
+                getString(R.string.nutr_upcase_str)};
 
         public NavigationAdapter(FragmentManager fm) {
             super(fm);

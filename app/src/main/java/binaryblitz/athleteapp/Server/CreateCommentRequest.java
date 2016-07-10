@@ -42,6 +42,12 @@ public class CreateCommentRequest implements Request {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        try {
+                            if(error.networkResponse.statusCode == 401) {
+                                listener.onRequestPerformedListener("AuthError");
+                                return;
+                            }
+                        } catch (Exception ignored) {}
                         listener.onRequestPerformedListener("Error");
                     }
                 }

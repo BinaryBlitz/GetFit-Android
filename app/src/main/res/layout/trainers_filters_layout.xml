@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -44,7 +45,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Sort"
+                        android:text="@string/sort"
                         android:layout_gravity="center_vertical"
                         android:id="@+id/date_text_view"
                         android:textAllCaps="false"

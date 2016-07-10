@@ -116,6 +116,7 @@ public class PhoneActivity extends BaseActivity {
                                 public void onRequestPerformedListener(Object... objects) {
                                     dialog.dismiss();
                                     if (objects[0].equals("Internet")) {
+                                        cancelRequest();
                                         return;
                                     }
                                     if (objects[0].equals("Error")) {
@@ -223,7 +224,6 @@ public class PhoneActivity extends BaseActivity {
                                 @Override
                                 public void onRequestPerformedListener(Object... objects) {
                                     dialog.dismiss();
-                                    Log.e("qwerty", objects[0].toString());
                                     if (objects[0].equals("Internet")) {
                                         return;
                                     }
@@ -322,6 +322,7 @@ public class PhoneActivity extends BaseActivity {
                                             @Override
                                             public void onRequestPerformedListener(Object... objects) {
                                                 if (objects[0].equals("Internet")) {
+                                                    cancelRequest();
                                                     return;
                                                 }
                                                 try {
@@ -392,7 +393,6 @@ public class PhoneActivity extends BaseActivity {
                 apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
                         .show();
             } else {
-                Log.i(TAG, "This device is not supported.");
                 finish();
             }
             return false;

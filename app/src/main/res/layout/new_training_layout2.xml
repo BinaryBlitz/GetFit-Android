@@ -297,7 +297,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Program"
+                    android:text="@string/program_str"
                     android:layout_gravity="center_vertical"
                     android:id="@+id/date_text_view"
                     android:textAllCaps="false"

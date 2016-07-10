@@ -1,5 +1,6 @@
 package binaryblitz.athleteapp.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -9,6 +10,7 @@ import org.json.JSONObject;
 import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.Custom.ProgressDialog;
 import binaryblitz.athleteapp.R;
+import binaryblitz.athleteapp.Server.DeviceInfoStore;
 import binaryblitz.athleteapp.Server.GetFitServerRequest;
 import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
 
@@ -23,6 +25,42 @@ public class SettingsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject object = new JSONObject();
+                JSONObject user = new JSONObject();
+
+                try {
+                    user.put("device_token", JSONObject.NULL);
+                    user.put("platform", JSONObject.NULL);
+                    object.put("user", user);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                GetFitServerRequest.with(getApplicationContext())
+                        .authorize()
+                        .listener(new OnRequestPerformedListener() {
+                            @Override
+                            public void onRequestPerformedListener(Object... objects) {
+                                if (objects[0].equals("Internet")) {
+                                    cancelRequest();
+                                    return;
+                                }
+                                DeviceInfoStore.resetToken(SettingsActivity.this);
+                                DeviceInfoStore.resetUser(SettingsActivity.this);
+                                Intent intent = new Intent(SettingsActivity.this, SplashActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .objects(object)
+                        .updateUser()
+                        .perform();
             }
         });
 
@@ -63,6 +101,10 @@ public class SettingsActivity extends BaseActivity {
                         .listener(new OnRequestPerformedListener() {
                             @Override
                             public void onRequestPerformedListener(Object... objects) {
+                                if (objects[0].equals("Internet")) {
+                                    cancelRequest();
+                                    return;
+                                }
                                 finish();
                             }
                         })

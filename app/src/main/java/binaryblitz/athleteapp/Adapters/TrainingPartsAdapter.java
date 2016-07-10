@@ -3,6 +3,7 @@ package binaryblitz.athleteapp.Adapters;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,15 +20,24 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultAct
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionRemoveItem;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractSwipeableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.Activities.ProfProfileActivity;
+import binaryblitz.athleteapp.Activities.ProgramActivity;
 import binaryblitz.athleteapp.Activities.TrainingActivity;
 import binaryblitz.athleteapp.Activities.TrainingPartActivity;
+import binaryblitz.athleteapp.Custom.ProgressDialog;
 import binaryblitz.athleteapp.Data.Training;
 import binaryblitz.athleteapp.Data.TrainingPart;
 import binaryblitz.athleteapp.R;
+import binaryblitz.athleteapp.Server.GetFitServerRequest;
+import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
 
 public class TrainingPartsAdapter
         extends RecyclerView.Adapter<RecyclerView.ViewHolder>
@@ -71,6 +81,7 @@ public class TrainingPartsAdapter
 
     public void setTrainings(ArrayList<Pair<Integer, Pair<Integer, Object>>> trainings) {
         this.trainings = trainings;
+        notifyDataSetChanged();
 
         int done = 0;
         int basic = 0;
@@ -279,8 +290,35 @@ public class TrainingPartsAdapter
                 public void onClick(View v) {
                     ((TrainingActivity) context).show(new TrainingActivity.DialogFinishedListener() {
                         @Override
-                        public void onDialogFinished(int val) {
-                            basicViewHolder.weight.setText(val + " KG");
+                        public void onDialogFinished(final int val) {
+                            final ProgressDialog dialog = new ProgressDialog();
+                            dialog.show(context.getFragmentManager(), "atheleteapp");
+                            JSONObject object = new JSONObject();
+                            JSONObject toSend = new JSONObject();
+
+                            try {
+                                object.accumulate("weight", val);
+                                toSend.accumulate("exercise_session", object);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            GetFitServerRequest.with(context)
+                                    .authorize()
+                                    .objects(toSend)
+                                    .listener(new OnRequestPerformedListener() {
+                                        @Override
+                                        public void onRequestPerformedListener(Object... objects) {
+                                            dialog.dismiss();
+                                            if (objects[0].equals("Internet")) {
+                                                ((BaseActivity) context).cancelRequest();
+                                                return;
+                                            }
+                                            basicViewHolder.weight.setText(val + " KG");
+                                        }
+                                    })
+                                    .updateExercise(part.getId())
+                                    .perform();
                         }
                     }, part.getWeight());
                 }
@@ -291,8 +329,35 @@ public class TrainingPartsAdapter
                 public void onClick(View v) {
                     ((TrainingActivity) context).show(new TrainingActivity.DialogFinishedListener() {
                         @Override
-                        public void onDialogFinished(int val) {
-                            basicViewHolder.count.setText(val + " TIMES");
+                        public void onDialogFinished(final int val) {
+                            final ProgressDialog dialog = new ProgressDialog();
+                            dialog.show(context.getFragmentManager(), "atheleteapp");
+                            JSONObject object = new JSONObject();
+                            JSONObject toSend = new JSONObject();
+
+                            try {
+                                object.accumulate("sets", val);
+                                toSend.accumulate("exercise_session", object);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            GetFitServerRequest.with(context)
+                                    .authorize()
+                                    .objects(toSend)
+                                    .listener(new OnRequestPerformedListener() {
+                                        @Override
+                                        public void onRequestPerformedListener(Object... objects) {
+                                            dialog.dismiss();
+                                            if (objects[0].equals("Internet")) {
+                                                ((BaseActivity) context).cancelRequest();
+                                                return;
+                                            }
+                                            basicViewHolder.count.setText(val + " TIMES");
+                                        }
+                                    })
+                                    .updateExercise(part.getId())
+                                    .perform();
                         }
                     }, part.getCount());
                 }
@@ -303,8 +368,35 @@ public class TrainingPartsAdapter
                 public void onClick(View v) {
                     ((TrainingActivity) context).show(new TrainingActivity.DialogFinishedListener() {
                         @Override
-                        public void onDialogFinished(int val) {
-                            basicViewHolder.time.setText(val + " MIN");
+                        public void onDialogFinished(final int val) {
+                            final ProgressDialog dialog = new ProgressDialog();
+                            dialog.show(context.getFragmentManager(), "atheleteapp");
+                            JSONObject object = new JSONObject();
+                            JSONObject toSend = new JSONObject();
+
+                            try {
+                                object.accumulate("distance", val);
+                                toSend.accumulate("exercise_session", object);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            GetFitServerRequest.with(context)
+                                    .authorize()
+                                    .objects(toSend)
+                                    .listener(new OnRequestPerformedListener() {
+                                        @Override
+                                        public void onRequestPerformedListener(Object... objects) {
+                                            dialog.dismiss();
+                                            if (objects[0].equals("Internet")) {
+                                                ((BaseActivity) context).cancelRequest();
+                                                return;
+                                            }
+                                            basicViewHolder.time.setText(val + " MIN");
+                                        }
+                                    })
+                                    .updateExercise(part.getId())
+                                    .perform();
                         }
                     }, part.getTime());
                 }
@@ -315,8 +407,35 @@ public class TrainingPartsAdapter
                 public void onClick(View v) {
                     ((TrainingActivity) context).show(new TrainingActivity.DialogFinishedListener() {
                         @Override
-                        public void onDialogFinished(int val) {
-                            basicViewHolder.reps.setText(val + " REPS");
+                        public void onDialogFinished(final int val) {
+                            final ProgressDialog dialog = new ProgressDialog();
+                            dialog.show(context.getFragmentManager(), "atheleteapp");
+                            JSONObject object = new JSONObject();
+                            JSONObject toSend = new JSONObject();
+
+                            try {
+                                object.accumulate("reps", val);
+                                toSend.accumulate("exercise_session", object);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            GetFitServerRequest.with(context)
+                                    .authorize()
+                                    .objects(toSend)
+                                    .listener(new OnRequestPerformedListener() {
+                                        @Override
+                                        public void onRequestPerformedListener(Object... objects) {
+                                            dialog.dismiss();
+                                            if (objects[0].equals("Internet")) {
+                                                ((BaseActivity) context).cancelRequest();
+                                                return;
+                                            }
+                                            basicViewHolder.reps.setText(val + " REPS");
+                                        }
+                                    })
+                                    .updateExercise(part.getId())
+                                    .perform();
                         }
                     }, part.getReps());
                 }
@@ -363,14 +482,20 @@ public class TrainingPartsAdapter
 
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
 
-            headerViewHolder.desc.setText(parent.getDesc());
-            headerViewHolder.name.setText(parent.getOwner().getName());
-            //headerViewHolder.avatar.setImageResource(parent.getOwner().getUserPhotoUrl());
+            headerViewHolder.desc.setText(TrainingActivity.desc);
+            headerViewHolder.name.setText(TrainingActivity.trainerName);
+
+            if(!TrainingActivity.trainerAvatarUrl.isEmpty()) {
+                Picasso.with(context)
+                        .load(TrainingActivity.trainerAvatarUrl)
+                        .into(headerViewHolder.avatar);
+            }
 
             headerViewHolder.btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ProfProfileActivity.class);
+                    intent.putExtra("id", TrainingActivity.trainerId);
                     context.startActivity(intent);
                 }
             });
@@ -454,16 +579,47 @@ public class TrainingPartsAdapter
         protected void onPerformAction() {
             super.onPerformAction();
             Pair<Integer, Pair<Integer, Object>> obj = trainings.get(mPosition);
+
+            JSONObject object = new JSONObject();
+            JSONObject toSend = new JSONObject();
+
+            try {
+                object.accumulate("completed", false);
+                toSend.accumulate("exercise_session", object);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            GetFitServerRequest.with(context)
+                    .authorize()
+                    .objects(toSend)
+                    .listener(new OnRequestPerformedListener() {
+                        @Override
+                        public void onRequestPerformedListener(Object... objects) {
+                        }
+                    })
+                    .updateExercise(((TrainingPart) trainings.get(mPosition).second.second).getId())
+                    .perform();
+
             trainings.remove(mPosition);
             mAdapter.notifyItemRemoved(mPosition);
             for(int i = trainings.size() - 1; i >= 0; i--) {
                 if(trainings.get(i).second.first == SPACE) {
-                    if(i == trainings.size() - 1) {
+                    int index = i + 1;
+                    for(int j = i + 1; j < trainings.size(); j++) {
+                        if(trainings.get(j).second.first == BASIC) {
+                            if(((TrainingPart) trainings.get(j).second.second).getNumber() < ((TrainingPart) obj.second.second).getNumber()) {
+                                index++;
+                            }
+                        }
+                    }
+
+                    if(index - 1 == trainings.size() - 1) {
                         trainings.add(new Pair<>(trainings.size() + inc, new Pair<>(BASIC, obj.second.second)));
                         notifyItemInserted(trainings.size() + 1);
                     } else {
-                        trainings.add(i + 1, new Pair<>(trainings.size() + inc, new Pair<>(BASIC, obj.second.second)));
-                        notifyItemInserted(i + 1);
+                        trainings.add(index, new Pair<>(trainings.size() + inc, new Pair<>(BASIC, obj.second.second)));
+                        notifyItemInserted(index);
                     }
                     inc++;
                     break;
@@ -513,12 +669,42 @@ public class TrainingPartsAdapter
         protected void onPerformAction() {
             super.onPerformAction();
             Pair<Integer, Pair<Integer, Object>> obj = trainings.get(mPosition);
+
+            JSONObject object = new JSONObject();
+            JSONObject toSend = new JSONObject();
+
+            try {
+                object.accumulate("completed", true);
+                toSend.accumulate("exercise_session", object);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            GetFitServerRequest.with(context)
+                    .authorize()
+                    .objects(toSend)
+                    .listener(new OnRequestPerformedListener() {
+                        @Override
+                        public void onRequestPerformedListener(Object... objects) {
+                        }
+                    })
+                    .updateExercise(((TrainingPart) trainings.get(mPosition).second.second).getId())
+                    .perform();
+
             trainings.remove(mPosition);
             mAdapter.notifyItemRemoved(mPosition);
             for(int i = 0; i < trainings.size(); i++) {
                 if(trainings.get(i).second.first == SPACE) {
-                    trainings.add(i + 1, new Pair<>(trainings.size() + inc, new Pair<>(DONE, obj.second.second)));
-                    notifyItemInserted(i + 1);
+                    int index = i + 1;
+                    for(int j = i + 1; j < trainings.size(); j++) {
+                        if(trainings.get(j).second.first == DONE) {
+                            if(((TrainingPart) trainings.get(j).second.second).getNumber() < ((TrainingPart) obj.second.second).getNumber()) {
+                                index++;
+                            }
+                        }
+                    }
+                    trainings.add(index, new Pair<>(trainings.size() + inc, new Pair<>(DONE, obj.second.second)));
+                    notifyItemInserted(index);
                     inc++;
                     break;
                 }

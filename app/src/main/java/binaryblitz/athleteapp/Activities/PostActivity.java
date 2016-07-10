@@ -1,10 +1,12 @@
 package binaryblitz.athleteapp.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -73,6 +75,36 @@ public class PostActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                     return;
                 }
 
+                if(GetFitServerRequest.with(PostActivity.this).isAuthorized()) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!isFinishing()) {
+                                new AlertDialog.Builder(PostActivity.this)
+                                        .setTitle(getString(R.string.title_str))
+                                        .setMessage(getString(R.string.reg_alert_str))
+                                        .setCancelable(false)
+                                        .setPositiveButton(getString(R.string.cont_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent intent = new Intent(PostActivity.this, AuthActivity.class);
+                                                startActivity(intent);
+                                            }
+                                        })
+                                        .setNegativeButton(getString(R.string.cancel_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }
+                    });
+
+                    return;
+                }
+
                 final ProgressDialog dialog = new ProgressDialog();
                 dialog.show(getFragmentManager(), "athleteapp");
 
@@ -99,9 +131,8 @@ public class PostActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                             public void onRequestPerformedListener(Object... objects) {
                                 dialog.dismiss();
 
-                                Log.e("qwerty", objects[0].toString());
-
                                 if (objects[0].equals("Internet")) {
+                                    cancelRequest();
                                     return;
                                 }
                                 ((EditText) findViewById(R.id.editText)).setText("");
@@ -185,9 +216,9 @@ public class PostActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                 .listener(new OnRequestPerformedListener() {
                     @Override
                     public void onRequestPerformedListener(Object... objects) {
-                        Log.e("qwerty", objects[0].toString());
                         layout.setRefreshing(false);
                         if (objects[0].equals("Internet")) {
+                            cancelRequest();
                             return;
                         }
                         if (objects[0].equals("Error")) {
@@ -200,11 +231,28 @@ public class PostActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                         ((TextView) findViewById(R.id.textView3)).setText(Integer.toString(post.getLikeCount()));
                         ((TextView) findViewById(R.id.textView4)).setText(Integer.toString(post.getCommentsCount()));
 
+                        if(post.getProgramName() == null) {
+                            findViewById(R.id.program).setVisibility(View.GONE);
+                        } else {
+                            findViewById(R.id.program).setVisibility(View.VISIBLE);
+                            findViewById(R.id.program).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(PostActivity.this, ProgramActivity.class);
+                                    intent.putExtra("id", post.getProgramId());
+                                    startActivity(intent);
+                                }
+                            });
+                            ((TextView) findViewById(R.id.textView123)).setText(post.getProgramName());
+                            ((TextView) findViewById(R.id.textView6)).setText(post.getProgramPrice());
+                            ((TextView) findViewById(R.id.textView2123)).setText(post.getProgramType() + ", " + post.getProgramWorkouts());
+                        }
+
                         Picasso.with(PostActivity.this)
                                 .load(post.getUserPhotoUrl())
                                 .into(((ImageView) findViewById(R.id.imageView)));
 
-                        if(post.getPhotoUrl() == null || post.getPhotoUrl().equals("No photo")) {
+                        if(post.getPhotoUrl() == null) {
                             ((ImageView) findViewById(R.id.imageView2)).setVisibility(View.GONE);
                         } else {
                             ((ImageView) findViewById(R.id.imageView2)).setVisibility(View.VISIBLE);
@@ -241,7 +289,7 @@ public class PostActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                             }
                         });
 
-                        ((TextView) findViewById(R.id.textView5)).setText(DateUtils.getDateStringRepresentationForNews(post.getDate()));
+                        ((TextView) findViewById(R.id.textView5)).setText(DateUtils.getDateStringRepresentationForNews(post.getDate(), PostActivity.this));
 
                         if(post.isLiked()) {
                             ((ImageView) findViewById(R.id.imageView3)).setImageResource(R.drawable.like_filled);
@@ -261,7 +309,9 @@ public class PostActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                                             .listener(new OnRequestPerformedListener() {
                                                 @Override
                                                 public void onRequestPerformedListener(Object... objects) {
-
+                                                    if (objects[0].equals("Internet")) {
+                                                        cancelRequest();
+                                                    }
                                                 }
                                             })
                                             .deleteLike(post.getLikeId())
@@ -275,6 +325,9 @@ public class PostActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                                             .listener(new OnRequestPerformedListener() {
                                                 @Override
                                                 public void onRequestPerformedListener(Object... objects) {
+                                                    if (objects[0].equals("Internet")) {
+                                                        cancelRequest();
+                                                    }
                                                 }
                                             })
                                             .like(post.getId())
@@ -297,7 +350,9 @@ public class PostActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                                             .listener(new OnRequestPerformedListener() {
                                                 @Override
                                                 public void onRequestPerformedListener(Object... objects) {
-
+                                                    if (objects[0].equals("Internet")) {
+                                                        cancelRequest();
+                                                    }
                                                 }
                                             })
                                             .deleteLike(post.getLikeId())
@@ -311,6 +366,9 @@ public class PostActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                                             .listener(new OnRequestPerformedListener() {
                                                 @Override
                                                 public void onRequestPerformedListener(Object... objects) {
+                                                    if (objects[0].equals("Internet")) {
+                                                        cancelRequest();
+                                                    }
                                                 }
                                             })
                                             .like(post.getId())
@@ -332,7 +390,9 @@ public class PostActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                     @Override
                     public void onRequestPerformedListener(Object... objects) {
                         try {
-
+                            if (objects[0].equals("Internet")) {
+                                cancelRequest();
+                            }
                             JSONArray array = (JSONArray) objects[0];
                             ArrayList<Comment> comments = new ArrayList<>();
 
@@ -373,11 +433,6 @@ public class PostActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                 })
                 .getComments(id)
                 .perform();
-    }
-
-    @Override
-    public void cancelRequest() {
-        Snackbar.make(findViewById(R.id.main), R.string.lost_connection_str, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

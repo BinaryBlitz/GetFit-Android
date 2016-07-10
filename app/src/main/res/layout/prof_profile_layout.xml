@@ -12,6 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:id="@+id/main"
     android:background="#e1e1e1">
 
     <android.support.design.widget.AppBarLayout
@@ -48,12 +49,15 @@
                         android:layout_width="fill_parent"
                         android:layout_height="150dp"
                         android:id="@+id/imageView2"
-                        android:scaleType="centerCrop" />
+                        android:scaleType="centerCrop"
+                        android:background="@color/accent_color" />
 
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
-                        android:background="@drawable/white_gradient">
+                        android:background="@drawable/white_gradient"
+                        android:visibility="gone"
+                        android:id="@+id/gradient">
 
                     </FrameLayout>
 
@@ -65,8 +69,9 @@
                         android:layout_height="88dp"
                         android:layout_gravity="left|bottom"
                         android:layout_marginLeft="16dp"
-                        android:scaleType="centerCrop"
-                        android:layout_marginBottom="6dp" />
+                        android:scaleType="centerInside"
+                        android:layout_marginBottom="6dp"
+                        android:background="@drawable/avatar_place_holder" />
 
                     <FrameLayout
                         android:layout_width="100dp"
@@ -89,7 +94,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="FOLLOW"
+                            android:text="@string/follow"
                             android:id="@+id/textView6"
                             android:layout_gravity="left|center_vertical"
                             android:textColor="@color/accent_color"
@@ -130,7 +135,8 @@
                     android:autoText="false"
                     android:background="#ffffff"
                     android:paddingLeft="16dp"
-                    android:paddingRight="16dp" />
+                    android:paddingRight="16dp"
+                    android:singleLine="true" />
 
                 <binaryblitz.athleteapp.Custom.RobotoTextView
                     android:layout_width="fill_parent"
@@ -229,7 +235,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="40dp"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="GET PERSONAL TRAINING"
+                    android:text="@string/get_personal_training"
                     android:id="@+id/textView10"
                     android:gravity="center"
                     android:background="@color/accent_color"
@@ -269,7 +275,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Profile"
+                        android:text="@string/profile_str"
                         android:layout_gravity="center_vertical"
                         android:id="@+id/date_text_view"
                         android:textAllCaps="false"

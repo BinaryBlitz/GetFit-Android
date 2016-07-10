@@ -3,10 +3,12 @@ package binaryblitz.athleteapp.Utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
@@ -14,6 +16,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 
 import com.nineoldandroids.view.ViewPropertyAnimator;
+
+import java.io.ByteArrayOutputStream;
 
 import binaryblitz.athleteapp.CircularReveal.animation.SupportAnimator;
 import binaryblitz.athleteapp.CircularReveal.animation.ViewAnimationUtils;
@@ -23,6 +27,13 @@ public class AndroidUtils {
     public static void hideKeyboard(View v) {
         InputMethodManager imm = (InputMethodManager) v.getContext().getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    public static String encodeToBase64(Bitmap image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
     public int getStatusBarHeight(Context context) {

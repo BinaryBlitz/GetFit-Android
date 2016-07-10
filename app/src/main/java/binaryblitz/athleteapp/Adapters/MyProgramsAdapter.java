@@ -28,27 +28,10 @@ public class MyProgramsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.context = context;
 
         collection = new ArrayList<>();
-//
-//        collection.add(new Program("1", "Intensive training program for your body", "photo", R.drawable.test2, "65", "Cardio", 5,
-//                "Who has taken an extended leave of absence from training?",
-//                "40", 159, 5, "Mike Silvestri", "1"));
-//        collection.get(0).setUserPhotoResId(R.drawable.test10);
-//        collection.add(new Program("1", "Intensive training program for your body", "photo", R.drawable.test3, "65", "Cardio", 5,
-//                "Who has taken an extended leave of absence from training?",
-//                "40", 159, 5, "Mike Silvestri", "1"));
-//        collection.get(1).setUserPhotoResId(R.drawable.test10);
-//        collection.add(new Program("1", "Intensive training program for your body", "photo", R.drawable.test4, "65", "Cardio", 5,
-//                "Who has taken an extended leave of absence from training?",
-//                "40", 159, 5, "Mike Silvestri", "1"));
-//        collection.get(2).setUserPhotoResId(R.drawable.test10);
-//        collection.add(new Program("1", "Intensive training program for your body", "photo", R.drawable.test5, "65", "Cardio", 5,
-//                "Who has taken an extended leave of absence from training?",
-//                "40", 159, 5, "Mike Silvestri", "1"));
-//        collection.get(3).setUserPhotoResId(R.drawable.test10);
-//        collection.add(new Program("1", "Intensive training program for your body", "photo", R.drawable.test6, "65", "Cardio", 5,
-//                "Who has taken an extended leave of absence from training?",
-//                "40", 159, 5, "Mike Silvestri", "1"));
-//        collection.get(4).setUserPhotoResId(R.drawable.test10);
+    }
+
+    public void setCollection(ArrayList<Program> collection) {
+        this.collection = collection;
     }
 
     public void setContext(Activity context) {
@@ -68,21 +51,31 @@ public class MyProgramsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         final NewsViewHolder holder = (NewsViewHolder) viewHolder;
 
+        final Program program = collection.get(position);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ProgramActivity.class);
+                intent.putExtra("id", program.getId());
                 context.startActivity(intent);
             }
         });
-
-        final Program program = collection.get(position);
 
         holder.user_name.setText(program.getTrainerName());
         holder.name.setText(program.getName());
         holder.post_desc.setText(program.getDesc());
         holder.like_count.setText(Double.toString(program.getStarCount()));
         holder.text_count.setText(Integer.toString(program.getUserCount()));
+
+        if(program.getUserPhotoUrl() == null || program.getUserPhotoUrl().equals("No photo")) {
+            holder.user_avatar.setVisibility(View.GONE);
+        } else {
+            holder.user_avatar.setVisibility(View.VISIBLE);
+            Picasso.with(context)
+                    .load(program.getUserPhotoUrl())
+                    .into(holder.user_avatar);
+        }
 
         if(program.getPhotoUrl() == null || program.getPhotoUrl().equals("No photo")) {
             holder.post_photo.setVisibility(View.GONE);
@@ -93,10 +86,9 @@ public class MyProgramsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     .into(holder.post_photo);
         }
 
-        holder.date.setText(program.getTime() + " MIN");
+        holder.date.setText(program.getType().toUpperCase());
 
-        holder.type.setText(program.getType() + ", ");
-        holder.ex_count.setText(program.getCount() + " exercises");
+        holder.ex_count.setText(program.getCount() + context.getString(R.string.workouts_str));
     }
 
     @Override

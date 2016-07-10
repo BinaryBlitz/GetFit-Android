@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<binaryblitz.athleteapp.CircularReveal.widget.RevealFrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main">
 
-    <FrameLayout
+    <binaryblitz.athleteapp.CircularReveal.widget.RevealFrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <android.support.design.widget.AppBarLayout
@@ -61,17 +62,17 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="56dp"
             android:background="#ffffff">
 
             <binaryblitz.athleteapp.Custom.RobotoTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
                 android:id="@+id/textView25"
                 android:layout_gravity="left|top"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="76dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
                 android:textColor="@color/dark_text_color"
                 android:textSize="16sp" />
@@ -103,14 +104,13 @@
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="WEIGHT, KG"
                         android:id="@+id/textView26"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textColor="@color/grey_text_color" />
 
                     <binaryblitz.athleteapp.Custom.BoldRobotoTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="80"
                         android:id="@+id/textView27"
                         android:layout_marginTop="24dp"
                         android:textColor="@color/dark_text_color"
@@ -142,7 +142,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="4"
                         android:id="@+id/textView27hghg"
                         android:layout_marginTop="24dp"
                         android:textColor="@color/dark_text_color"
@@ -177,7 +176,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="80"
                         android:id="@+id/textView27dsds"
                         android:layout_marginTop="24dp"
                         android:textColor="@color/dark_text_color"
@@ -211,7 +209,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="80"
                         android:id="@+id/textView27fdfd"
                         android:layout_marginTop="24dp"
                         android:textColor="@color/dark_text_color"
@@ -241,14 +238,13 @@
                 android:layout_marginBottom="56dp"
                 android:id="@+id/video">
                 <include layout="@layout/video_card" />
-                <include layout="@layout/video_card" />
             </LinearLayout>
         </LinearLayout>
         <binaryblitz.athleteapp.Custom.BoldRobotoTextView
             android:layout_width="fill_parent"
             android:layout_height="56dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="EXERCISE DONE"
+            android:text="@string/exercise_done"
             android:id="@+id/textView16trtr"
             android:gravity="center"
             android:textColor="#ffffff"
@@ -258,7 +254,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
-    </FrameLayout>
+    </binaryblitz.athleteapp.CircularReveal.widget.RevealFrameLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" android:layout_width="match_parent"
@@ -291,22 +287,14 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/scrollView" >
 
-                    <binaryblitz.athleteapp.Custom.BoldRobotoTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="1. Check out your pulse \n\n2. Check out your breathe \n\n3. Make a 3 minute rest after each exercise \n\n4. Dring 2 glasses of water during this set"
-                        android:id="@+id/textView18"
-                        android:textColor="@color/dark_text_color"
-                        android:textSize="24sp"
-                        android:paddingLeft="16dp"
-                        android:paddingTop="16dp"
-                        android:textAllCaps="true"
-                        android:paddingRight="16dp"
-                        android:paddingBottom="16dp" />
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/tips"></LinearLayout>
                 </ScrollView>
             </FrameLayout>
         </FrameLayout>
 
     </RelativeLayout>
-</FrameLayout>
+</binaryblitz.athleteapp.CircularReveal.widget.RevealFrameLayout>

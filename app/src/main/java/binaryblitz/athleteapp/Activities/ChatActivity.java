@@ -2,6 +2,7 @@ package binaryblitz.athleteapp.Activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +24,7 @@ import com.gun0912.tedpicker.Config;
 import com.gun0912.tedpicker.ImagePickerActivity;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -33,7 +36,9 @@ import java.util.TimeZone;
 
 import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.Adapters.ChatAdapter;
+import binaryblitz.athleteapp.Data.Chat;
 import binaryblitz.athleteapp.Data.Message;
+import binaryblitz.athleteapp.Data.SubscriptionsSet;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Server.GetFitServerRequest;
 import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
@@ -56,6 +61,18 @@ public class ChatActivity extends BaseActivity {
 
         Intent intent = new Intent(ChatActivity.this, ImagePickerActivity.class);
         startActivityForResult(intent, 13);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        timer.start();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        timer.cancel();
     }
 
     @Override
@@ -108,17 +125,14 @@ public class ChatActivity extends BaseActivity {
                     return;
                 }
 
-                if(!AndroidUtils.isConnected(ChatActivity.this)) {
-                    Snackbar.make(findViewById(R.id.main), "Отсутствует интернет подключение.", Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
-
                 GetFitServerRequest.with(ChatActivity.this)
                         .authorize()
                         .listener(new OnRequestPerformedListener() {
                             @Override
                             public void onRequestPerformedListener(Object... objects) {
-
+                                if (objects[0].equals("Internet")) {
+                                    cancelRequest();
+                                }
                             }
                         })
                         .sendMessage(id, null, ((EditText) findViewById(R.id.editText)).getText().toString())
@@ -132,45 +146,165 @@ public class ChatActivity extends BaseActivity {
             }
         });
 
-        GetFitServerRequest.with(this)
-                .authorize()
-                .listener(new OnRequestPerformedListener() {
-                    @Override
-                    public void onRequestPerformedListener(Object... objects) {
-                        Log.e("qwerty", objects[0].toString());
+        load();
 
-                        try {
-                            JSONArray array = (JSONArray) objects[0];
-                            ArrayList<Message> messages = new ArrayList<>();
-                            for(int i = 0; i < array.length(); i++) {
-                                JSONObject object = array.getJSONObject(i);
+        timer = new CountDownTimer(10000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
 
-                                Calendar start = Calendar.getInstance();
-                                try {
-                                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
-                                    format.setTimeZone(TimeZone.getTimeZone("UTC"));
-                                    Date date = format.parse(object.getString("created_at"));
-                                    start.setTime(date);
-                                } catch (Exception ignored) {}
+            }
+
+            @Override
+            public void onFinish() {
+                load();
+            }
+        };
+    }
+
+    public void scroll() {
+        view.scrollToPosition(adapter.getItemCount() - 1);
+    }
+
+    private void load() {
+        if(!id.equals("notif")) {
+            GetFitServerRequest.with(this)
+                    .authorize()
+                    .listener(new OnRequestPerformedListener() {
+                        @Override
+                        public void onRequestPerformedListener(Object... objects) {
+                            try {
+                                JSONArray array = (JSONArray) objects[0];
+                                if (adapter.getItemCount() == array.length() + 1) {
+                                    timer.cancel();
+                                    timer.start();
+                                    return;
+                                }
+
+                                if (objects[0].equals("AuthError")) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!isFinishing()) {
+                                                new AlertDialog.Builder(ChatActivity.this)
+                                                        .setTitle(getString(R.string.title_str))
+                                                        .setMessage(getString(R.string.reg_alert_str))
+                                                        .setCancelable(false)
+                                                        .setPositiveButton(getString(R.string.cont_upcase_str), new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                Intent intent = new Intent(ChatActivity.this, AuthActivity.class);
+                                                                startActivity(intent);
+                                                            }
+                                                        })
+                                                        .setNegativeButton(getString(R.string.cancel_upcase_str), new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                            }
+                                                        })
+                                                        .show();
+                                            }
+                                        }
+                                    });
+
+                                    return;
+                                }
+
+                                if (objects[0].equals("Internet")) {
+                                    cancelRequest();
+                                    return;
+                                }
+                                if (objects[0].equals("Error")) {
+                                    Snackbar.make(findViewById(R.id.main), R.string.error_try_str, Snackbar.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                ArrayList<Message> messages = new ArrayList<>();
+                                for (int i = 0; i < array.length(); i++) {
+                                    JSONObject object = array.getJSONObject(i);
+
+                                    Calendar start = Calendar.getInstance();
+                                    try {
+                                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+                                        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                        Date date = format.parse(object.getString("created_at"));
+                                        start.setTime(date);
+                                    } catch (Exception ignored) {
+                                    }
 
 
-                                messages.add(0, new Message(
-                                        object.getString("id"),
-                                        object.getString("content"),
-                                        start,
-                                        object.isNull("image_url") ? null : object.getString("image_url"),
-                                        object.getString("category").equals("user"),
-                                        object.isNull("image_url") ? null : object.getString("image_url")
-                                ));
+                                    messages.add(0, new Message(
+                                            object.getString("id"),
+                                            object.getString("content"),
+                                            start,
+                                            object.isNull("image_url") ? null : object.getString("image_url"),
+                                            object.getString("category").equals("user"),
+                                            object.isNull("image_url") ? null : object.getString("image_url")
+                                    ));
+                                }
+                                adapter.setCollection(messages);
+                                adapter.notifyDataSetChanged();
+
+                                scroll();
+                                timer.cancel();
+                                timer.start();
+                            } catch (Exception ignored) {
                             }
-                            adapter.setCollection(messages);
-                            adapter.notifyDataSetChanged();
-                        } catch (Exception e) {
                         }
-                    }
-                })
-                .messages(id)
-                .perform();
+                    })
+                    .messages(id)
+                    .perform();
+        } else {
+
+            GetFitServerRequest.with(this)
+                    .authorize()
+                    .listener(new OnRequestPerformedListener() {
+                        @Override
+                        public void onRequestPerformedListener(Object... objects) {
+                            try {
+                                if (objects[0].equals("Internet")) {
+                                    cancelRequest();
+                                    return;
+                                }
+                                if (objects[0].equals("Error")) {
+                                    Snackbar.make(findViewById(R.id.main), R.string.error_try_str, Snackbar.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                JSONArray array = (JSONArray) objects[0];
+
+                                ArrayList<Message> messages = new ArrayList<>();
+                                for (int i = 0; i < array.length(); i++) {
+                                    JSONObject object = array.getJSONObject(i);
+
+                                    Calendar start = Calendar.getInstance();
+                                    try {
+                                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+                                        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+                                        Date date = format.parse(object.getString("created_at"));
+                                        start.setTime(date);
+                                    } catch (Exception ignored) {
+                                    }
+
+                                    messages.add(0, new Message(
+                                            object.getString("id"),
+                                            object.getString("content"),
+                                            start,
+                                            object.isNull("image_url") ? null : object.getString("image_url"),
+                                            false,
+                                            object.isNull("image_url") ? null : object.getString("image_url")
+                                    ));
+                                }
+                                adapter.setCollection(messages);
+                                adapter.notifyDataSetChanged();
+
+                            } catch (Exception ignored) {
+
+                            }
+                        }
+                    })
+                    .notifications()
+                    .perform();
+        }
     }
 
     @Override
@@ -190,7 +324,9 @@ public class ChatActivity extends BaseActivity {
                             .listener(new OnRequestPerformedListener() {
                                 @Override
                                 public void onRequestPerformedListener(Object... objects) {
-
+                                    if (objects[0].equals("Internet")) {
+                                        cancelRequest();
+                                    }
                                 }
                             })
                             .sendMessage(id, photo.toString(), null)

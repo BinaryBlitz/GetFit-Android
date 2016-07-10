@@ -1,15 +1,24 @@
 package binaryblitz.athleteapp.Activities;
 
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,12 +26,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.vending.billing.IInAppBillingService;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,6 +47,7 @@ import java.util.TimeZone;
 import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.Custom.ProgressDialog;
 import binaryblitz.athleteapp.Custom.RaitingDialog;
+import binaryblitz.athleteapp.Data.MyProgramsSet;
 import binaryblitz.athleteapp.Data.Post;
 import binaryblitz.athleteapp.Data.Professional;
 import binaryblitz.athleteapp.Data.ProfessionalType;
@@ -64,10 +77,38 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
 
     private String subscriptionId = null;
 
+    IInAppBillingService mService;
+
+    ServiceConnection mServiceConn = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name,
+                                       IBinder service) {
+            mService = IInAppBillingService.Stub.asInterface(service);
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mService != null) {
+            unbindService(mServiceConn);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prof_profile_layout);
+
+        Intent serviceIntent =
+                new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        serviceIntent.setPackage("com.android.vending");
+        bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -128,6 +169,34 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
         vBgLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (GetFitServerRequest.with(ProfProfileActivity.this).isAuthorized()) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!isFinishing()) {
+                                new AlertDialog.Builder(ProfProfileActivity.this)
+                                        .setTitle(getString(R.string.title_str))
+                                        .setMessage(getString(R.string.reg_alert_str))
+                                        .setCancelable(false)
+                                        .setPositiveButton(getString(R.string.cont_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent intent = new Intent(ProfProfileActivity.this, AuthActivity.class);
+                                                startActivity(intent);
+                                            }
+                                        })
+                                        .setNegativeButton(getString(R.string.cancel_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }
+                    });
+
+                    return;
+                }
                 final ProgressDialog dialog = new ProgressDialog();
                 dialog.show(getFragmentManager(), "atheleteapp");
 
@@ -137,13 +206,16 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
                             .listener(new OnRequestPerformedListener() {
                                 @Override
                                 public void onRequestPerformedListener(Object... objects) {
-                                    Log.e("qwerty", objects[0].toString());
                                     dialog.dismiss();
-
+                                    if (objects[0].equals("Internet")) {
+                                        cancelRequest();
+                                        return;
+                                    }
                                     try {
                                         followId = ((JSONObject) objects[0]).getString("id");
                                         following = true;
-                                    } catch (Exception ignored) {}
+                                    } catch (Exception ignored) {
+                                    }
                                     userCount++;
                                     ((TextView) findViewById(R.id.textView4)).setText(Integer.toString(userCount));
                                     vBgLike.setBackgroundResource(R.drawable.blue_btn);
@@ -160,6 +232,10 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
                                 @Override
                                 public void onRequestPerformedListener(Object... objects) {
                                     dialog.dismiss();
+                                    if (objects[0].equals("Internet")) {
+                                        cancelRequest();
+                                        return;
+                                    }
                                     userCount--;
                                     followId = null;
                                     following = false;
@@ -177,20 +253,70 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
             }
         });
 
-        findViewById(R.id.imageView3).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.textView3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (GetFitServerRequest.with(ProfProfileActivity.this).isAuthorized()) {
+                    ProfProfileActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!ProfProfileActivity.this.isFinishing()) {
+                                new AlertDialog.Builder(ProfProfileActivity.this)
+                                        .setTitle(ProfProfileActivity.this.getString(R.string.title_str))
+                                        .setMessage(ProfProfileActivity.this.getString(R.string.reg_alert_str))
+                                        .setCancelable(false)
+                                        .setPositiveButton(ProfProfileActivity.this.getString(R.string.cont_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent intent = new Intent(ProfProfileActivity.this, AuthActivity.class);
+                                                ProfProfileActivity.this.startActivity(intent);
+                                            }
+                                        })
+                                        .setNegativeButton(ProfProfileActivity.this.getString(R.string.cancel_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }
+                    });
+
+                    return;
+                }
+
+                try {
+                    if (SubscriptionsSet.load().get(id) == null) {
+                        new AlertDialog.Builder(ProfProfileActivity.this)
+                                .setTitle(ProfProfileActivity.this.getString(R.string.title_str))
+                                .setMessage(getString(R.string.rating_error_str))
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.ok_str, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .show();
+
+                        return;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 RaitingDialog dialog = new RaitingDialog();
                 dialog.setListener(new RaitingDialog.OnRateDialogFinished() {
                     @Override
                     public void OnRateDialogFinished(float rating) {
+
                         JSONObject object = new JSONObject();
 
                         try {
                             object.accumulate("value", (int) rating);
                             object.accumulate("content", "Gut");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        } catch (Exception e) {
                         }
 
                         JSONObject toSend = new JSONObject();
@@ -201,16 +327,55 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
                             e.printStackTrace();
                         }
 
-                        GetFitServerRequest.with(ProfProfileActivity.this)
-                                .authorize()
-                                .objects(toSend)
-                                .listener(new OnRequestPerformedListener() {
-                                    @Override
-                                    public void onRequestPerformedListener(Object... objects) {
-                                    }
-                                })
-                                .rateTrainer(id)
-                                .perform();
+                        if (object.isNull("rating_id")) {
+                            try {
+                                GetFitServerRequest.with(ProfProfileActivity.this)
+                                        .authorize()
+                                        .objects(toSend)
+                                        .listener(new OnRequestPerformedListener() {
+                                            @Override
+                                            public void onRequestPerformedListener(Object... objects) {
+                                                if (objects[0].equals("Internet")) {
+                                                    cancelRequest();
+                                                    return;
+                                                }
+                                                try {
+                                                    ((TextView) findViewById(R.id.textView3)).setText(new DecimalFormat("#.#", DecimalFormatSymbols.getInstance(Locale.US)).format(((JSONObject) objects[0]).getDouble("rating")));
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        })
+                                        .rateTrainer(object.getString("id"))
+                                        .perform();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            try {
+                                GetFitServerRequest.with(ProfProfileActivity.this)
+                                        .authorize()
+                                        .objects(toSend)
+                                        .listener(new OnRequestPerformedListener() {
+                                            @Override
+                                            public void onRequestPerformedListener(Object... objects) {
+                                                if (objects[0].equals("Internet")) {
+                                                    cancelRequest();
+                                                    return;
+                                                }
+                                                try {
+                                                    ((TextView) findViewById(R.id.textView3)).setText(new DecimalFormat("#.#", DecimalFormatSymbols.getInstance(Locale.US)).format(((JSONObject) objects[0]).getDouble("rating")));
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        })
+                                        .patchRating(object.getString("rating"))
+                                        .perform();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 });
 
@@ -218,20 +383,70 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
             }
         });
 
-        findViewById(R.id.textView3).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.imageView3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (GetFitServerRequest.with(ProfProfileActivity.this).isAuthorized()) {
+                    ProfProfileActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!ProfProfileActivity.this.isFinishing()) {
+                                new AlertDialog.Builder(ProfProfileActivity.this)
+                                        .setTitle(ProfProfileActivity.this.getString(R.string.title_str))
+                                        .setMessage(ProfProfileActivity.this.getString(R.string.reg_alert_str))
+                                        .setCancelable(false)
+                                        .setPositiveButton(ProfProfileActivity.this.getString(R.string.cont_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent intent = new Intent(ProfProfileActivity.this, AuthActivity.class);
+                                                ProfProfileActivity.this.startActivity(intent);
+                                            }
+                                        })
+                                        .setNegativeButton(ProfProfileActivity.this.getString(R.string.cancel_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }
+                    });
+
+                    return;
+                }
+
+                try {
+                    if (SubscriptionsSet.load().get(id) == null) {
+                        new AlertDialog.Builder(ProfProfileActivity.this)
+                                .setTitle(ProfProfileActivity.this.getString(R.string.title_str))
+                                .setMessage(getString(R.string.rating_error_str))
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.ok_str, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .show();
+
+                        return;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 RaitingDialog dialog = new RaitingDialog();
                 dialog.setListener(new RaitingDialog.OnRateDialogFinished() {
                     @Override
                     public void OnRateDialogFinished(float rating) {
+
                         JSONObject object = new JSONObject();
 
                         try {
                             object.accumulate("value", (int) rating);
                             object.accumulate("content", "Gut");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        } catch (Exception e) {
                         }
 
                         JSONObject toSend = new JSONObject();
@@ -242,16 +457,55 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
                             e.printStackTrace();
                         }
 
-                        GetFitServerRequest.with(ProfProfileActivity.this)
-                                .authorize()
-                                .objects(toSend)
-                                .listener(new OnRequestPerformedListener() {
-                                    @Override
-                                    public void onRequestPerformedListener(Object... objects) {
-                                    }
-                                })
-                                .rateTrainer(id)
-                                .perform();
+                        if (object.isNull("rating_id")) {
+                            try {
+                                GetFitServerRequest.with(ProfProfileActivity.this)
+                                        .authorize()
+                                        .objects(toSend)
+                                        .listener(new OnRequestPerformedListener() {
+                                            @Override
+                                            public void onRequestPerformedListener(Object... objects) {
+                                                if (objects[0].equals("Internet")) {
+                                                    cancelRequest();
+                                                    return;
+                                                }
+                                                try {
+                                                    ((TextView) findViewById(R.id.textView3)).setText(new DecimalFormat("#.#", DecimalFormatSymbols.getInstance(Locale.US)).format(((JSONObject) objects[0]).getDouble("rating")));
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        })
+                                        .rateTrainer(object.getString("id"))
+                                        .perform();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            try {
+                                GetFitServerRequest.with(ProfProfileActivity.this)
+                                        .authorize()
+                                        .objects(toSend)
+                                        .listener(new OnRequestPerformedListener() {
+                                            @Override
+                                            public void onRequestPerformedListener(Object... objects) {
+                                                if (objects[0].equals("Internet")) {
+                                                    cancelRequest();
+                                                    return;
+                                                }
+                                                try {
+                                                    ((TextView) findViewById(R.id.textView3)).setText(new DecimalFormat("#.#", DecimalFormatSymbols.getInstance(Locale.US)).format(((JSONObject) objects[0]).getDouble("rating")));
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        })
+                                        .patchRating(object.getString("rating"))
+                                        .perform();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 });
 
@@ -273,9 +527,12 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
                         try {
                             JSONObject object = (JSONObject) objects[0];
 
-                            Picasso.with(ProfProfileActivity.this)
-                                    .load(GetFitServerRequest.imagesUrl + object.getString("banner_url"))
-                                    .into((ImageView) findViewById(R.id.imageView2));
+                            if (!object.isNull("banner_url")) {
+                                Picasso.with(ProfProfileActivity.this)
+                                        .load(GetFitServerRequest.imagesUrl + object.getString("banner_url"))
+                                        .into((ImageView) findViewById(R.id.imageView2));
+                                findViewById(R.id.gradient).setVisibility(View.VISIBLE);
+                            }
 
                             Picasso.with(ProfProfileActivity.this)
                                     .load(GetFitServerRequest.imagesUrl + object.getString("avatar_url"))
@@ -316,11 +573,12 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
 
                             try {
                                 followId = object.getJSONObject("following_id").getString("id");
-                            } catch (Exception e) {}
+                            } catch (Exception e) {
+                            }
 
                             following = !object.isNull("following_id");
 
-                            if(following) {
+                            if (following) {
                                 vBgLike.setBackgroundResource(R.drawable.blue_btn);
                                 ivLike.setImageResource(R.drawable.done_ic);
                                 ((TextView) findViewById(R.id.textView6)).setTextColor(Color.WHITE);
@@ -340,12 +598,56 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
                             findViewById(R.id.imageView5).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    if(subscriptionId != null) {
+                                    if (GetFitServerRequest.with(ProfProfileActivity.this).isAuthorized()) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (!isFinishing()) {
+                                                    new AlertDialog.Builder(ProfProfileActivity.this)
+                                                            .setTitle(getString(R.string.title_str))
+                                                            .setMessage(getString(R.string.reg_alert_str))
+                                                            .setCancelable(false)
+                                                            .setPositiveButton(getString(R.string.cont_upcase_str), new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    Intent intent = new Intent(ProfProfileActivity.this, AuthActivity.class);
+                                                                    startActivity(intent);
+                                                                }
+                                                            })
+                                                            .setNegativeButton(getString(R.string.cancel_upcase_str), new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                                }
+                                                            })
+                                                            .show();
+                                                }
+                                            }
+                                        });
+
+                                        return;
+                                    }
+                                    if (subscriptionId != null) {
                                         Intent intent = new Intent(ProfProfileActivity.this, ChatActivity.class);
                                         intent.putExtra("id", subscriptionId);
                                         startActivity(intent);
                                     } else {
-
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (!isFinishing()) {
+                                                    new AlertDialog.Builder(ProfProfileActivity.this)
+                                                            .setTitle(getString(R.string.getfit_str))
+                                                            .setMessage(getString(R.string.messages_error_str))
+                                                            .setCancelable(false)
+                                                            .setPositiveButton(R.string.ok_str, new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                }
+                                                            }).show();
+                                                }
+                                            }
+                                        });
                                     }
                                 }
                             });
@@ -353,29 +655,53 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
                             findViewById(R.id.textView10).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    final ProgressDialog dialog = new ProgressDialog();
-                                    dialog.show(getFragmentManager(), "atheleteapp");
 
-                                    GetFitServerRequest.with(ProfProfileActivity.this)
-                                            .authorize()
-                                            .listener(new OnRequestPerformedListener() {
-                                                @Override
-                                                public void onRequestPerformedListener(Object... objects) {
-                                                    dialog.dismiss();
-                                                    try {
-                                                        subscriptionId = ((JSONObject) objects[0]).getString("id");
+                                    if (GetFitServerRequest.with(ProfProfileActivity.this).isAuthorized()) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (!isFinishing()) {
+                                                    new AlertDialog.Builder(ProfProfileActivity.this)
+                                                            .setTitle(getString(R.string.title_str))
+                                                            .setMessage(getString(R.string.reg_alert_str))
+                                                            .setCancelable(false)
+                                                            .setPositiveButton(getString(R.string.cont_upcase_str), new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    Intent intent = new Intent(ProfProfileActivity.this, AuthActivity.class);
+                                                                    startActivity(intent);
+                                                                }
+                                                            })
+                                                            .setNegativeButton(getString(R.string.cancel_upcase_str), new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
 
-                                                        SubscriptionsSet.load().add(new SubscriptionsSet.Subscription(
-                                                                subscriptionId,
-                                                                id
-                                                        ));
-                                                    } catch (Exception e) {
-
-                                                    }
+                                                                }
+                                                            })
+                                                            .show();
                                                 }
-                                            })
-                                            .subscript(id)
-                                            .perform();
+                                            }
+                                        });
+
+                                        return;
+                                    }
+
+                                    Bundle buyIntentBundle = null;
+                                    try {
+                                        buyIntentBundle = mService.getBuyIntent(3, getPackageName(),
+                                                "android.test.purchased", "inapp", "bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ");
+                                    } catch (RemoteException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
+                                    try {
+                                        startIntentSenderForResult(pendingIntent.getIntentSender(),
+                                                1001, new Intent(), Integer.valueOf(0), Integer.valueOf(0),
+                                                Integer.valueOf(0));
+                                    } catch (IntentSender.SendIntentException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             });
                         } catch (Exception e) {
@@ -393,7 +719,10 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
                     @Override
                     public void onRequestPerformedListener(Object... objects) {
                         ArrayList<Program> collection = new ArrayList<>();
-
+                        if (objects[0].equals("Internet")) {
+                            cancelRequest();
+                            return;
+                        }
                         try {
                             JSONArray array = (JSONArray) objects[0];
 
@@ -412,7 +741,8 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
                                         object.getJSONObject("trainer").getString("first_name") + " " +
                                                 object.getJSONObject("trainer").getString("last_name"),
                                         object.getJSONObject("trainer").getString("id"),
-                                        GetFitServerRequest.baseUrl + object.getString("banner_url")
+                                        GetFitServerRequest.baseUrl + object.getString("banner_url"),
+                                        object.isNull("rating_id") ? null : object.getString("rating")
                                 );
                                 program.setUserPhotoUrl(GetFitServerRequest.baseUrl +
                                         object.getJSONObject("trainer").getString("avatar_url"));
@@ -433,7 +763,10 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
                     @Override
                     public void onRequestPerformedListener(Object... objects) {
                         ArrayList<Post> news = new ArrayList<>();
-
+                        if (objects[0].equals("Internet")) {
+                            cancelRequest();
+                            return;
+                        }
                         try {
                             JSONArray array = (JSONArray) objects[0];
 
@@ -446,7 +779,8 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
                                     format.setTimeZone(TimeZone.getTimeZone("UTC"));
                                     Date date = format.parse(object.getString("updated_at"));
                                     start.setTime(date);
-                                } catch (Exception ignored) {}
+                                } catch (Exception ignored) {
+                                }
 
                                 news.add(new Post(
                                         object.getString("id"),
@@ -459,14 +793,14 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
                                         start,
                                         object.getInt("likes_count"),
                                         object.getInt("comments_count"),
-                                        object.getString("like_id"),
+                                        object.isNull("like_id") ? "" : object.getString("like_id"),
                                         !object.isNull("like_id")));
                             }
 
                             Collections.sort(news, new Comparator<Post>() {
                                 @Override
                                 public int compare(Post lhs, Post rhs) {
-                                    if(lhs.getDate().before(rhs.getDate())) {
+                                    if (lhs.getDate().before(rhs.getDate())) {
                                         return 1;
                                     } else {
                                         return -1;
@@ -485,14 +819,57 @@ public class ProfProfileActivity extends BaseActivity implements SwipeRefreshLay
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1001) {
+            int responseCode = data.getIntExtra("RESPONSE_CODE", 0);
+            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+            String dataSignature = data.getStringExtra("INAPP_DATA_SIGNATURE");
+
+            if (resultCode == RESULT_OK) {
+
+                final ProgressDialog dialog = new ProgressDialog();
+                dialog.show(getFragmentManager(), "atheleteapp");
+
+                GetFitServerRequest.with(ProfProfileActivity.this)
+                        .authorize()
+                        .listener(new OnRequestPerformedListener() {
+                            @Override
+                            public void onRequestPerformedListener(Object... objects) {
+                                dialog.dismiss();
+                                if (objects[0].equals("Internet")) {
+                                    cancelRequest();
+                                    return;
+                                }
+                                try {
+                                    subscriptionId = ((JSONObject) objects[0]).getString("id");
+
+                                    SubscriptionsSet.load().add(new SubscriptionsSet.Subscription(
+                                            subscriptionId,
+                                            id
+                                    ));
+
+                                    Intent intent = new Intent(ProfProfileActivity.this, QuestionsActivity.class);
+                                    startActivity(intent);
+                                } catch (Exception e) {
+
+                                }
+                            }
+                        })
+                        .subscript(id)
+                        .perform();
+            }
+        }
+    }
+
+    @Override
     public void onRefresh() {
         load();
     }
 
     private class NavigationAdapter extends FragmentPagerAdapter {
 
-        String[] TITLES = {"PROGRAMS",
-                "NEWS"};
+        String[] TITLES = {getString(R.string.programs_upcase_str),
+                getString(R.string.news_upcase_str)};
 
         public NavigationAdapter(FragmentManager fm) {
             super(fm);

@@ -5,7 +5,7 @@
     <binaryblitz.athleteapp.Custom.BoldRobotoTextView android:layout_width="fill_parent"
         android:layout_height="56dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="UNLOCK"
+        android:text="@string/unlock"
         android:id="@+id/textView16"
         android:gravity="center"
         android:textColor="#ffffff"

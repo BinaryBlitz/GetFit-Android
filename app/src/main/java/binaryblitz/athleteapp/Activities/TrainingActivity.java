@@ -3,11 +3,14 @@ package binaryblitz.athleteapp.Activities;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
@@ -16,14 +19,22 @@ import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.SwipeDismissItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.Adapters.TrainingPartsAdapter;
+import binaryblitz.athleteapp.Custom.ProgressDialog;
 import binaryblitz.athleteapp.Data.Training;
 import binaryblitz.athleteapp.Data.TrainingPart;
 import binaryblitz.athleteapp.R;
+import binaryblitz.athleteapp.Server.GetFitServerRequest;
+import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
 import binaryblitz.athleteapp.Utils.AndroidUtils;
 
 public class TrainingActivity extends BaseActivity {
@@ -32,9 +43,14 @@ public class TrainingActivity extends BaseActivity {
     private RecyclerViewSwipeManager mRecyclerViewSwipeManager;
     private RecyclerViewTouchActionGuardManager mRecyclerViewTouchActionGuardManager;
 
-    private static Training parent;
+    public static Training parent;
     private static ArrayList<TrainingPart> parts;
     private TrainingPartsAdapter myItemAdapter;
+
+    public static String trainerName = "";
+    public static String trainerId = "";
+    public static String desc = "";
+    public static String trainerAvatarUrl = "";
 
     public static boolean FLAG = false;
 
@@ -54,7 +70,17 @@ public class TrainingActivity extends BaseActivity {
         trainings.add(new Pair<>(3, new Pair<>(TrainingPartsAdapter.SPACE, null)));
 
         for(int i = 0; i < parts.size(); i++) {
-            trainings.add(new Pair<>(4 + i, new Pair<>(TrainingPartsAdapter.BASIC, (Object)parts.get(i))));
+            if(parts.get(i).isCompleted()) {
+                trainings.add(new Pair<>(4 + i, new Pair<>(TrainingPartsAdapter.DONE, (Object) parts.get(i))));
+            }
+        }
+
+        trainings.add(new Pair<>(3, new Pair<>(TrainingPartsAdapter.SPACE, null)));
+
+        for(int i = 0; i < parts.size(); i++) {
+            if(!parts.get(i).isCompleted()) {
+                trainings.add(new Pair<>(4 + i, new Pair<>(TrainingPartsAdapter.BASIC, (Object) parts.get(i))));
+            }
         }
 
         trainings.add(new Pair<>(4 + parts.size(), new Pair<>(TrainingPartsAdapter.FOOTER, null)));
@@ -73,6 +99,8 @@ public class TrainingActivity extends BaseActivity {
                 finish();
             }
         });
+
+        parts = new ArrayList<>();
 
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -125,7 +153,9 @@ public class TrainingActivity extends BaseActivity {
         findViewById(R.id.empty).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AndroidUtils.animateRevealHide(findViewById(R.id.dialog));
+                if(parent.getTips() != null) {
+                    AndroidUtils.animateRevealHide(findViewById(R.id.dialog));
+                }
             }
         });
 
@@ -133,15 +163,41 @@ public class TrainingActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 new MaterialDialog.Builder(TrainingActivity.this)
-                        .title("End part")
-                        .content("Are you sure?")
-                        .positiveText("Yes")
-                        .negativeText("No")
+                        .title(R.string.end_part_str)
+                        .content(getString(R.string.are_you_sure_str))
+                        .positiveText(getString(R.string.yes_str))
+                        .negativeText(getString(R.string.no_str))
                         .callback(new MaterialDialog.ButtonCallback() {
                             @Override
                             public void onPositive(MaterialDialog dialog) {
                                 CalendarActivity.DONE = true;
-                                finish();
+                                final ProgressDialog dialog1 = new ProgressDialog();
+                                dialog1.show(getFragmentManager(), "atheleteapp");
+                                JSONObject object = new JSONObject();
+                                JSONObject toSend = new JSONObject();
+
+                                try {
+                                    object.accumulate("completed", true);
+                                    toSend.accumulate("workout_session", object);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                GetFitServerRequest.with(TrainingActivity.this)
+                                        .authorize()
+                                        .objects(toSend)
+                                        .listener(new OnRequestPerformedListener() {
+                                            @Override
+                                            public void onRequestPerformedListener(Object... objects) {
+                                                if (objects[0].equals("Internet")) {
+                                                    cancelRequest();
+                                                    return;
+                                                }
+                                                finish();
+                                            }
+                                        })
+                                        .completeWorkout(getIntent().getStringExtra("id"))
+                                        .perform();
                             }
                         })
                         .show();
@@ -150,7 +206,87 @@ public class TrainingActivity extends BaseActivity {
 
         loadCollection();
 
-        ((TextView) findViewById(R.id.date_text_viewd)).setText(parent.getName());
+        GetFitServerRequest.with(this)
+                .authorize()
+                .listener(new OnRequestPerformedListener() {
+                    @Override
+                    public void onRequestPerformedListener(Object... objects) {
+                        try {
+                            if (objects[0].equals("Internet")) {
+                                cancelRequest();
+                                return;
+                            }
+                            JSONArray array = (JSONArray) objects[0];
+
+                            for(int i = 0; i < array.length(); i++) {
+                                JSONObject object = array.getJSONObject(i);
+
+                                parts.add(new TrainingPart(
+                                        object.getString("id"),
+                                        object.getJSONObject("exercise").getJSONObject("exercise_type").getString("name"),
+                                        object.isNull("weight") ? 0 :
+                                                object.getInt("weight"),
+                                        object.isNull("sets") ? 0 :
+                                                object.getInt("sets"),
+                                        object.isNull("reps") ? 0 :
+                                                object.getInt("reps"),
+                                        object.isNull("distance") ? 0 :
+                                                object.getInt("distance"),
+                                        object.getJSONObject("exercise").getJSONObject("exercise_type").getString("description"),
+                                        object.getBoolean("completed"),
+                                        i,
+                                        object.getJSONObject("exercise").getJSONObject("exercise_type").getString("video_url")
+                                ));
+                            }
+
+                            loadCollection();
+                        } catch (Exception e) {
+                        }
+                    }
+                })
+                .exercises(getIntent().getStringExtra("id"))
+                .perform();
+
+        GetFitServerRequest.with(this)
+                .authorize()
+                .listener(new OnRequestPerformedListener() {
+                    @Override
+                    public void onRequestPerformedListener(Object... objects) {
+                        try {
+                            if (objects[0].equals("Internet")) {
+                                cancelRequest();
+                                return;
+                            }
+                            JSONObject object = (JSONObject) objects[0];
+
+                            desc = object.getString("description");
+                            trainerName = object.getJSONObject("trainer").getString("first_name") + " " +
+                                            object.getJSONObject("trainer").getString("last_name");
+
+                            trainerAvatarUrl = GetFitServerRequest.imagesUrl + object.getJSONObject("trainer").getString("avatar_url");
+                            trainerId = object.getJSONObject("trainer").getString("id");
+
+                            myItemAdapter.notifyItemChanged(0);
+                        } catch (Exception e) {
+                        }
+                    }
+                })
+                .program(getIntent().getStringExtra("programId"))
+                .perform();
+
+        if(parent.getTips() != null) {
+            ArrayList<Pair<String, String>> tips = parent.getTips();
+            ((LinearLayout) findViewById(R.id.tips)).removeAllViews();
+            for (int i = 0; i < tips.size(); i++) {
+                View v1 = LayoutInflater.from(this).inflate(R.layout.title_layout, null);
+                View v2 = LayoutInflater.from(this).inflate(R.layout.tip_content_layout, null);
+                ((TextView) v1.findViewById(R.id.textView30)).setText(tips.get(i).first);
+                ((TextView) v2.findViewById(R.id.textView18)).setText(tips.get(i).second);
+
+                ((LinearLayout) findViewById(R.id.tips)).addView(v1);
+                ((LinearLayout) findViewById(R.id.tips)).addView(v2);
+            }
+        }
     }
 
     @Override
@@ -176,7 +312,9 @@ public class TrainingActivity extends BaseActivity {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                AndroidUtils.animateRevealShowFirst(findViewById(R.id.dialog), TrainingActivity.this);
+                if(parent.getTips() != null) {
+                    AndroidUtils.animateRevealShowFirst(findViewById(R.id.dialog), TrainingActivity.this);
+                }
             }
         });
     }
@@ -184,7 +322,7 @@ public class TrainingActivity extends BaseActivity {
     public void show(final DialogFinishedListener listener, int current) {
 
         final Dialog d = new Dialog(TrainingActivity.this);
-        d.setTitle("Select Value");
+        d.setTitle(R.string.select_val_str);
         d.setContentView(R.layout.dialog);
         View b1 = d.findViewById(R.id.button1);
         View b2 = d.findViewById(R.id.button2);

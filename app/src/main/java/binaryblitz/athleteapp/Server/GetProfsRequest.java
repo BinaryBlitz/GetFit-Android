@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import binaryblitz.athleteapp.Data.ProfessionalType;
+import binaryblitz.athleteapp.Utils.AndroidUtils;
 
 public class GetProfsRequest implements Request {
 
@@ -18,6 +19,12 @@ public class GetProfsRequest implements Request {
 
     @Override
     public void execute(final OnRequestPerformedListener listener, final JSONObject... params) {
+
+        if(!AndroidUtils.isConnected(GetFitServerRequest.context)) {
+            GetFitServerRequest.activity.cancelRequest();
+            listener.onRequestPerformedListener("Internet");
+            return;
+        }
 
         String res = "";
 
@@ -39,7 +46,8 @@ public class GetProfsRequest implements Request {
                 com.android.volley.Request.Method.GET,
                 GetFitServerRequest.baseUrl
                         + "/api/trainers"
-                        + GetFitServerRequest.apiToken + "&category=" + res
+                        + GetFitServerRequest.apiToken +
+                        (GetFitServerRequest.apiToken.isEmpty() ? "?category=" : "&category=") + res
                 ,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -54,6 +62,12 @@ public class GetProfsRequest implements Request {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        try {
+                            if(error.networkResponse.statusCode == 401) {
+                                listener.onRequestPerformedListener("AuthError");
+                                return;
+                            }
+                        } catch (Exception ignored) {}
                         listener.onRequestPerformedListener("Error");
                     }
                 }

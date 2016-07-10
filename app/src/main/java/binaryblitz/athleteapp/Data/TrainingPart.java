@@ -11,7 +11,13 @@ public class TrainingPart {
 
     private String desc;
 
-    public TrainingPart(String id, String name, int weight, int count, int reps, int time, String desc) {
+    private boolean completed;
+    private int number;
+
+    private String videoUrl;
+
+    public TrainingPart(String id, String name, int weight, int count, int reps, int time, String desc,
+                        boolean completed, int number, String videoUrl) {
         this.id = id;
         this.name = name;
         this.weight = weight;
@@ -19,6 +25,33 @@ public class TrainingPart {
         this.reps = reps;
         this.time = time;
         this.desc = desc;
+        this.completed = completed;
+        this.number = number;
+        this.videoUrl = videoUrl;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
     public String getId() {

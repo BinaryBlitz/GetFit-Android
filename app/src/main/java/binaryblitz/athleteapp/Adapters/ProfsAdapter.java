@@ -1,10 +1,12 @@
 package binaryblitz.athleteapp.Adapters;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,13 +20,19 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Locale;
 
+import binaryblitz.athleteapp.Abstract.BaseActivity;
+import binaryblitz.athleteapp.Activities.AuthActivity;
 import binaryblitz.athleteapp.Activities.ProfProfileActivity;
 import binaryblitz.athleteapp.Custom.ProgressDialog;
 import binaryblitz.athleteapp.Custom.RaitingDialog;
 import binaryblitz.athleteapp.Data.Professional;
 import binaryblitz.athleteapp.Data.ProfessionalType;
+import binaryblitz.athleteapp.Data.SubscriptionsSet;
 import binaryblitz.athleteapp.R;
 import binaryblitz.athleteapp.Server.GetFitServerRequest;
 import binaryblitz.athleteapp.Server.OnRequestPerformedListener;
@@ -73,7 +81,7 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         holder.user_name.setText(prof.getName());
         holder.post_desc.setText(prof.getDesc());
-        holder.like_count.setText(Double.toString(prof.getStarCount()));
+        holder.like_count.setText(new DecimalFormat("#.#", DecimalFormatSymbols.getInstance(Locale.US)).format(prof.getStarCount()));
         holder.text_count.setText(Integer.toString(prof.getUserCount()));
 
         Picasso.with(context).load(prof.getUserPhotoUrl()).into(holder.user_avatar);
@@ -81,11 +89,55 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         holder.itemView.findViewById(R.id.imageView3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(GetFitServerRequest.with(context).isAuthorized()) {
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!context.isFinishing()) {
+                                new AlertDialog.Builder(context)
+                                        .setTitle(context.getString(R.string.title_str))
+                                        .setMessage(context.getString(R.string.reg_alert_str))
+                                        .setCancelable(false)
+                                        .setPositiveButton(context.getString(R.string.cont_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent intent = new Intent(context, AuthActivity.class);
+                                                context.startActivity(intent);
+                                            }
+                                        })
+                                        .setNegativeButton(context.getString(R.string.cancel_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }
+                    });
+
+                    return;
+                }
+
+                if(SubscriptionsSet.load().get(prof.getId()) == null) {
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.title_str))
+                            .setMessage(context.getString(R.string.rating_error_str))
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.ok_str, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .show();
+
+                    return;
+                }
+
                 RaitingDialog dialog = new RaitingDialog();
                 dialog.setListener(new RaitingDialog.OnRateDialogFinished() {
                     @Override
                     public void OnRateDialogFinished(float rating) {
-                        Log.e("qwety", "finished");
                         JSONObject object = new JSONObject();
 
                         try {
@@ -103,17 +155,49 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             e.printStackTrace();
                         }
 
-                        GetFitServerRequest.with(context)
-                                .authorize()
-                                .objects(toSend)
-                                .listener(new OnRequestPerformedListener() {
-                                    @Override
-                                    public void onRequestPerformedListener(Object... objects) {
-                                        Log.e("qwerty", objects[0].toString());
-                                    }
-                                })
-                                .rateTrainer(prof.getId())
-                                .perform();
+                        if(prof.getRatingId() == null) {
+                            GetFitServerRequest.with(context)
+                                    .authorize()
+                                    .objects(toSend)
+                                    .listener(new OnRequestPerformedListener() {
+                                        @Override
+                                        public void onRequestPerformedListener(Object... objects) {
+                                            if (objects[0].equals("Internet")) {
+                                                ((BaseActivity) context).cancelRequest();
+                                                return;
+                                            }
+                                            try {
+                                                prof.setStarCount(((JSONObject) objects[0]).getDouble("rating"));
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                            holder.like_count.setText(new DecimalFormat("#.#", DecimalFormatSymbols.getInstance(Locale.US)).format(prof.getStarCount()));
+                                        }
+                                    })
+                                    .rateTrainer(prof.getId())
+                                    .perform();
+                        } else {
+                            GetFitServerRequest.with(context)
+                                    .authorize()
+                                    .objects(toSend)
+                                    .listener(new OnRequestPerformedListener() {
+                                        @Override
+                                        public void onRequestPerformedListener(Object... objects) {
+                                            if (objects[0].equals("Internet")) {
+                                                ((BaseActivity) context).cancelRequest();
+                                                return;
+                                            }
+                                            try {
+                                                prof.setStarCount(((JSONObject) objects[0]).getDouble("rating"));
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                            holder.like_count.setText(new DecimalFormat("#.#", DecimalFormatSymbols.getInstance(Locale.US)).format(prof.getStarCount()));
+                                        }
+                                    })
+                                    .patchRating(prof.getRatingId())
+                                    .perform();
+                        }
                     }
                 });
 
@@ -124,11 +208,55 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         holder.itemView.findViewById(R.id.textView3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(GetFitServerRequest.with(context).isAuthorized()) {
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!context.isFinishing()) {
+                                new AlertDialog.Builder(context)
+                                        .setTitle(context.getString(R.string.title_str))
+                                        .setMessage(context.getString(R.string.reg_alert_str))
+                                        .setCancelable(false)
+                                        .setPositiveButton(context.getString(R.string.cont_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent intent = new Intent(context, AuthActivity.class);
+                                                context.startActivity(intent);
+                                            }
+                                        })
+                                        .setNegativeButton(context.getString(R.string.cancel_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }
+                    });
+
+                    return;
+                }
+
+                if(SubscriptionsSet.load().get(prof.getId()) == null) {
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.title_str))
+                            .setMessage(context.getString(R.string.rating_error_str))
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.ok_str, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .show();
+
+                    return;
+                }
+
                 RaitingDialog dialog = new RaitingDialog();
                 dialog.setListener(new RaitingDialog.OnRateDialogFinished() {
                     @Override
                     public void OnRateDialogFinished(float rating) {
-                        Log.e("qwety", "finished");
                         JSONObject object = new JSONObject();
 
                         try {
@@ -146,17 +274,49 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             e.printStackTrace();
                         }
 
-                        GetFitServerRequest.with(context)
-                                .authorize()
-                                .objects(toSend)
-                                .listener(new OnRequestPerformedListener() {
-                                    @Override
-                                    public void onRequestPerformedListener(Object... objects) {
-                                        Log.e("qwerty", objects[0].toString());
-                                    }
-                                })
-                                .rateTrainer(prof.getId())
-                                .perform();
+                        if(prof.getRatingId() == null) {
+                            GetFitServerRequest.with(context)
+                                    .authorize()
+                                    .objects(toSend)
+                                    .listener(new OnRequestPerformedListener() {
+                                        @Override
+                                        public void onRequestPerformedListener(Object... objects) {
+                                            if (objects[0].equals("Internet")) {
+                                                ((BaseActivity) context).cancelRequest();
+                                                return;
+                                            }
+                                            try {
+                                                prof.setStarCount(((JSONObject) objects[0]).getDouble("rating"));
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                            holder.like_count.setText(new DecimalFormat("#.#", DecimalFormatSymbols.getInstance(Locale.US)).format(prof.getStarCount()));
+                                        }
+                                    })
+                                    .rateTrainer(prof.getId())
+                                    .perform();
+                        } else {
+                            GetFitServerRequest.with(context)
+                                    .authorize()
+                                    .objects(toSend)
+                                    .listener(new OnRequestPerformedListener() {
+                                        @Override
+                                        public void onRequestPerformedListener(Object... objects) {
+                                            if (objects[0].equals("Internet")) {
+                                                ((BaseActivity) context).cancelRequest();
+                                                return;
+                                            }
+                                            try {
+                                                prof.setStarCount(((JSONObject) objects[0]).getDouble("rating"));
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                            holder.like_count.setText(new DecimalFormat("#.#", DecimalFormatSymbols.getInstance(Locale.US)).format(prof.getStarCount()));
+                                        }
+                                    })
+                                    .patchRating(prof.getRatingId())
+                                    .perform();
+                        }
                     }
                 });
 
@@ -173,7 +333,7 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     .into(holder.post_photo);
         }
 
-        holder.date.setText(prof.getProgramCount() + " PROGRAMS");
+        holder.date.setText(prof.getProgramCount() + context.getString(R.string.programs_adapter_str));
 
         if(prof.isFollowing()) {
             holder.vBgLike.setBackgroundResource(R.drawable.blue_btn);
@@ -188,6 +348,35 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         holder.vBgLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(GetFitServerRequest.with(context).isAuthorized()) {
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!context.isFinishing()) {
+                                new AlertDialog.Builder(context)
+                                        .setTitle(context.getString(R.string.title_str))
+                                        .setMessage(context.getString(R.string.reg_alert_str))
+                                        .setCancelable(false)
+                                        .setPositiveButton(context.getString(R.string.cont_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent intent = new Intent(context, AuthActivity.class);
+                                                context.startActivity(intent);
+                                            }
+                                        })
+                                        .setNegativeButton(context.getString(R.string.cancel_upcase_str), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }
+                    });
+
+                    return;
+                }
                 final ProgressDialog dialog = new ProgressDialog();
                 dialog.show(context.getFragmentManager(), "atheleteapp");
 
@@ -197,9 +386,11 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             .listener(new OnRequestPerformedListener() {
                                 @Override
                                 public void onRequestPerformedListener(Object... objects) {
-                                    Log.e("qwerty", objects[0].toString());
                                     dialog.dismiss();
-
+                                    if (objects[0].equals("Internet")) {
+                                        ((BaseActivity) context).cancelRequest();
+                                        return;
+                                    }
                                     try {
                                         prof.setFollowId(((JSONObject) objects[0]).getString("id"));
                                         prof.setFollowing(true);
@@ -222,6 +413,10 @@ public class ProfsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                 @Override
                                 public void onRequestPerformedListener(Object... objects) {
                                     dialog.dismiss();
+                                    if (objects[0].equals("Internet")) {
+                                        ((BaseActivity) context).cancelRequest();
+                                        return;
+                                    }
                                     prof.setUserCount(prof.getUserCount() - 1);
                                     prof.setFollowId(null);
                                     prof.setFollowing(false);

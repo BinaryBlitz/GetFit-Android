@@ -1,7 +1,11 @@
 package binaryblitz.athleteapp.Utils;
 
+import android.content.Context;
+
 import java.util.Calendar;
 import java.util.Date;
+
+import binaryblitz.athleteapp.R;
 
 public class DateTimeUtil {
 
@@ -19,45 +23,45 @@ public class DateTimeUtil {
         return cal;
     }
 
-    public static String getMonthString(int number) {
+    public static String getMonthString(Context context, int number) {
         String month = "";
 
         switch(number) {
             case 1:
-                month = "January";
+                month = context.getString(R.string.jan_str);
                 break;
             case 2:
-                month = "February";
+                month = context.getString(R.string.feb_str);
                 break;
             case 3:
-                month = "March";
+                month = context.getString(R.string.march_str);
                 break;
             case 4:
-                month = "April";
+                month = context.getString(R.string.april_str);
                 break;
             case 5:
-                month = "May";
+                month = context.getString(R.string.may_str);
                 break;
             case 6:
-                month = "June";
+                month = context.getString(R.string.june_str);
                 break;
             case 7:
-                month = "July";
+                month = context.getString(R.string.july_str);
                 break;
             case 8:
-                month = "August";
+                month = context.getString(R.string.august_str);
                 break;
             case 9:
-                month = "September";
+                month = context.getString(R.string.sep_str);
                 break;
             case 10:
-                month = "October";
+                month = context.getString(R.string.cot_str);
                 break;
             case 11:
-                month = "November";
+                month = context.getString(R.string.nov_str);
                 break;
             case 12:
-                month = "December";
+                month = context.getString(R.string.dec_str);
                 break;
             default:
                 return month;

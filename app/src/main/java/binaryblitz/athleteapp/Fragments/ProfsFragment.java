@@ -8,7 +8,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import binaryblitz.athleteapp.Abstract.BaseActivity;
 import binaryblitz.athleteapp.Activities.ProfsActivity;
 import binaryblitz.athleteapp.Adapters.ProfsAdapter;
 import binaryblitz.athleteapp.Data.Professional;
@@ -88,10 +88,14 @@ public class ProfsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         layout.setRefreshing(false);
 
                         try {
+                            if (objects[0].equals("Error")) {
+                                ((BaseActivity) getActivity()).cancelRequest();
+                                return;
+                            }
                             JSONArray array = (JSONArray) objects[0];
                             ArrayList<Professional> collection = new ArrayList<>();
 
-                            for(int i = 0; i < array.length(); i++) {
+                            for (int i = 0; i < array.length(); i++) {
                                 JSONObject object = array.getJSONObject(i);
 
                                 Professional professional = new Professional(
@@ -104,12 +108,14 @@ public class ProfsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                         false,
                                         object.getInt("programs_count"),
                                         object.getInt("followers_count"),
-                                        object.getDouble("rating")
+                                        object.getDouble("rating"),
+                                        object.isNull("rating_id") ? null : object.getString("rating")
                                 );
 
                                 try {
                                     professional.setFollowId(object.getJSONObject("following_id").getString("id"));
-                                } catch (Exception ignored) {}
+                                } catch (Exception ignored) {
+                                }
 
                                 professional.setFollowing(!object.isNull("following_id"));
 
@@ -119,7 +125,7 @@ public class ProfsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                             adapter.setCollection(collection);
                             adapter.notifyDataSetChanged();
 
-                            if(adapter.getItemCount() == 0) {
+                            if (adapter.getItemCount() == 0) {
                                 getView().findViewById(R.id.noitems).setVisibility(View.VISIBLE);
                             } else {
                                 getView().findViewById(R.id.noitems).setVisibility(View.GONE);
@@ -140,12 +146,15 @@ public class ProfsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     public void onRequestPerformedListener(Object... objects) {
 
                         layout.setRefreshing(false);
-
+                        if (objects[0].equals("Error")) {
+                            ((BaseActivity) getActivity()).cancelRequest();
+                            return;
+                        }
                         try {
                             JSONArray array = (JSONArray) objects[0];
                             ArrayList<Professional> collection = new ArrayList<>();
 
-                            for(int i = 0; i < array.length(); i++) {
+                            for (int i = 0; i < array.length(); i++) {
                                 JSONObject object = array.getJSONObject(i);
 
                                 Professional professional = new Professional(
@@ -158,12 +167,14 @@ public class ProfsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                         false,
                                         object.getInt("programs_count"),
                                         object.getInt("followers_count"),
-                                        object.getDouble("rating")
+                                        object.getDouble("rating"),
+                                        object.isNull("rating_id") ? null : object.getString("rating")
                                 );
 
                                 try {
                                     professional.setFollowId(object.getJSONObject("following_id").getString("id"));
-                                } catch (Exception ignored) {}
+                                } catch (Exception ignored) {
+                                }
 
                                 professional.setFollowing(!object.isNull("following_id"));
 
@@ -173,7 +184,7 @@ public class ProfsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                             adapter.setCollection(collection);
                             adapter.notifyDataSetChanged();
 
-                            if(adapter.getItemCount() == 0) {
+                            if (adapter.getItemCount() == 0) {
                                 getView().findViewById(R.id.noitems).setVisibility(View.VISIBLE);
                             } else {
                                 getView().findViewById(R.id.noitems).setVisibility(View.GONE);

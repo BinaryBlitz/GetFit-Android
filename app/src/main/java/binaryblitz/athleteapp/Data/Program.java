@@ -16,14 +16,16 @@ public class Program {
     private String time;
 
     private int userCount;
-    private int starCount;
+    private double starCount;
 
     private String trainerName;
     private String trainerId;
 
+    private String ratingId;
+
     public Program(String id, String name, String price,
                    String type, int count, String desc, String time, int userCount,
-                   int starCount, String trainerName, String trainerId, String photoUrl) {
+                   double starCount, String trainerName, String trainerId, String photoUrl, String ratingId) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -36,6 +38,15 @@ public class Program {
         this.trainerName = trainerName;
         this.trainerId = trainerId;
         this.photoUrl = photoUrl;
+        this.ratingId = ratingId;
+    }
+
+    public String getRatingId() {
+        return ratingId;
+    }
+
+    public void setRatingId(String ratingId) {
+        this.ratingId = ratingId;
     }
 
     public String getUserPhotoUrl() {
@@ -118,11 +129,11 @@ public class Program {
         this.userCount = userCount;
     }
 
-    public int getStarCount() {
+    public double getStarCount() {
         return starCount;
     }
 
-    public void setStarCount(int starCount) {
+    public void setStarCount(double starCount) {
         this.starCount = starCount;
     }
 

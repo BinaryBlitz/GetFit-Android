@@ -13,6 +13,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:id="@+id/main"
     android:background="#f1f1f1">
 
     <android.support.design.widget.AppBarLayout
@@ -48,13 +49,15 @@
                         android:layout_width="fill_parent"
                         android:layout_height="150dp"
                         android:id="@+id/imageView2"
-                        android:src="@drawable/test1"
-                        android:scaleType="centerCrop" />
+                        android:scaleType="centerCrop"
+                        android:background="@color/accent_color" />
 
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
-                        android:background="@drawable/white_gradient">
+                        android:background="@drawable/white_gradient"
+                        android:visibility="gone"
+                        android:id="@+id/gradient">
 
                     </FrameLayout>
 
@@ -66,9 +69,9 @@
                         android:layout_height="88dp"
                         android:layout_gravity="left|bottom"
                         android:layout_marginLeft="16dp"
-                        android:src="@drawable/evgen"
                         android:scaleType="centerCrop"
-                        android:layout_marginBottom="6dp" />
+                        android:layout_marginBottom="6dp"
+                        android:src="@drawable/avatar_place_holder" />
 
                     <FrameLayout
                         android:layout_width="100dp"
@@ -97,7 +100,6 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Efanov Evgeniy"
                     android:id="@+id/textView"
                     android:layout_gravity="left|center_vertical"
                     android:textSize="20sp"
@@ -112,7 +114,6 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Who has taken an extended leave of absence from training? Who has taken an extended leave of absence from training? "
                     android:id="@+id/textView2"
                     android:textColor="@color/dark_text_color"
                     android:textSize="18sp"

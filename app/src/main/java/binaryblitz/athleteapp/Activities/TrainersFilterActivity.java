@@ -43,7 +43,7 @@ public class TrainersFilterActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 new MaterialDialog.Builder(TrainersFilterActivity.this)
-                        .title("Select")
+                        .title(getString(R.string.select_str))
                         .items(collection2)
                         .itemsCallback(new MaterialDialog.ListCallback() {
                             @Override
@@ -78,9 +78,13 @@ public class TrainersFilterActivity extends BaseActivity {
                     @Override
                     public void onRequestPerformedListener(Object... objects) {
                         try {
+                            if (objects[0].equals("Internet")) {
+                                cancelRequest();
+                                return;
+                            }
                             JSONArray array = (JSONArray) objects[0];
                             collection1.add("0");
-                            collection2.add("All");
+                            collection2.add(getString(R.string.all_str));
                             for(int i = 0; i < array.length(); i++) {
                                 JSONObject object = array.getJSONObject(i);
 

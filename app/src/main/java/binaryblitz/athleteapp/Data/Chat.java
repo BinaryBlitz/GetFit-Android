@@ -3,7 +3,7 @@ package binaryblitz.athleteapp.Data;
 import java.util.Calendar;
 
 public class Chat {
-    private int avatar;
+    private String avatar;
     private String name;
     private Calendar time;
     private String last;
@@ -11,7 +11,7 @@ public class Chat {
 
     private String subscriptionId;
 
-    public Chat(int unRead, String name, Calendar time, String last, int avatar, String subscriptionId) {
+    public Chat(int unRead, String name, Calendar time, String last, String avatar, String subscriptionId) {
         this.unRead = unRead;
         this.name = name;
         this.time = time;
@@ -28,11 +28,11 @@ public class Chat {
         this.subscriptionId = subscriptionId;
     }
 
-    public int getAvatar() {
+    public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(int avatar) {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 

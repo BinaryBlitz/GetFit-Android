@@ -9,6 +9,7 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto">
     <FrameLayout
         android:layout_width="match_parent"
+        android:id="@+id/main"
         android:layout_height="match_parent">
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/refresh"
@@ -58,7 +59,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Chats"
+                        android:text="@string/chats"
                         android:layout_gravity="center_vertical"
                         android:id="@+id/date_text_view"
                         android:textAllCaps="false"

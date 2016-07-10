@@ -47,8 +47,7 @@
                     android:textSize="18sp"
                     android:textColor="#ffffff"
                     android:layout_marginLeft="56dp"
-                    android:singleLine="true"
-                    android:text="Efanov Evgeny" />
+                    android:singleLine="true" />
 
             </FrameLayout>
         </android.support.v7.widget.Toolbar>

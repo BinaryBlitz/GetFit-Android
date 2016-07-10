@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Welcome to GetFit!\nSign up or sign in"
+            android:text="@string/welcome_to_getfit_nsign_up_or_sign_in"
             android:id="@+id/textView31"
             android:layout_gravity="center_horizontal|bottom"
             android:layout_marginBottom="56dp"

@@ -17,10 +17,11 @@ public class Professional {
     private double starCount;
 
     private String followId;
+    private String ratingId;
 
     public Professional(String id, String photoUrl, String userPhotoUrl, String name,
                         String desc, ProfessionalType type, boolean following,
-                        int programCount, int userCount, double starCount) {
+                        int programCount, int userCount, double starCount, String ratingId) {
         this.id = id;
         this.photoUrl = photoUrl;
         this.userPhotoUrl = userPhotoUrl;
@@ -31,6 +32,15 @@ public class Professional {
         this.programCount = programCount;
         this.userCount = userCount;
         this.starCount = starCount;
+        this.ratingId = ratingId;
+    }
+
+    public String getRatingId() {
+        return ratingId;
+    }
+
+    public void setRatingId(String ratingId) {
+        this.ratingId = ratingId;
     }
 
     public String getFollowId() {

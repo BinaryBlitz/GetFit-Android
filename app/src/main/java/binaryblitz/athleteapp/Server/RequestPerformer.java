@@ -43,6 +43,10 @@ public class RequestPerformer {
         return new RequestExecutor(new FollowRequest(id), listener, objects);
     }
 
+    public RequestExecutor profile(String id) {
+        return new RequestExecutor(new GetProfileRequest(id), listener, objects);
+    }
+
     public RequestExecutor unfollow(String id) {
         return new RequestExecutor(new UnfollowRequest(id), listener, objects);
     }
@@ -75,12 +79,24 @@ public class RequestPerformer {
         return new RequestExecutor(new GetProgramsRequest(), listener, objects);
     }
 
+    public RequestExecutor notifications() {
+        return new RequestExecutor(new GetNotificationsRequest(), listener, objects);
+    }
+
     public RequestExecutor post(String id) {
         return new RequestExecutor(new GetPostRequest(id), listener, objects);
     }
 
     public RequestExecutor program(String id) {
         return new RequestExecutor(new GetProgramRequest(id), listener, objects);
+    }
+
+    public RequestExecutor updateExercise(String id) {
+        return new RequestExecutor(new UpdateExerciseSessionRequest(id), listener, objects);
+    }
+
+    public RequestExecutor userPrograms(String id) {
+        return new RequestExecutor(new GetUserProgramsRequest(id), listener, objects);
     }
 
     public RequestExecutor workoutSessions() {
@@ -93,6 +109,10 @@ public class RequestPerformer {
 
     public RequestExecutor filterTrainers(ProfessionalType type, String spec, String order) {
         return new RequestExecutor(new FilterTrainersRequest(type, order, spec), listener, objects);
+    }
+
+    public RequestExecutor filterStore(String order, String spec, String price) {
+        return new RequestExecutor(new FilterStoreRequest(order, spec, price), listener, objects);
     }
 
     public RequestExecutor subscriptions() {
@@ -115,6 +135,18 @@ public class RequestPerformer {
         return new RequestExecutor(new GetUserRequest(), listener, objects);
     }
 
+    public RequestExecutor myPrograms() {
+        return new RequestExecutor(new GetMyProgramsRequest(), listener, objects);
+    }
+
+    public RequestExecutor programTypes() {
+        return new RequestExecutor(new GetProgramTypesRequest(), listener, objects);
+    }
+
+    public RequestExecutor updateWorkouts() {
+        return new RequestExecutor(new UpdateMyWorkoutsRequest(), listener, objects);
+    }
+
     public RequestExecutor trainers(ProfessionalType type) {
         return new RequestExecutor(new GetProfsRequest(type), listener, objects);
     }
@@ -127,8 +159,28 @@ public class RequestPerformer {
         return new RequestExecutor(new GetMessagesRequest(id), listener, objects);
     }
 
+    public RequestExecutor completeWorkout(String id) {
+        return new RequestExecutor(new CompleteWorkoutRequest(id), listener, objects);
+    }
+
+    public RequestExecutor exercises(String id) {
+        return new RequestExecutor(new GetExercisesRequest(id), listener, objects);
+    }
+
+    public RequestExecutor videoDetails(String id) {
+        return new RequestExecutor(new GetVideoDetailsrequest(id), listener, objects);
+    }
+
+    public RequestExecutor purchaseProgram(String id) {
+        return new RequestExecutor(new PurchaseProgramRequest(id), listener, objects);
+    }
+
     public RequestExecutor rateTrainer(String id) {
         return new RequestExecutor(new RateTrainerRequest(id), listener, objects);
+    }
+
+    public RequestExecutor duration(String id) {
+        return new RequestExecutor(new GetDurationRequest(id), listener, objects);
     }
 
     public RequestExecutor subscript(String id) {
@@ -137,6 +189,10 @@ public class RequestPerformer {
 
     public RequestExecutor rateProgram(String id) {
         return new RequestExecutor(new RateProgramRequest(id), listener, objects);
+    }
+
+    public RequestExecutor patchRating(String id) {
+        return new RequestExecutor(new PatchRatingRequest(id), listener, objects);
     }
 
     public RequestExecutor getComments(String id) {

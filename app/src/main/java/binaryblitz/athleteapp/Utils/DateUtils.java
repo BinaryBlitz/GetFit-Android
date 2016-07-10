@@ -89,12 +89,12 @@ public class DateUtils {
         return date;
     }
 
-    public static String getDateStringRepresentationForNews(Calendar startTime) {
+    public static String getDateStringRepresentationForNews(Calendar startTime, Context context) {
         String date;
         Calendar calendar = Calendar.getInstance();
 
         if(calendar.equals(startTime)) {
-            return "TODAY";
+            return context.getString(R.string.today_upcase_str);
         }
 
         date = Integer.toString(startTime.get(Calendar.DAY_OF_MONTH)) + "/" +
